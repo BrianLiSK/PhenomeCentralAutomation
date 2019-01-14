@@ -5,7 +5,7 @@ import org.openqa.selenium.WebDriver;
 
 // Represents the page reached when "Create... -> New patient" is clicked on the navbar
 //    http://localhost:8083/edit/data/Pxxxxxxx (new patient ID)
-public class createPatientPage extends basePage implements commonInfoSelectors {
+public class createPatientPage extends commonInfoSelectors {
 
     public createPatientPage(WebDriver aDriver) { super(aDriver); }
 
