@@ -6,7 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-// This abstract class contains the toolbar elements which is visible on all pages
+// This abstract class contains the toolbar (navbar) elements which is visible on all pages
 public abstract class basePage {
     public final By adminLink = By.id("tmAdminSpace");
     public final By aboutLink = By.id("tmAbout");
@@ -104,6 +104,11 @@ public abstract class basePage {
         clickOnElement(browseMenuDrp);
         clickOnElement(viewAllPatientsLink);
         return new allPatientsPage(superDriver);
+    }
+
+    public adminSettingsPage navigateToAdminSettingsPage() {
+        clickOnElement(adminLink);
+        return new adminSettingsPage(superDriver);
     }
 
 

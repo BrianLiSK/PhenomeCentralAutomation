@@ -11,8 +11,8 @@ public class homePage extends basePage {
 
 
     public homePage(WebDriver aDriver) {
-        super(aDriver); // Give the webdriver to the superclass
-    }
+        super(aDriver);
+    } // Give the webdriver to the superclass
 
     public loginPage navigateToLoginPage() {
         superDriver.navigate().to(HOMEPAGE_URL);
