@@ -1,6 +1,7 @@
 package pageObjects;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -39,7 +40,7 @@ public abstract class basePage {
     // Ctor, might want to modify timeOut for web elements
     public basePage(WebDriver aDriver) {
         superDriver = aDriver;
-        pause = new WebDriverWait(superDriver, 2);
+        pause = new WebDriverWait(superDriver, 5);
     }
 
     public basePage waitForElementToBePresent(By elementSelector) {
@@ -102,7 +103,14 @@ public abstract class basePage {
 
     public allPatientsPage navigateToAllPatientsPage() {
         clickOnElement(browseMenuDrp);
-        clickOnElement(viewAllPatientsLink);
+        try {
+            clickOnElement(viewAllPatientsLink);
+        } catch (ElementNotInteractableException e) {
+            clickOnElement(browseMenuDrp);
+            clickOnElement(viewAllPatientsLink);
+            System.err.println("Might throw an error, All Patients Link not clickable!");
+        }
+
         return new allPatientsPage(superDriver);
     }
 
