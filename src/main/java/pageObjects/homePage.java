@@ -3,6 +3,7 @@ package pageObjects;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+// Represents the page on http://localhost:8083/
 public class homePage extends basePage {
     final By loginLink = By.id("launch-login");
     final By signUpButton = By.cssSelector("launch-register");

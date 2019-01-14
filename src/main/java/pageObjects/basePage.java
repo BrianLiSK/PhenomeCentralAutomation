@@ -59,7 +59,15 @@ public abstract class basePage {
         } catch (InterruptedException e) {
             System.err.println("Test was interrupted during an unconditional wait!!");
         }
+        return this;
+    }
 
+    public basePage unconditionalWaitNs(int n) {
+        try {
+            Thread.sleep(n * 1000);
+        } catch (InterruptedException e) {
+            System.err.println("Test was interrupted during an unconditional wait of " + n + " seconds!");
+        }
         return this;
     }
 
