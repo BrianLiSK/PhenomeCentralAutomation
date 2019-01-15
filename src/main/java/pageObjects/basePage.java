@@ -23,12 +23,16 @@ public abstract class basePage {
     Constant Credentials
     */
     protected final String HOMEPAGE_URL = "http://localhost:8083";
+    protected final String ALL_PAITIENTS_URL = "http://localhost:8083/AllData";
 
     protected String ADMIN_USERNAME = "Admin";
     protected String ADMIN_PASS = "admin";
 
-    protected String USER_USERNAME = "TestUser2Dos";
+    protected String USER_USERNAME = "TestUser1Uno";
     protected String USER_PASS = "123456";
+
+    protected String USER_USERNAME2 = "TestUser2Dos";
+    protected String USER_PASS2 = "123456";
 
     /*
     Main WebDriver and Wait here
@@ -102,13 +106,13 @@ public abstract class basePage {
     }
 
     public allPatientsPage navigateToAllPatientsPage() {
+        // TODO: Investigate why an error is being thrown
         clickOnElement(browseMenuDrp);
         try {
             clickOnElement(viewAllPatientsLink);
         } catch (ElementNotInteractableException e) {
-            clickOnElement(browseMenuDrp);
-            clickOnElement(viewAllPatientsLink);
             System.err.println("Might throw an error, All Patients Link not clickable!");
+            superDriver.navigate().to(ALL_PAITIENTS_URL);
         }
 
         return new allPatientsPage(superDriver);

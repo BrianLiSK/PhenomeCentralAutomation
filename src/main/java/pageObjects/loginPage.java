@@ -29,4 +29,8 @@ public class loginPage extends basePage {
         return loginAs(USER_USERNAME, USER_PASS);
     }
 
+    public homePage loginAsUserTwo() {
+        return loginAs(USER_USERNAME2, USER_PASS2);
+    }
+
 }

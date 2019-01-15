@@ -23,18 +23,29 @@ public class createPatientTest extends baseTest implements commonInfoEnums {
     // Creates a patient via JSON import. Updates the consent, then asserts that the section titles are visible.
     @Test
     public void importJSONPatient() {
-        String importedPID;
-        importedPID = currentPage.navigateToLoginPage()
+//        String importedPID;
+        // Create patient 1 on TestUser1Uno
+        currentPage.navigateToLoginPage()
                 .loginAsUser()
                 .navigateToAllPatientsPage()
                 .importJSONPatient(JSONToImport)
                 .sortPatientsDateDesc()
                 .viewFirstPatientInTable()
-                .getPatientID();
+                .editThisPatient()
+                .toggleNthConsentBox(1)
+                .toggleNthConsentBox(2)
+                .toggleNthConsentBox(3)
+                .toggleNthConsentBox(4)
+                .updateConsent()
+                .saveAndViewSummary()
 
-        System.out.println("THE ID IS: " + importedPID);
-
-        currentPage2
+        // Create patient 2 on TestUser2Dos
+                .logOut()
+                .loginAsUserTwo()
+                .navigateToAllPatientsPage()
+                .importJSONPatient(JSONToImport)
+                .sortPatientsDateDesc()
+                .viewFirstPatientInTable()
                 .editThisPatient()
                 .toggleNthConsentBox(1)
                 .toggleNthConsentBox(2)
@@ -42,10 +53,13 @@ public class createPatientTest extends baseTest implements commonInfoEnums {
                 .toggleNthConsentBox(4)
                 .updateConsent()
                 .saveAndViewSummary();
+        //        System.out.println("THE ID IS: " + importedPID);
         System.out.println("We just edited: " + currentPage2.getPatientID());
 
         Assert.assertTrue(currentPage2.checkForVisibleSections(checkForTheseSections));
 
+        // Log back in as admin, go to match notification and notify them
+        // TODO: Notifies the first row only for now. We should delete patient afterwards for demo.
         currentPage2.logOut().loginAsAdmin()
                 .navigateToAdminSettingsPage()
                 .navigateToMatchingNotificationPage()
