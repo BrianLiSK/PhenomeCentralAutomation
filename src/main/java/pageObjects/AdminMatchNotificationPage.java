@@ -8,7 +8,7 @@ import org.openqa.selenium.WebDriver;
  * Administration -> PhenoTips -> Matching Notification in the left accordion menu
  * i.e. http://localhost:8083/admin/XWiki/XWikiPreferences?editor=globaladmin&section=Matching+Notification
  */
-public class AdminMatchNotificationPage extends BasePage
+public class AdminMatchNotificationPage extends adminSettingsPage
 {
     By patientIDContainsBox = By.id("external-id-filter");
 
