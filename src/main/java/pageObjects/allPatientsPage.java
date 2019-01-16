@@ -4,18 +4,26 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 // Represents the http://localhost:8083/AllData page, where Browse -> Browse patients is clicked on
-public class allPatientsPage extends basePage {
-
-    public allPatientsPage(WebDriver aDriver) { super(aDriver); }
-
+public class allPatientsPage extends basePage
+{
     By importJSONLink = By.id("phenotips_json_import");
+
     By JSONBox = By.id("import");
+
     By importBtn = By.id("import_button");
 
-    By sortCreationDate = By.cssSelector("th.xwiki-livetable-display-header-text:nth-child(4) > a:nth-child(1)"); // Click twice
-    By firstPatientRowLink = By.cssSelector("#patients-display > tr:nth-child(1) > td:nth-child(1) > a:nth-child(1)");
+    By sortCreationDate = By.cssSelector("th.xwiki-livetable-display-header-text:nth-child(4) > a:nth-child(1)");
 
-    public allPatientsPage importJSONPatient(String theJSON) {
+    By firstPatientRowLink = By.cssSelector("#patients-display > tr:nth-child(1) > td:nth-child(1) > a:nth-child(1)");
+        // Click twice
+
+    public allPatientsPage(WebDriver aDriver)
+    {
+        super(aDriver);
+    }
+
+    public allPatientsPage importJSONPatient(String theJSON)
+    {
         clickOnElement(importJSONLink);
         clickAndTypeOnElement(JSONBox, theJSON);
         clickOnElement(importBtn);
@@ -23,19 +31,17 @@ public class allPatientsPage extends basePage {
         return this;
     }
 
-    public allPatientsPage sortPatientsDateDesc() {
+    public allPatientsPage sortPatientsDateDesc()
+    {
         clickOnElement(sortCreationDate);
         clickOnElement(sortCreationDate);
         unconditionalWait5s();
         return this;
     }
 
-    public viewPatientPage viewFirstPatientInTable() {
+    public viewPatientPage viewFirstPatientInTable()
+    {
         clickOnElement(firstPatientRowLink);
         return new viewPatientPage(superDriver);
     }
-
-
-
-
 }

@@ -4,11 +4,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterSuite;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import pageObjects.basePage;
 
-public abstract class baseTest {
+public abstract class baseTest
+{
     protected WebDriver theDriver = new FirefoxDriver();
 
 //    @BeforeTest
@@ -34,7 +32,8 @@ public abstract class baseTest {
 //    }
 
     @AfterClass
-    public void testCleanup() {
+    public void testCleanup()
+    {
         // Pause a bit before closing.
         try {
             Thread.sleep(1500);
@@ -50,7 +49,8 @@ public abstract class baseTest {
     }
 
     @AfterSuite
-    public void cleanup() {
+    public void cleanup()
+    {
         // Pause a bit before closing.
         try {
             Thread.sleep(1500);
@@ -64,5 +64,4 @@ public abstract class baseTest {
             theDriver.quit();
         }
     }
-
 }
