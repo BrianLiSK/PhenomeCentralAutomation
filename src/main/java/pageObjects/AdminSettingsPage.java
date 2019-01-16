@@ -7,11 +7,11 @@ import org.openqa.selenium.WebDriver;
  * This is the main Global Administrator settings page. Reached by clicking on "Administrator" (gear icon)
  * link on the top left of the navbar. Ex. http://localhost:8083/admin/XWiki/XWikiPreferences
  */
-public class adminSettingsPage extends BasePage
+public class AdminSettingsPage extends BasePage
 {
     private final By matchingNotificationMenu = By.id("vertical-menu-Matching Notification");
 
-    public adminSettingsPage(WebDriver aDriver)
+    public AdminSettingsPage(WebDriver aDriver)
     {
         super(aDriver);
     }

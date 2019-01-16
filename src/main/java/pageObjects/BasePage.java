@@ -176,12 +176,12 @@ public abstract class BasePage
      * Navigates to the Admin Settings page by clicking the "Administrator" (gears icon) link at the
      * top left of the navbar
      * @requires: An administrator to already be logged in.
-     * @return new object of the adminSettingsPage
+     * @return new object of the AdminSettingsPage
      */
-    public adminSettingsPage navigateToAdminSettingsPage()
+    public AdminSettingsPage navigateToAdminSettingsPage()
     {
         clickOnElement(adminLink);
-        return new adminSettingsPage(superDriver);
+        return new AdminSettingsPage(superDriver);
     }
 
     /**
