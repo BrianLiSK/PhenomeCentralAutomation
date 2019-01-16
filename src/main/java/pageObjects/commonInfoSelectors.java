@@ -9,7 +9,7 @@ import org.openqa.selenium.WebDriver;
 import testCases.commonInfoEnums;
 
 // Contains selectors for accordion sections on the create and view patient info pages.
-public abstract class commonInfoSelectors extends basePage implements commonInfoEnums
+public abstract class commonInfoSelectors extends BasePage implements commonInfoEnums
 {
     private final By patientInfoSection = By.id("HPatientinformation"); // "Patient information"
 

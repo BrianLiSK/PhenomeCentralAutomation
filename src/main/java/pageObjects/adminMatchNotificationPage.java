@@ -3,7 +3,7 @@ package pageObjects;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-public class adminMatchNotificationPage extends basePage
+public class adminMatchNotificationPage extends BasePage
 {
     By patientIDContainsBox = By.id("external-id-filter");
 

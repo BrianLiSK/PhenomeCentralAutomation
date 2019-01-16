@@ -8,7 +8,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 // This abstract class contains the toolbar (navbar) elements which is visible on all pages
-public abstract class basePage
+public abstract class BasePage
 {
     /**
      * Public selectors, the loginPageTest touches these.
@@ -64,7 +64,7 @@ public abstract class basePage
      * interval if need be.
      * @param aDriver is the instance of webdriver created for the test. Must not be {@code null}
      */
-    public basePage(WebDriver aDriver)
+    public BasePage(WebDriver aDriver)
     {
         superDriver = aDriver;
         pause = new WebDriverWait(superDriver, 5);
@@ -111,7 +111,7 @@ public abstract class basePage
     }
 
     /**
-     * Similar to {@link basePage#clickOnElement(By)}. Just sends a specified input string to the element.
+     * Similar to {@link BasePage#clickOnElement(By)}. Just sends a specified input string to the element.
      * This usually should be a text box.
      * @Throws Some kind of Element-not-interactable exception (implicit) when element cannot accept keyboard string
      * @param elementSelector is the selector. It must accept a string input from keyboard.

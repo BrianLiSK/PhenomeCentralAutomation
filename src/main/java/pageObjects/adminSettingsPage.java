@@ -3,7 +3,7 @@ package pageObjects;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-public class adminSettingsPage extends basePage
+public class adminSettingsPage extends BasePage
 {
     By matchingNotificationMenu = By.id("vertical-menu-Matching Notification");
 

@@ -4,7 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 // Represents the page on http://localhost:8083/
-public class homePage extends basePage
+public class homePage extends BasePage
 {
     final By loginLink = By.id("launch-login");
 

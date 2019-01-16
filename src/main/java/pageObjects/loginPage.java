@@ -4,7 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 // Represents the page http://localhost:8083/PhenomeCentral/login
-public class loginPage extends basePage
+public class loginPage extends BasePage
 {
     private final By userNameField = By.id("j_username");
 
