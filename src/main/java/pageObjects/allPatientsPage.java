@@ -27,7 +27,7 @@ public class allPatientsPage extends basePage
         clickOnElement(importJSONLink);
         clickAndTypeOnElement(JSONBox, theJSON);
         clickOnElement(importBtn);
-        unconditionalWait5s();
+        unconditionalWaitNs(5);
         return this;
     }
 
@@ -35,7 +35,7 @@ public class allPatientsPage extends basePage
     {
         clickOnElement(sortCreationDate);
         clickOnElement(sortCreationDate);
-        unconditionalWait5s();
+        unconditionalWaitNs(5);
         return this;
     }
 

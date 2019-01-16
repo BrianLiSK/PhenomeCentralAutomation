@@ -73,7 +73,7 @@ public class createPatientPage extends commonInfoSelectors
     public createPatientPage updateConsent()
     {
         clickOnElement(updateBtn);
-        unconditionalWait5s();
+        unconditionalWaitNs(5);
         return this;
     }
 
