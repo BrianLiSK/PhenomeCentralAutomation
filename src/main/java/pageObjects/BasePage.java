@@ -7,7 +7,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-// This abstract class contains the toolbar (navbar) elements which is visible on all pages
+/**
+ * This abstract class contains the toolbar (navbar) elements which is visible on all pages
+ * All page classes should inherit this base class
+ */
 public abstract class BasePage
 {
     /**

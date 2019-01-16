@@ -3,8 +3,10 @@ package pageObjects;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-// Represents the page reached when "Create... -> New patient" is clicked on the navbar
-//    http://localhost:8083/edit/data/Pxxxxxxx (new patient ID)
+/**
+ * Represents the page reached when "Create... -> New patient" is clicked on the navbar
+ * Ex. http://localhost:8083/edit/data/Pxxxxxxx (new patient ID)
+*/
 public class createPatientPage extends CommonInfoSelectors
 {
     private final By patientIDDiv = By.id("document-title");
@@ -48,6 +50,11 @@ public class createPatientPage extends CommonInfoSelectors
         super(aDriver);
     }
 
+    /**
+     * Toggles the nth consent checkbox in the "Consents granted" section
+     * @param n which is an integer between 1-5 representing the specified checkbox.
+     * @return the same object as we are on the same page
+     */
     public createPatientPage toggleNthConsentBox(int n)
     {
         switch (n) {
@@ -66,10 +73,18 @@ public class createPatientPage extends CommonInfoSelectors
             case 5:
                 clickOnElement(matchingConsentBox);
                 break;
+            default:
+                System.out.println("Invalid nth consent box specified: " + n);
+                break;
         }
         return this;
     }
 
+    /**
+     * Clicks on the "Update" button under the "Consents granted" section and then waits
+     * 5 seconds for it to update the consent.
+     * @return same object as we stay on the same page
+     */
     public createPatientPage updateConsent()
     {
         clickOnElement(updateBtn);
@@ -77,6 +92,10 @@ public class createPatientPage extends CommonInfoSelectors
         return this;
     }
 
+    /**
+     * Hits the "Save and View Summary" button on the bottom left.
+     * @return navigating to the view page containing patient's full details so a new object of that type
+     */
     public viewPatientPage saveAndViewSummary()
     {
         clickOnElement(saveAndViewSummaryBtn);

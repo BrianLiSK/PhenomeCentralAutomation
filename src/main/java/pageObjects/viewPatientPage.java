@@ -3,7 +3,10 @@ package pageObjects;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-// Represents the page http://localhost:8083/AllData
+/**
+ * Represents viewing a specifc patient's full information page.
+ * Ex. http://localhost:8083/P0000005
+ */
 public class viewPatientPage extends CommonInfoSelectors
 {
     private final By patientID = By.cssSelector("#document-title > h1:nth-child(1)");
@@ -17,12 +20,21 @@ public class viewPatientPage extends CommonInfoSelectors
         super(aDriver);
     }
 
+    /**
+     * Returns a string representing the current patient's ID number. It is the string
+     * at the top left corner of the page.
+     * @return a String in the form of Pxxxxxxx
+     */
     public String getPatientID()
     {
         waitForElementToBePresent(patientID);
         return superDriver.findElement(patientID).getText();
     }
 
+    /**
+     * Clicks on the "Edit" link to edit the patient
+     * @return new patient editor page object as we navigate to the patient editing page
+     */
     public createPatientPage editThisPatient()
     {
         clickOnElement(editBtn);
