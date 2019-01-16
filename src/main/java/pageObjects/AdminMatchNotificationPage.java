@@ -8,7 +8,7 @@ import org.openqa.selenium.WebDriver;
  * Administration -> PhenoTips -> Matching Notification in the left accordion menu
  * i.e. http://localhost:8083/admin/XWiki/XWikiPreferences?editor=globaladmin&section=Matching+Notification
  */
-public class adminMatchNotificationPage extends BasePage
+public class AdminMatchNotificationPage extends BasePage
 {
     By patientIDContainsBox = By.id("external-id-filter");
 
@@ -20,7 +20,7 @@ public class adminMatchNotificationPage extends BasePage
 
     By sendNotificationsBtn = By.id("send-notifications-button");
 
-    public adminMatchNotificationPage(WebDriver aDriver)
+    public AdminMatchNotificationPage(WebDriver aDriver)
     {
         super(aDriver);
     }
@@ -30,7 +30,7 @@ public class adminMatchNotificationPage extends BasePage
      * @param identifier String to search by. Usually an identifier or the Patient ID itself
      * @return the same object as we are still on the same page, just with the table filtered
      */
-    public adminMatchNotificationPage filterByID(String identifier)
+    public AdminMatchNotificationPage filterByID(String identifier)
     {
         clickAndTypeOnElement(patientIDContainsBox, identifier);
         clickOnElement(reloadMatchesBtn);
@@ -44,7 +44,7 @@ public class adminMatchNotificationPage extends BasePage
      * @return the same (current) object, as we stay on the same page.
      */
     // TODO: Requires MockMock to be working and configured!!
-    public adminMatchNotificationPage emailFirstRowUsers()
+    public AdminMatchNotificationPage emailFirstRowUsers()
     {
         clickOnElement(firstRowFirstEmailBox);
         clickOnElement(firstRowSecondEmailBox);

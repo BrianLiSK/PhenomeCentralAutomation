@@ -12,9 +12,9 @@ public class adminSettingsPage extends BasePage
         super(aDriver);
     }
 
-    public adminMatchNotificationPage navigateToMatchingNotificationPage()
+    public AdminMatchNotificationPage navigateToMatchingNotificationPage()
     {
         clickOnElement(matchingNotificationMenu);
-        return new adminMatchNotificationPage(superDriver);
+        return new AdminMatchNotificationPage(superDriver);
     }
 }
