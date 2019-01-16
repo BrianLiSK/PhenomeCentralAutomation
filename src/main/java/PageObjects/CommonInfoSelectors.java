@@ -1,4 +1,4 @@
-package pageObjects;
+package PageObjects;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-import testCases.CommonInfoEnums;
+import TestCases.CommonInfoEnums;
 
 /** Contains common selectors for the accordion sections on the create and view patient info pages.
  *  Ex. http://localhost:8083/data/P0000015 and http://localhost:8083/edit/data/P0000015

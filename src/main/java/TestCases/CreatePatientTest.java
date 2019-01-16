@@ -1,11 +1,11 @@
-package testCases;
+package TestCases;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import net.bytebuddy.utility.RandomString;
-import pageObjects.HomePage;
-import pageObjects.ViewPatientPage;
+import PageObjects.HomePage;
+import PageObjects.ViewPatientPage;
 
 public class CreatePatientTest extends BaseTest implements CommonInfoEnums
 {

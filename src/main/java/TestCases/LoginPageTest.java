@@ -1,9 +1,9 @@
-package testCases;
+package TestCases;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import pageObjects.HomePage;
+import PageObjects.HomePage;
 
 public class LoginPageTest extends BaseTest
 {
