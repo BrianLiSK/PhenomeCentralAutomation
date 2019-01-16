@@ -53,7 +53,6 @@ public abstract class CommonInfoSelectors extends BasePage implements commonInfo
         sectionMap.put(SECTIONS.PrenatalHistorySection, prenatalHistorySection);
         sectionMap.put(SECTIONS.SuggestedGenesSection, suggestedGenesSection);
         sectionMap.put(SECTIONS.SimilarCasesSection, similarCasesSection);
-        System.out.println("CTOR in CommonInfoSelectors: Map is: " + sectionMap);
     }
 
     /**
@@ -70,19 +69,6 @@ public abstract class CommonInfoSelectors extends BasePage implements commonInfo
             if (!presence) {
                 return false;
             }
-//            switch (aSection) {
-//                case ClinicalSymptomsSection: presence = isElementPresent(clinicalSymptomsSection); break;
-//                case SECTIONS.DiagnosisSection: presence = isElementPresent(diagnosisSection); break;
-//                case SECTIONS.FamilyHistorySection: presence = isElementPresent(familyHistorySection); break;
-//                case SECTIONS.GenotypeInfoSection: presence = isElementPresent(genotypeInfoSection); break;
-//                case SECTIONS.MeasurementSection: presence = isElementPresent(measurementsSection); break;
-//                case SECTIONS.MedicalHistorySection: presence = isElementPresent(medicalHistorySection); break;
-//                case SECTIONS.PatientInfoSection: presence = isElementPresent(patientInfoSection); break;
-//                case SECTIONS.PrenatalHistorySection: presence = isElementPresent(prenatalHistorySection); break;
-//                case SECTIONS.SuggestedGenesSection: presence = isElementPresent(suggestedGenesSection); break;
-//                default: presence = false; break;
-//            }
-//            if (!presence) {return false;}
         }
         return true;
     }
