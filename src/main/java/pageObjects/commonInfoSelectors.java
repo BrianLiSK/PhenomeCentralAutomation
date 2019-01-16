@@ -8,7 +8,9 @@ import org.openqa.selenium.WebDriver;
 
 import testCases.commonInfoEnums;
 
-// Contains selectors for accordion sections on the create and view patient info pages.
+/** Contains common selectors for the accordion sections on the create and view patient info pages.
+ *  Ex. http://localhost:8083/data/P0000015 and http://localhost:8083/edit/data/P0000015
+ */
 public abstract class commonInfoSelectors extends BasePage implements commonInfoEnums
 {
     private final By patientInfoSection = By.id("HPatientinformation"); // "Patient information"
@@ -32,8 +34,12 @@ public abstract class commonInfoSelectors extends BasePage implements commonInfo
 
     private final By similarCasesSection = By.id("HSimilarcases"); // Similar cases
 
-    Map<SECTIONS, By> sectionMap = new HashMap<SECTIONS, By>();
+    private Map<SECTIONS, By> sectionMap = new HashMap<SECTIONS, By>();
 
+    /**
+     * CTOR. Initializes the map from an enum value to a specific element for the section
+     * @param aDriver is not {@code null}
+     */
     public commonInfoSelectors(WebDriver aDriver)
     {
         super(aDriver);
@@ -50,6 +56,12 @@ public abstract class commonInfoSelectors extends BasePage implements commonInfo
         System.out.println("CTOR in commonInfoSelectors: Map is: " + sectionMap);
     }
 
+    /**
+     * Iterates over each section in loSections (specified by enum values) and ensure that they
+     * are present on the page. Only checks the title is present, not the actual contents.
+     * @param loSections a possibly empty array of sections specified by the SECTIONS enum
+     * @return True if all the sections in loSections are visible and false if one of them isn't.
+     */
     public Boolean checkForVisibleSections(SECTIONS[] loSections)
     {
         for (SECTIONS aSection : loSections) {
