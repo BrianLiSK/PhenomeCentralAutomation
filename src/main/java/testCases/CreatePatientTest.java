@@ -4,14 +4,14 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import net.bytebuddy.utility.RandomString;
-import pageObjects.homePage;
-import pageObjects.viewPatientPage;
+import pageObjects.HomePage;
+import pageObjects.ViewPatientPage;
 
-public class createPatientTest extends baseTest implements commonInfoEnums
+public class CreatePatientTest extends BaseTest implements CommonInfoEnums
 {
-    final homePage currentPage = new homePage(theDriver);
+    final HomePage currentPage = new HomePage(theDriver);
 
-    final viewPatientPage currentPage2 = new viewPatientPage(theDriver);
+    final ViewPatientPage currentPage2 = new ViewPatientPage(theDriver);
         // At some point we need to restart the view patients page.
 
     final SECTIONS[] checkForTheseSections = {

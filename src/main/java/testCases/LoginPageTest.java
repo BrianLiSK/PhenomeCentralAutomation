@@ -3,11 +3,11 @@ package testCases;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import pageObjects.homePage;
+import pageObjects.HomePage;
 
-public class loginPageTest extends baseTest
+public class LoginPageTest extends BaseTest
 {
-    homePage currentPage = new homePage(theDriver);
+    HomePage currentPage = new HomePage(theDriver);
 
     // Login as Admin, assert that both Administrator Settings link and About link are visible
     @Test

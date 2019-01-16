@@ -6,7 +6,7 @@ package testCases;
  * name to change and then we can update the enum without touching the selector.
   */
 
-public interface commonInfoEnums
+public interface CommonInfoEnums
 {
     // Public enum for friendly names
     enum SECTIONS
