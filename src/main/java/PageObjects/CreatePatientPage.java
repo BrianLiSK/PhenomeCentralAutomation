@@ -101,4 +101,15 @@ public class CreatePatientPage extends CommonInfoSelectors
         clickOnElement(saveAndViewSummaryBtn);
         return new ViewPatientPage(superDriver);
     }
+
+    public CreatePatientPage setIdentifer(String identifer)
+    {
+        clickOnElement(identifierBox);
+        superDriver.findElement(identifierBox).clear();
+        clickAndTypeOnElement(identifierBox, identifer);
+        unconditionalWaitNs(1);
+        return this;
+    }
+
+
 }

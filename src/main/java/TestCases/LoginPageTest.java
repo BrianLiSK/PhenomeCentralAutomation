@@ -5,11 +5,18 @@ import org.testng.annotations.Test;
 
 import PageObjects.HomePage;
 
+/**
+ * Test the login functionality.
+ *
+ * Each test can be run separately.
+ */
 public class LoginPageTest extends BaseTest
 {
     HomePage currentPage = new HomePage(theDriver);
 
-    // Login as Admin, assert that both Administrator Settings link and About link are visible
+    /**
+     * Login as Admin, assert that both Administrator Settings link and About link are visible
+      */
     @Test
     public void loginAdminTest()
     {
@@ -23,7 +30,9 @@ public class LoginPageTest extends BaseTest
         currentPage.logOut();
     }
 
-    // Login as User, assert that Admin Settings link is not visible
+    /**
+     * Login as User, assert that Admin Settings link is not visible
+      */
     @Test
     public void loginUserTest()
     {
