@@ -11,7 +11,7 @@ import testCases.commonInfoEnums;
 /** Contains common selectors for the accordion sections on the create and view patient info pages.
  *  Ex. http://localhost:8083/data/P0000015 and http://localhost:8083/edit/data/P0000015
  */
-public abstract class commonInfoSelectors extends BasePage implements commonInfoEnums
+public abstract class CommonInfoSelectors extends BasePage implements commonInfoEnums
 {
     private final By patientInfoSection = By.id("HPatientinformation"); // "Patient information"
 
@@ -40,7 +40,7 @@ public abstract class commonInfoSelectors extends BasePage implements commonInfo
      * CTOR. Initializes the map from an enum value to a specific element for the section
      * @param aDriver is not {@code null}
      */
-    public commonInfoSelectors(WebDriver aDriver)
+    public CommonInfoSelectors(WebDriver aDriver)
     {
         super(aDriver);
         sectionMap.put(SECTIONS.ClinicalSymptomsSection, clinicalSymptomsSection);
@@ -53,7 +53,7 @@ public abstract class commonInfoSelectors extends BasePage implements commonInfo
         sectionMap.put(SECTIONS.PrenatalHistorySection, prenatalHistorySection);
         sectionMap.put(SECTIONS.SuggestedGenesSection, suggestedGenesSection);
         sectionMap.put(SECTIONS.SimilarCasesSection, similarCasesSection);
-        System.out.println("CTOR in commonInfoSelectors: Map is: " + sectionMap);
+        System.out.println("CTOR in CommonInfoSelectors: Map is: " + sectionMap);
     }
 
     /**
@@ -66,7 +66,7 @@ public abstract class commonInfoSelectors extends BasePage implements commonInfo
     {
         for (SECTIONS aSection : loSections) {
             Boolean presence = isElementPresent(sectionMap.get(aSection));
-            System.out.println("commonInfoSelectors Line 44");
+            System.out.println("CommonInfoSelectors Line 44");
             if (!presence) {
                 return false;
             }

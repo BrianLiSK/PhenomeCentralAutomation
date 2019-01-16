@@ -4,7 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 // Represents the page http://localhost:8083/AllData
-public class viewPatientPage extends commonInfoSelectors
+public class viewPatientPage extends CommonInfoSelectors
 {
     private final By patientID = By.cssSelector("#document-title > h1:nth-child(1)");
 
