@@ -75,6 +75,9 @@ public class createPatientTest extends baseTest implements commonInfoEnums
             .navigateToAdminSettingsPage()
             .navigateToMatchingNotificationPage()
             .filterByID("Auto " + randomChars)
-            .emailAndCheckFirstRowUsers();
+            .emailFirstRowUsers()
+            .navigateToEmailInboxPage()
+            .deleteAllEmails();
+        theDriver.navigate().back();
     }
 }

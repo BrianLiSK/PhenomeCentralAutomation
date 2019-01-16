@@ -25,6 +25,8 @@ public abstract class BasePage
 
     protected final String ALL_PAITIENTS_URL = "http://localhost:8083/AllData";
 
+    protected final String EMAIL_UI_URL = "http://localhost:8085";
+
     /**
      * Common login credentials.
      */
@@ -180,5 +182,14 @@ public abstract class BasePage
     {
         clickOnElement(adminLink);
         return new adminSettingsPage(superDriver);
+    }
+
+    /**
+     * Navigates to MockMock's (fake SMTP service) email landing page.
+     * @return new object of the EmailUIPage where the email inbox can be seen
+     */
+    public EmailUIPage navigateToEmailInboxPage() {
+        superDriver.navigate().to(EMAIL_UI_URL);
+        return new EmailUIPage(superDriver);
     }
 }

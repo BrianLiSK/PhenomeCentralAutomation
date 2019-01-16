@@ -3,6 +3,11 @@ package pageObjects;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+/**
+ * The admin page where match notifications can be sent.
+ * Administration -> PhenoTips -> Matching Notification in the left accordion menu
+ * i.e. http://localhost:8083/admin/XWiki/XWikiPreferences?editor=globaladmin&section=Matching+Notification
+ */
 public class adminMatchNotificationPage extends BasePage
 {
     By patientIDContainsBox = By.id("external-id-filter");
@@ -20,6 +25,11 @@ public class adminMatchNotificationPage extends BasePage
         super(aDriver);
     }
 
+    /**
+     * Filters the table by inputting a string into "Patient ID contains:" box and clicking "Refresh Matches"
+     * @param identifier String to search by. Usually an identifier or the Patient ID itself
+     * @return the same object as we are still on the same page, just with the table filtered
+     */
     public adminMatchNotificationPage filterByID(String identifier)
     {
         clickAndTypeOnElement(patientIDContainsBox, identifier);
@@ -28,17 +38,19 @@ public class adminMatchNotificationPage extends BasePage
         return this;
     }
 
+    /**
+     * Notifies the two users on the first row of a match. Requires that there is at least one visible row on
+     * the table. Waits 10 seconds before returning as it is difficult to check css state.
+     * @return the same (current) object, as we stay on the same page.
+     */
     // TODO: Requires MockMock to be working and configured!!
-    public adminMatchNotificationPage emailAndCheckFirstRowUsers()
+    public adminMatchNotificationPage emailFirstRowUsers()
     {
         clickOnElement(firstRowFirstEmailBox);
         clickOnElement(firstRowSecondEmailBox);
         clickOnElement(sendNotificationsBtn);
         unconditionalWaitNs(10);
-        superDriver.navigate().to("http://localhost:8085/");
-        waitForElementToBePresent(By.cssSelector(".delete"));
-        unconditionalWaitNs(3);
-        superDriver.navigate().back();
         return this;
     }
+
 }
