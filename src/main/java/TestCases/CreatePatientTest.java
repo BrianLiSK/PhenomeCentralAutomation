@@ -3,6 +3,7 @@ package TestCases;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import PageObjects.EmailUIPage;
 import net.bytebuddy.utility.RandomString;
 import PageObjects.HomePage;
 import PageObjects.ViewPatientPage;
@@ -94,14 +95,23 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
     @Test
     public void verifyEmailNotifications()
     {
+        EmailUIPage emailPage = new EmailUIPage(theDriver);
+
+        currentPage2.navigateToEmailInboxPage()
+            .deleteAllEmails();
+
+        theDriver.navigate().back();
+
         currentPage2.logOut()
             .loginAsAdmin()
             .navigateToAdminSettingsPage()
             .navigateToMatchingNotificationPage()
             .filterByID(patientUniqueIdentifier + " Match")
             .emailFirstRowUsers()
-            .navigateToEmailInboxPage()
-            .deleteAllEmails();
+            .navigateToEmailInboxPage();
+        Assert.assertEquals(emailPage.getNumberOfEmails(), 2);
+
+        emailPage.deleteAllEmails();
         theDriver.navigate().back();
     }
 
