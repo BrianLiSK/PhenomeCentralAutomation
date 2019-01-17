@@ -1,7 +1,9 @@
 package PageObjects;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.Select;
 
 /**
  * Represents the page reached when "Create... -> New patient" is clicked on the navbar
@@ -30,12 +32,15 @@ public class CreatePatientPage extends CommonInfoSelectors
     private final By lifeStatusDrp = By.id("PhenoTips.PatientClass_0_life_status");
 
     private final By dobMonthDrp =
-        By.cssSelector("#date-of-birth-block > div:nth-child(2) > div > div > span > select");
+        By.cssSelector("#date-of-birth-block > div > div:nth-child(2) > div > div > span > select.month");
 
     private final By dobYearDrp =
-        By.cssSelector("#date-of-birth-block > div:nth-child(2) > div > div > span > select:nth-child(2)");
+        By.cssSelector("#date-of-birth-block > div > div:nth-child(2) > div > div > span > select.year");
 
-    private final By maleGenderBtn = By.id("PhenoTips.PatientClass_0_gender");
+    private final By maleGenderBtn = By.id("xwiki-form-gender-0-0");
+    private final By femaleGenderBtn = By.id("xwiki-form-gender-0-1");
+    private final By otherGenderBtn = By.id("xwiki-form-gender-0-2");
+    private final By unknownGenderBtn = By.id("xwiki-form-gender-0-3");
 
     private final By congenitalOnsentBtn = By.id("PhenoTips.PatientClass_0_global_age_of_onset_HP:0003577");
 
@@ -102,12 +107,54 @@ public class CreatePatientPage extends CommonInfoSelectors
         return new ViewPatientPage(superDriver);
     }
 
+    /**
+     * Clears and then sets the patient identifer field box.
+     * @param identifer the string that should be entered into the "Identifer" field under Patient Information
+     * @return stay on the same page so return the same instance of object
+     */
     public CreatePatientPage setIdentifer(String identifer)
     {
         clickOnElement(identifierBox);
         superDriver.findElement(identifierBox).clear();
         clickAndTypeOnElement(identifierBox, identifer);
-        unconditionalWaitNs(1);
+        unconditionalWaitNs(1); // Gives "identifier already exists" if we navigate away too fast.
+        return this;
+    }
+
+    /**
+     * Sets the date of birth of the patient under Patient Information.
+     * Will safely handle invalid strings by defaulting to 01/2019.
+     * @param month the Month as a String (01 - 12). Must exactly match the dropdown.
+     * @param year the year as a String (1500s - 2019). Must exactly match the dropdown.
+     * @return stay on the same page so return same object.
+     */
+    public CreatePatientPage setDOB(String month, String year) {
+        Select monthDrp;
+        Select yearDrp;
+
+        waitForElementToBePresent(dobMonthDrp);
+        monthDrp = new Select(superDriver.findElement(dobMonthDrp));
+        yearDrp = new Select(superDriver.findElement(dobYearDrp));
+
+        try {
+            monthDrp.selectByVisibleText(month);
+            yearDrp.selectByVisibleText(year);
+        } catch (NoSuchElementException e) {
+            System.out.println("Invalid DOB passed. Default set to 01/2019");
+            monthDrp.selectByVisibleText("01");
+            yearDrp.selectByVisibleText("2019");
+        }
+
+        return this;
+    }
+
+    /**
+     * Toggles the expansion of the given section
+     * @param theSection is the section from the enum that we want to expand
+     * @return stay on the same page so the same object
+     */
+    public CommonInfoSelectors expandSection(SECTIONS theSection) {
+        clickOnElement(sectionMap.get(theSection));
         return this;
     }
 
