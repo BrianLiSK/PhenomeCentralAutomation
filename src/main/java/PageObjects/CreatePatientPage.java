@@ -60,7 +60,7 @@ public class CreatePatientPage extends CommonInfoSelectors
 
     private final By geneNameBoxes = By.cssSelector(
         "#extradata-list-PhenoTips\\.GeneClass_PhenoTips\\.GeneVariantClass > tbody > tr > td:nth-child(2) > input[type=text]");
-    private final By geneStatusDrp = By.id("PhenoTips.GeneClass_0_status");
+    private final By geneStatusDrps = By.cssSelector("td.Status > select");
     private final By geneStrategySequencingCheckboxes = By.cssSelector(
         "td.Strategy > label > input[value=sequencing]");
     private final By firstGeneSuggestion = By.cssSelector("div.suggestItem > div > span.suggestValue");
@@ -249,7 +249,7 @@ public class CreatePatientPage extends CommonInfoSelectors
         unconditionalWaitNs(1);
 
         List<WebElement> foundGeneBoxes = superDriver.findElements(geneNameBoxes);
-        List<WebElement> foundStatusDrps = superDriver.findElements(geneStatusDrp);
+        List<WebElement> foundStatusDrps = superDriver.findElements(geneStatusDrps);
         List<WebElement> foundSequencingCheckboxes = superDriver.findElements(geneStrategySequencingCheckboxes);
 
         // Get the last element of each list for the most bottom one
@@ -263,7 +263,6 @@ public class CreatePatientPage extends CommonInfoSelectors
         bottommostGeneNameBox.sendKeys(theGene);
         clickOnElement(firstGeneSuggestion);
 
-        ((JavascriptExecutor)superDriver).executeScript("arguments[0].scrollIntoView();", bottommostStatusDrp);
         bottommostStatusDrp.click();
         statusDrp.selectByVisibleText(geneStatus);
 
