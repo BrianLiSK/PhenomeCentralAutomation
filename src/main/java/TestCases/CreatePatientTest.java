@@ -74,7 +74,7 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
             .addGene("TXNL1", "Carrier", "Sequencing")
             .saveAndViewSummary();
     }
-    
+
     // Creates a patient as User 2 via JSON import. Asserts that the section titles are visible.
     // Updates consent, and changes modifies the identifier so that it is unique and matchable.
     @Test

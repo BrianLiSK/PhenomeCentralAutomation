@@ -22,4 +22,12 @@ public interface CommonInfoEnums
         DiagnosisSection,
         SimilarCasesSection
     }
+
+    // Privilage levels
+    enum PRIVILAGE
+    {
+        CanView,
+        CanViewAndModify,
+        CanViewAndModifyAndManageRights
+    }
 }
