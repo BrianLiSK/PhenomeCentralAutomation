@@ -44,7 +44,24 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
     public void createPatientManually()
     {
         currentPage.navigateToLoginPage()
-            .loginAsUser();
+            .loginAsUser()
+            .navigateToCreateANewPatientPage()
+            .toggleNthConsentBox(1)
+            .toggleNthConsentBox(2)
+            .toggleNthConsentBox(3)
+            .toggleNthConsentBox(4)
+            .updateConsent()
+            .setIdentifer(patientUniqueIdentifier)
+            .setDOB("02", "2012")
+            .setGender("Male")
+            .setOnset("Congenital onset ")
+            .expandSection(SECTIONS.ClinicalSymptomsSection)
+            .addPhenotype("Blindness")
+            .expandSection(SECTIONS.ClinicalSymptomsSection)
+            .expandSection(SECTIONS.GenotypeInfoSection)
+            .addGene("PLS1", "Candidate", "Sequencing")
+            .addGene("PLS3", "Candidate", "Sequencing")
+            .saveAndViewSummary();
     }
 
     // Creates a patient as User 1 via JSON import.
