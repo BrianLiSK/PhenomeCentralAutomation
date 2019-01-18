@@ -30,4 +30,12 @@ public interface CommonInfoEnums
         CanViewAndModify,
         CanViewAndModifyAndManageRights
     }
+
+    // Visibility Levels
+    enum VISIBILITY
+    {
+        Private,
+        Matchable,
+        Public
+    }
 }

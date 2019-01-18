@@ -107,6 +107,7 @@ public abstract class CommonInfoSelectors extends BasePage implements CommonInfo
             default: clickOnElement(privateRadioBtn); break;
         }
         clickOnElement(updateConfirmBtn);
+        unconditionalWaitNs(2); // TODO: Make function to wait until clickable
     }
 
     /**

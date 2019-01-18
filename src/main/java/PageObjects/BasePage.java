@@ -65,7 +65,7 @@ public abstract class BasePage
     private final By viewAllPatientsLink = By.cssSelector(
         "#phenotips-globalTools > div > div > ul > li:nth-child(2) > ul > li:nth-child(1) > span > a");
 
-    private final By logOutLink = By.id("tmLogout");
+    protected final By logOutLink = By.id("tmLogout"); // Used to check when modals close
 
     /**
      * Declaration of the webdriver and the waiting objects. Will be initialized

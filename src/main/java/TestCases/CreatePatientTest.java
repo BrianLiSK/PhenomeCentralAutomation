@@ -9,7 +9,7 @@ import PageObjects.HomePage;
 import PageObjects.ViewPatientPage;
 
 /**
- * Testing the creation of a patient via JSON import
+ * Testing the creation of two very similar patients via JSON import and manually. Asserts a match at end.
  *
  * The entire class must be run together. Lower methods depend on the ones above.
  *
@@ -75,7 +75,7 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
             .saveAndViewSummary();
     }
 
-    // Creates a patient as User 2 via JSON import. Asserts that the section titles are visible.
+    // Creates an identitcal patient as User 2 via JSON import. Asserts that the section titles are visible.
     // Updates consent, and changes modifies the identifier so that it is unique and matchable.
     @Test
     public void importSecondJSONPatient()
@@ -124,6 +124,30 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
 
         emailPage.deleteAllEmails();
         theDriver.navigate().back();
+        currentPage2.logOut();
+    }
+
+    // Adjusts Patient created by User 1 to public, ensures User 2 can now see it.
+    @Test
+    public void publicVisiblityTest()
+    {
+        String ID1 = currentPage.navigateToLoginPage()
+            .loginAsUserTwo()
+            .navigateToAllPatientsPage()
+            .sortPatientsDateDesc()
+            .viewFirstPatientInTable()
+            .getPatientID();
+
+        currentPage2.setGlobalVisibility("public");
+
+        String ID2 = currentPage2.logOut()
+            .loginAsUser()
+            .navigateToAllPatientsPage()
+            .sortPatientsDateDesc()
+            .viewFirstPatientInTable()
+            .getPatientID();
+
+        Assert.assertEquals(ID1, ID2);
     }
 
 //    @Test
