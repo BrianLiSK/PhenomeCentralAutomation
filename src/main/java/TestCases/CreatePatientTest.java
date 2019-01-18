@@ -74,32 +74,8 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
             .addGene("TXNL1", "Carrier", "Sequencing")
             .saveAndViewSummary();
     }
-
-    // Creates a patient as User 1 via JSON import.
-    // Updates the consent, then asserts that the section titles are visible.
-//    @Test
-//    public void importJSONPatient()
-//    {
-//        currentPage.navigateToLoginPage()
-//            .loginAsUser()
-//            .navigateToAllPatientsPage()
-//            .importJSONPatient(JSONToImport)
-//            .sortPatientsDateDesc()
-//            .viewFirstPatientInTable()
-//            .editThisPatient()
-//            .toggleNthConsentBox(1)
-//            .toggleNthConsentBox(2)
-//            .toggleNthConsentBox(3)
-//            .toggleNthConsentBox(4)
-//            .updateConsent()
-//            .saveAndViewSummary();
-//
-//        System.out.println("We just edited: " + currentPage2.getPatientID());
-//
-//        Assert.assertTrue(currentPage2.checkForVisibleSections(checkForTheseSections));
-//    }
-
-    // Creates a patient as User 2 via JSON import.
+    
+    // Creates a patient as User 2 via JSON import. Asserts that the section titles are visible.
     // Updates consent, and changes modifies the identifier so that it is unique and matchable.
     @Test
     public void importSecondJSONPatient()
@@ -149,6 +125,15 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
         emailPage.deleteAllEmails();
         theDriver.navigate().back();
     }
+
+//    @Test
+//    public void deleteAllUsersHelper() {
+//        currentPage
+//            .navigateToLoginPage()
+//            .loginAsAdmin()
+//            .navigateToAllPatientsPage()
+//            .deleteAllPatients();
+//    }
 
 
 }
