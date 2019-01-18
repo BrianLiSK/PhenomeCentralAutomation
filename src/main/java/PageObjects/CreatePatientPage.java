@@ -252,6 +252,7 @@ public class CreatePatientPage extends CommonInfoSelectors
         List<WebElement> foundStatusDrps = superDriver.findElements(geneStatusDrp);
         List<WebElement> foundSequencingCheckboxes = superDriver.findElements(geneStrategySequencingCheckboxes);
 
+        // Get the last element of each list for the most bottom one
         WebElement bottommostGeneNameBox = foundGeneBoxes.get(foundGeneBoxes.size() - 1);
         WebElement bottommostStatusDrp = foundStatusDrps.get(foundStatusDrps.size() - 1);
         WebElement bottommostSequenceCheckbox = foundSequencingCheckboxes.get(foundSequencingCheckboxes.size() - 1);
@@ -262,6 +263,8 @@ public class CreatePatientPage extends CommonInfoSelectors
         bottommostGeneNameBox.sendKeys(theGene);
         clickOnElement(firstGeneSuggestion);
 
+        ((JavascriptExecutor)superDriver).executeScript("arguments[0].scrollIntoView();", bottommostStatusDrp);
+        bottommostStatusDrp.click();
         statusDrp.selectByVisibleText(geneStatus);
 
         bottommostSequenceCheckbox.click();

@@ -30,6 +30,8 @@ public abstract class BasePage
 
     protected final String ALL_PAITIENTS_URL = "http://localhost:8083/AllData";
 
+    // protected final String NEW_PAITIENTS_URL = "http://localhost:8083/AllData";
+
     protected final String EMAIL_UI_URL = "http://localhost:8085";
 
     /**
@@ -211,12 +213,19 @@ public abstract class BasePage
      */
     public CreatePatientPage navigateToCreateANewPatientPage() {
         clickOnElement(createMenuDrp);
-        clickOnElement(newPatientLink);
+        unconditionalWaitNs(1);
+
+        try {
+            clickOnElement(newPatientLink);
+        } catch (ElementNotInteractableException e) {
+            System.err.println("Might throw an error, New Patients Link not clickable!");
+            forceClickOnElement(newPatientLink);
+        }
         return new CreatePatientPage(superDriver);
     }
 
     /**
-     * Forces selenium to scroll so that the indicated element is in its viewport.
+     * Forces a scroll via JS so that the indicated element is in Selenium's viewport.
      * Without this, sometimes a "ElementClickInterceptedException" exception is thrown as
      * the element to click is out of window or otherwise blocked by some other element.
      *
@@ -228,5 +237,18 @@ public abstract class BasePage
 
         WebElement webElement = superDriver.findElement(elementSelector);
         ((JavascriptExecutor)superDriver).executeScript("arguments[0].scrollIntoView();", webElement);
+    }
+
+    /**
+     * Waits for an elements presence then forcefully clicks using JS on it.
+     * Sometimes, selectors have properties of hidden even thought they might not necessarialy be so.
+     * @param elementSelector a By selector indiciating the element to click on.
+     */
+    public void forceClickOnElement(By elementSelector)
+    {
+        waitForElementToBePresent(elementSelector);
+
+        WebElement webElement = superDriver.findElement(elementSelector);
+        ((JavascriptExecutor)superDriver).executeScript("arguments[0].click();", webElement);
     }
 }
