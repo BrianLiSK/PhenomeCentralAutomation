@@ -100,6 +100,16 @@ public abstract class BasePage
     }
 
     /**
+     * Explicitly wait for the specified element to be clickable. Useful for when a modal blocks the
+     * access of the rest of the page (i.e. waiting for the modal to close).
+     * @param elementSelector specifies the element to wait for clickable. Must not be {@code null}
+     */
+    public void waitForElementToBeClickable(By elementSelector)
+    {
+        pause.until(ExpectedConditions.elementToBeClickable(elementSelector));
+    }
+
+    /**
      * Explicitly sleep for a full n seconds. Does not wait on anything specific. Useful when it is difficult
      * to specify an element to wait and check upon. Ex. Filtering update
      * @Throws InterruptedException (implicit) if thread is interrupted, ex. SIGIGNT.

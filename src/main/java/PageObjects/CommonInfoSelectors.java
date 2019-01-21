@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
@@ -26,7 +27,7 @@ public abstract class CommonInfoSelectors extends BasePage implements CommonInfo
 
     private final By newCollaboratorBox = By.id("new-collaborator-input");
 
-    private final By firstCollaboratorResult = By.cssSelector("div.user-name");
+    private final By firstCollaboratorResult = By.cssSelector("div.suggestItem > div.user > div.user-name");
 
     private final By updateConfirmBtn = By.cssSelector("input.button[value=Update]");
 
@@ -107,7 +108,8 @@ public abstract class CommonInfoSelectors extends BasePage implements CommonInfo
             default: clickOnElement(privateRadioBtn); break;
         }
         clickOnElement(updateConfirmBtn);
-        unconditionalWaitNs(2); // TODO: Make function to wait until clickable
+        waitForElementToBeClickable(logOutLink); // TODO: Make function to wait until clickable
+        unconditionalWaitNs(2);
     }
 
     /**
@@ -122,6 +124,8 @@ public abstract class CommonInfoSelectors extends BasePage implements CommonInfo
         clickAndTypeOnElement(newCollaboratorBox, collaboratorName);
         unconditionalWaitNs(1); // wait for results to reload
         clickOnElement(firstCollaboratorResult);
+        superDriver.findElement(newCollaboratorBox).sendKeys(Keys.ENTER); // Looks like we'll have to press enter
+        //forceClickOnElement(firstCollaboratorResult); // ?? click twice
 
         List<WebElement> loPrivilageDropdowns = superDriver.findElements(privilageLevelDrps);
         Select bottomMostPDrop = new Select(loPrivilageDropdowns.get(loPrivilageDropdowns.size() - 1));
@@ -135,7 +139,9 @@ public abstract class CommonInfoSelectors extends BasePage implements CommonInfo
                 bottomMostPDrop.selectByVisibleText("Can view and modify the record and manage access rights"); break;
         }
 
-        clickOnElement(updateConfirmBtn);
+        forceClickOnElement(updateConfirmBtn);
+        waitForElementToBeClickable(logOutLink);
+        unconditionalWaitNs(2);
     }
 
 

@@ -27,6 +27,8 @@ public class AllPatientsPage extends BasePage
 
     private final By deleteYesConfirmBtn = By.cssSelector("input[value=Yes]");
 
+    private final By patientIDFilterBox = By.cssSelector("input[title=\"Filter for the Identifier column\"]");
+
     public AllPatientsPage(WebDriver aDriver)
     {
         super(aDriver);
@@ -87,6 +89,17 @@ public class AllPatientsPage extends BasePage
             unconditionalWaitNs(3);
         }
 
+        return this;
+    }
+
+    /**
+     * Filters by the patient ID by sending keys to the "type to filter" box under the identifier column
+     * @param patientID the patient ID to enter, should be in Pxxxxxxx format.
+     * @return stay on the same page so return the same object.
+     */
+    public AllPatientsPage filterByPatientID(String patientID) {
+        clickAndTypeOnElement(patientIDFilterBox, patientID);
+        unconditionalWaitNs(2);
         return this;
     }
 }
