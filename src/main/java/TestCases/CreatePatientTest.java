@@ -186,7 +186,7 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
         aHomePage.logOut();
     }
 
-    @Test(dependsOnMethods = {"createPatientManually", "importSecondJSONPatient"})
+    @Test//(dependsOnMethods = {"createPatientManually", "importSecondJSONPatient"})
     public void collaboratorVisibilityTest()
     {
         aHomePage
@@ -194,7 +194,7 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
             .loginAsUser()
             .navigateToAllPatientsPage()
             .viewFirstPatientInTable()
-            .addCollaboratorToPatient("TestUser2Dos", PRIVILAGE.CanView);
+            .addCollaboratorToPatient("TestUser2Dos", PRIVILAGE.CanViewAndModifyAndManageRights);
 
         String patientIDThroughUser1 = aViewPatientPage.getPatientID();
 
@@ -207,6 +207,8 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
         String patientIDThroughUser2 = aViewPatientPage.getPatientID();
 
         Assert.assertEquals(patientIDThroughUser1, patientIDThroughUser2);
+
+        aViewPatientPage.removeNthCollaborator(1); // Remove the collaborator to reset the state.
 
         aViewPatientPage.logOut();
     }

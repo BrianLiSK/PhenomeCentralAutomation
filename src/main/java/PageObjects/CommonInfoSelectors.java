@@ -33,6 +33,9 @@ public abstract class CommonInfoSelectors extends BasePage implements CommonInfo
 
     private final By privilageLevelDrps = By.cssSelector("select[name=accessLevel]");
 
+    private final By deleteCollaboratorBtn = By.cssSelector("span[title=\"Remove this collaborator\"]");
+
+    // Selectors for the sections below
     private final By patientInfoSection = By.id("HPatientinformation"); // "Patient information"
 
     private final By familyHistorySection = By.id("HFamilyhistoryandpedigree"); // "Family history and pedigree"
@@ -138,6 +141,23 @@ public abstract class CommonInfoSelectors extends BasePage implements CommonInfo
             case CanViewAndModifyAndManageRights:
                 bottomMostPDrop.selectByVisibleText("Can view and modify the record and manage access rights"); break;
         }
+
+        forceClickOnElement(updateConfirmBtn);
+        waitForElementToBeClickable(logOutLink);
+        unconditionalWaitNs(2);
+    }
+
+    /**
+     * Deletes the Nth collaborator from the permissions modal.
+     * @param n is the Nth collaborator (n >= 1) Must supply valid Nth collaborator otherwise
+     * array out of bounds exception will be thrown.
+     */
+    public void removeNthCollaborator(int n) {
+        clickOnElement(modifyPermissionsBtn);
+        waitForElementToBePresent(newCollaboratorBox);
+
+        List<WebElement> loDeleteCollaboratorBtns = superDriver.findElements(deleteCollaboratorBtn);
+        loDeleteCollaboratorBtns.get(n-1).click();
 
         forceClickOnElement(updateConfirmBtn);
         waitForElementToBeClickable(logOutLink);
