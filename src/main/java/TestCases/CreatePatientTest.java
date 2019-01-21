@@ -3,6 +3,7 @@ package TestCases;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import PageObjects.AdminRefreshMatchesPage;
 import PageObjects.EmailUIPage;
 import net.bytebuddy.utility.RandomString;
 import PageObjects.HomePage;
@@ -115,6 +116,24 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
         aHomePage.logOut();
     }
 
+    // Refresh the matches and assert that two new matches are found.
+    @Test(dependsOnMethods = {"createPatientManually", "importSecondJSONPatient"}, priority = 1)
+    public void refreshMatchesForTwoPatients()
+    {
+        AdminRefreshMatchesPage aRefreshMatchesPage= new AdminRefreshMatchesPage(theDriver);
+
+        aHomePage.navigateToLoginPage()
+            .loginAsAdmin()
+            .navigateToAdminSettingsPage()
+            .navigateToRefreshMatchesPage()
+            .refreshAllMatches();
+
+        Assert.assertEquals(aRefreshMatchesPage.getNumberOfLocalPatientsProcessed(), 2);
+        Assert.assertEquals(aRefreshMatchesPage.getTotalMatchesFound(), 2);
+
+        aHomePage.logOut();
+    }
+
     // Sends the email notification of an identical (100%) match to the two newly created
     // patients, checks that the inbox has emails.
     // TODO: Maybe we should delete patient afterwards, otherwise might get other matches in first row.
@@ -184,7 +203,7 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
             .navigateToAllPatientsPage()
             .filterByPatientID(patientIDThroughUser1)
             .viewFirstPatientInTable();
-        
+
         String patientIDThroughUser2 = aViewPatientPage.getPatientID();
 
         Assert.assertEquals(patientIDThroughUser1, patientIDThroughUser2);
