@@ -11,18 +11,18 @@ import PageObjects.ViewPatientPage;
 /**
  * Testing the creation of two very similar patients via JSON import and manually. Asserts a match at end.
  *
- * The entire class must be run together. Lower methods depend on the ones above.
+ * The entire class should be run together. Lower methods depend on the ones above.
  *
  * Requires MockMock email SMTP service to be running for it to check emails.
  */
 public class CreatePatientTest extends BaseTest implements CommonInfoEnums
 {
-    final HomePage currentPage = new HomePage(theDriver);
+    final private HomePage aHomePage = new HomePage(theDriver);
 
-    final ViewPatientPage currentPage2 = new ViewPatientPage(theDriver);
+    final private ViewPatientPage aViewPatientPage = new ViewPatientPage(theDriver);
         // At some point we need to restart the view patients page.
 
-    final SECTIONS[] checkForTheseSections = {
+    final private SECTIONS[] checkForTheseSections = {
         SECTIONS.PatientInfoSection,
         SECTIONS.ClinicalSymptomsSection,
         SECTIONS.SuggestedGenesSection,
@@ -30,11 +30,11 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
         SECTIONS.SimilarCasesSection
     };
 
-    final String randomChars = RandomString.make(5);
+    final private String randomChars = RandomString.make(5);
 
-    final String patientUniqueIdentifier = "Auto " + randomChars + " Patient";
+    final private String patientUniqueIdentifier = "Auto " + randomChars + " Patient";
 
-    final String JSONToImport =
+    final private String JSONToImport =
         "[{\"allergies\":[],\"date\":\"2019-01-11T17:26:01.000Z\",\"apgar\":{},\"notes\":{\"family_history\":\"\",\"prenatal_development\":\"\",\"indication_for_referral\":\"\",\"genetic_notes\":\"\",\"medical_history\":\"\",\"diagnosis_notes\":\"\"},\"ethnicity\":{\"maternal_ethnicity\":[],\"paternal_ethnicity\":[]},\"date_of_birth\":{\"month\":3,\"year\":2011},\"global_mode_of_inheritance\":[],\"solved\":{\"status\":\"unsolved\"},\"external_id\":\""
             + patientUniqueIdentifier +
             "\",\"variants\":[],\"clinicalStatus\":\"affected\",\"disorders\":[],\"features\":[{\"id\":\"HP:0000385\",\"label\":\"Small earlobe\",\"type\":\"phenotype\",\"observed\":\"yes\"},{\"id\":\"HP:0000505\",\"label\":\"Visual impairment\",\"type\":\"phenotype\",\"observed\":\"yes\"},{\"id\":\"HP:0000618\",\"label\":\"Blindness\",\"type\":\"phenotype\",\"observed\":\"yes\"},{\"id\":\"HP:0001250\",\"label\":\"Seizures\",\"type\":\"phenotype\",\"observed\":\"yes\"},{\"id\":\"HP:0002121\",\"label\":\"Absence seizures\",\"type\":\"phenotype\",\"observed\":\"yes\"},{\"id\":\"HP:0006266\",\"label\":\"Small placenta\",\"type\":\"phenotype\",\"observed\":\"yes\"},{\"id\":\"HP:0007875\",\"label\":\"Congenital blindness\",\"type\":\"phenotype\",\"observed\":\"yes\"},{\"id\":\"HP:0011146\",\"label\":\"Dialeptic seizures\",\"type\":\"phenotype\",\"observed\":\"yes\"},{\"id\":\"HP:0011147\",\"label\":\"Typical absence seizures\",\"type\":\"phenotype\",\"observed\":\"yes\"},{\"id\":\"HP:0200055\",\"label\":\"Small hand\",\"type\":\"phenotype\",\"observed\":\"yes\"}],\"date_of_death\":\"\",\"last_modification_date\":\"2019-01-11T17:31:13.000Z\",\"nonstandard_features\":[],\"prenatal_perinatal_history\":{\"multipleGestation\":null,\"icsi\":null,\"ivf\":null,\"assistedReproduction_donoregg\":null,\"assistedReproduction_iui\":null,\"twinNumber\":\"\",\"assistedReproduction_fertilityMeds\":null,\"gestation\":null,\"assistedReproduction_surrogacy\":null,\"assistedReproduction_donorsperm\":null},\"family_history\":{\"miscarriages\":null,\"consanguinity\":null,\"affectedRelatives\":null},\"genes\":[{\"gene\":\"PLS1\",\"id\":\"ENSG00000120756\",\"strategy\":[\"sequencing\"],\"status\":\"candidate\"},{\"gene\":\"PLS3\",\"id\":\"ENSG00000102024\",\"strategy\":[\"sequencing\"],\"status\":\"candidate\"},{\"gene\":\"QSOX1\",\"id\":\"ENSG00000116260\",\"strategy\":[\"sequencing\"],\"status\":\"solved\"},{\"gene\":\"TXNL1\",\"id\":\"ENSG00000091164\",\"strategy\":[\"sequencing\"],\"status\":\"carrier\"}],\"life_status\":\"alive\",\"sex\":\"M\",\"clinical-diagnosis\":[],\"reporter\":\"TestUser1Uno\",\"last_modified_by\":\"TestUser1Uno\",\"global_age_of_onset\":[{\"id\":\"HP:0003577\",\"label\":\"Congenital onset\"}],\"report_id\":\"P0000009\",\"medical_reports\":[]}\n" +
@@ -42,15 +42,15 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
 
     // Patient IDs of the two created patients, assigned during the tests.
 
-    String createdPatient1;
+    private String createdPatient1;
 
-    String createdPatient2;
+    private String createdPatient2;
 
     // Create a patient manually as User 1.
     @Test(groups={"CreatePatientTest.createTwoPatients"})
     public void createPatientManually()
     {
-        currentPage.navigateToLoginPage()
+        aHomePage.navigateToLoginPage()
             .loginAsUser()
             .navigateToCreateANewPatientPage()
             .toggleNthConsentBox(1)
@@ -80,11 +80,11 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
             .addGene("TXNL1", "Carrier", "Sequencing")
             .saveAndViewSummary();
 
-        createdPatient1 = currentPage2.getPatientID();
-        System.out.println("We just edited: " + currentPage2.getPatientID());
-        Assert.assertTrue(currentPage2.checkForVisibleSections(checkForTheseSections));
+        createdPatient1 = aViewPatientPage.getPatientID();
+        System.out.println("We just edited: " + aViewPatientPage.getPatientID());
+        Assert.assertTrue(aViewPatientPage.checkForVisibleSections(checkForTheseSections));
 
-        currentPage2.logOut();
+        aViewPatientPage.logOut();
 
     }
 
@@ -93,7 +93,7 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
     @Test(groups={"CreatePatientTest.createTwoPatients"})
     public void importSecondJSONPatient()
     {
-        currentPage.navigateToLoginPage()
+        aHomePage.navigateToLoginPage()
             .loginAsUserTwo()
             .navigateToAllPatientsPage()
             .importJSONPatient(JSONToImport)
@@ -108,12 +108,11 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
             .setIdentifer(patientUniqueIdentifier + " Match")
             .saveAndViewSummary();
 
-        createdPatient2 = currentPage2.getPatientID();
-        System.out.println("We just edited: " + currentPage2.getPatientID());
+        createdPatient2 = aViewPatientPage.getPatientID();
+        System.out.println("We just edited: " + aViewPatientPage.getPatientID());
+        Assert.assertTrue(aViewPatientPage.checkForVisibleSections(checkForTheseSections));
 
-        Assert.assertTrue(currentPage2.checkForVisibleSections(checkForTheseSections));
-
-        currentPage.logOut();
+        aHomePage.logOut();
     }
 
     // Sends the email notification of an identical (100%) match to the two newly created
@@ -124,10 +123,10 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
     {
         EmailUIPage emailPage = new EmailUIPage(theDriver);
 
-        currentPage2.navigateToEmailInboxPage()
+        aViewPatientPage.navigateToEmailInboxPage()
             .deleteAllEmails();
 
-        currentPage.navigateToLoginPage()
+        aHomePage.navigateToLoginPage()
             .loginAsAdmin()
             .navigateToAdminSettingsPage()
             .navigateToMatchingNotificationPage()
@@ -138,60 +137,64 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
 
         emailPage.deleteAllEmails();
         theDriver.navigate().back();
-        currentPage2.logOut();
+        aViewPatientPage.logOut();
     }
 
     // Adjusts Patient created by User 1 to public, ensures User 2 can now see it.
     @Test(dependsOnMethods = {"createPatientManually", "importSecondJSONPatient"}, enabled = false)
     public void publicVisiblityTest()
     {
-        String ID1 = currentPage.navigateToLoginPage()
+        aHomePage.navigateToLoginPage()
             .loginAsUserTwo()
             .navigateToAllPatientsPage()
             .sortPatientsDateDesc()
-            .viewFirstPatientInTable()
-            .getPatientID();
+            .viewFirstPatientInTable();
 
-        currentPage2.setGlobalVisibility("public");
+        String ID1 = aViewPatientPage.getPatientID();
 
-        String ID2 = currentPage2.logOut()
+        aViewPatientPage.setGlobalVisibility("public");
+
+        aViewPatientPage.logOut()
             .loginAsUser()
             .navigateToAllPatientsPage()
             .sortPatientsDateDesc()
-            .viewFirstPatientInTable()
-            .getPatientID();
+            .viewFirstPatientInTable();
+
+        String ID2 = aViewPatientPage.getPatientID();
 
         Assert.assertEquals(ID1, ID2);
-        currentPage2.setGlobalVisibility("private"); // Set patient back to private to allow for other tests.
-        currentPage.logOut();
+        aViewPatientPage.setGlobalVisibility("private"); // Set patient back to private to allow for other tests.
+        aHomePage.logOut();
     }
 
     @Test(dependsOnMethods = {"createPatientManually", "importSecondJSONPatient"})
     public void collaboratorVisibilityTest()
     {
-        currentPage
+        aHomePage
             .navigateToLoginPage()
             .loginAsUser()
             .navigateToAllPatientsPage()
             .viewFirstPatientInTable()
             .addCollaboratorToPatient("TestUser2Dos", PRIVILAGE.CanView);
-        String patientIDThroughUser1 = currentPage2.getPatientID();
 
-        String patientIDThroughUser2 = currentPage2.logOut()
+        String patientIDThroughUser1 = aViewPatientPage.getPatientID();
+
+        aViewPatientPage.logOut()
             .loginAsUserTwo()
             .navigateToAllPatientsPage()
             .filterByPatientID(patientIDThroughUser1)
-            .viewFirstPatientInTable()
-            .getPatientID();
+            .viewFirstPatientInTable();
+        
+        String patientIDThroughUser2 = aViewPatientPage.getPatientID();
 
         Assert.assertEquals(patientIDThroughUser1, patientIDThroughUser2);
 
-        currentPage2.logOut();
+        aViewPatientPage.logOut();
     }
 
     @Test(enabled = false)
     public void deleteAllUsersHelper() {
-        currentPage
+        aHomePage
             .navigateToLoginPage()
             .loginAsAdmin()
             .navigateToAllPatientsPage()
