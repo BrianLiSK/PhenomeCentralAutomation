@@ -50,6 +50,9 @@ public class CreatePatientPage extends CommonInfoSelectors
 
     private final By congenitalOnsentBtn = By.id("PhenoTips.PatientClass_0_global_age_of_onset_HP:0003577");
 
+    private final By ageOfOnsetBtns = By.cssSelector("div.global_age_of_onset > div > div  > ul > li.term-entry");
+    private final By modeOfInheritanceChkboxes = By.cssSelector("div.global_mode_of_inheritance > div > div > ul > li");
+
     private final By updateBtn = By.cssSelector("#patient-consent-update > a:nth-child(1)");
 
 //    private final By familyHistoryPedigreeSection = By.id("HFamilyhistoryandpedigree");
@@ -196,7 +199,7 @@ public class CreatePatientPage extends CommonInfoSelectors
             case "Male": clickOnElement(maleGenderBtn); break;
             case "Female": clickOnElement(femaleGenderBtn); break;
             case "Other": clickOnElement(otherGenderBtn); break;
-            case "Unkown": clickOnElement(unknownGenderBtn); break;
+            case "Unknown": clickOnElement(unknownGenderBtn); break;
             default: System.out.println("Invalid gender selected! Default to Unknown"); break;
         }
         return this;
@@ -271,5 +274,40 @@ public class CreatePatientPage extends CommonInfoSelectors
         return this;
     }
 
+    /**
+     * Cycles through all the parent options for the age of onset buttons.
+     * @return stay on the same page so return same object.
+     */
+    public CreatePatientPage cycleThroughAgeOfOnset() {
+        waitForElementToBePresent(ageOfOnsetBtns);
+        List<WebElement> loAgeOfOnsetBtns = superDriver.findElements(ageOfOnsetBtns);
+
+        forceScrollToElement(ageOfOnsetBtns);
+
+        for (WebElement e: loAgeOfOnsetBtns) {
+            e.click();
+        }
+
+        clickOnElement(congenitalOnsentBtn);
+        return this;
+    }
+
+    /**
+     * Cycles through all the parent options for the mode of inheritance checkboxes.
+     * @return stay on the same page so return same object.
+     */
+    public CreatePatientPage cycleThroughModeOfInheritance() {
+        waitForElementToBePresent(modeOfInheritanceChkboxes);
+
+        List<WebElement> loModeOfInheritanceChkboxes = superDriver.findElements(modeOfInheritanceChkboxes);
+
+        forceScrollToElement(modeOfInheritanceChkboxes);
+
+        for (WebElement e: loModeOfInheritanceChkboxes) {
+            e.click();
+        }
+
+        return this;
+    }
 
 }
