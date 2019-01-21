@@ -73,6 +73,12 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
             .addGene("QSOX1", "Confirmed causal", "Sequencing")
             .addGene("TXNL1", "Carrier", "Sequencing")
             .saveAndViewSummary();
+
+        System.out.println("We just edited: " + currentPage2.getPatientID());
+        Assert.assertTrue(currentPage2.checkForVisibleSections(checkForTheseSections));
+
+        currentPage2.logOut();
+
     }
 
     // Creates an identitcal patient as User 2 via JSON import. Asserts that the section titles are visible.
@@ -80,7 +86,7 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
     @Test
     public void importSecondJSONPatient()
     {
-        currentPage.logOut()
+        currentPage.navigateToLoginPage()
             .loginAsUserTwo()
             .navigateToAllPatientsPage()
             .importJSONPatient(JSONToImport)
@@ -98,12 +104,14 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
         System.out.println("We just edited: " + currentPage2.getPatientID());
 
         Assert.assertTrue(currentPage2.checkForVisibleSections(checkForTheseSections));
+
+        currentPage.logOut();
     }
 
     // Sends the email notification of an identical (100%) match to the two newly created
     // patients, checks that the inbox has emails.
     // TODO: Maybe we should delete patient afterwards, otherwise might get other matches in first row.
-    @Test
+    @Test(dependsOnMethods = {"createPatientManually", "importSecondJSONPatient"})
     public void verifyEmailNotifications()
     {
         EmailUIPage emailPage = new EmailUIPage(theDriver);
@@ -111,9 +119,7 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
         currentPage2.navigateToEmailInboxPage()
             .deleteAllEmails();
 
-        theDriver.navigate().back();
-
-        currentPage2.logOut()
+        currentPage.navigateToLoginPage()
             .loginAsAdmin()
             .navigateToAdminSettingsPage()
             .navigateToMatchingNotificationPage()
@@ -128,7 +134,7 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
     }
 
     // Adjusts Patient created by User 1 to public, ensures User 2 can now see it.
-    @Test
+    @Test(dependsOnMethods = {"createPatientManually", "importSecondJSONPatient"}, enabled = false)
     public void publicVisiblityTest()
     {
         String ID1 = currentPage.navigateToLoginPage()
@@ -148,16 +154,17 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
             .getPatientID();
 
         Assert.assertEquals(ID1, ID2);
+        currentPage.logOut();
     }
 
-//    @Test
-//    public void deleteAllUsersHelper() {
-//        currentPage
-//            .navigateToLoginPage()
-//            .loginAsAdmin()
-//            .navigateToAllPatientsPage()
-//            .deleteAllPatients();
-//    }
+    @Test(enabled = false)
+    public void deleteAllUsersHelper() {
+        currentPage
+            .navigateToLoginPage()
+            .loginAsAdmin()
+            .navigateToAllPatientsPage()
+            .deleteAllPatients();
+    }
 
 
 }
