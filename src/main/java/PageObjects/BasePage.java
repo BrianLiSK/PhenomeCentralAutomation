@@ -286,28 +286,28 @@ public abstract class BasePage
         List<WebElement> loButtons = superDriver
             .findElements(new ByChained(rootPath, childrenPath));
 
-//        List<WebElement> loButtonsLabels = superDriver
-//            .findElements(new ByChained(rootPath, childrenLabelLocation));
+        List<WebElement> loButtonsLabels = superDriver
+            .findElements(new ByChained(rootPath, childrenLabelLocation));
 
         Iterator<WebElement> buttonIter = loButtons.iterator();
-//        Iterator<WebElement> labelsIter = loButtonsLabels.iterator();
+        Iterator<WebElement> labelsIter = loButtonsLabels.iterator();
 
-//        if (loButtons.size() != loButtonsLabels.size()) {
-//            loLabels.add("Unequal array sizes for buttons and labels in preOrderTraverseAndClick: " +
-//                "Found Buttons: " + loButtons.size() + " but found Labels: " + loLabels.size());
-//            return loLabels;
-//        }
+        if (loButtons.size() != loButtonsLabels.size()) {
+            loLabels.add("Unequal array sizes for buttons and labels in preOrderTraverseAndClick: " +
+                "Found Buttons: " + loButtons.size() + " but found Labels: " + loLabels.size());
+            return loLabels;
+        }
 
         forceScrollToElement(rootPath);
 
-//        while (buttonIter.hasNext() && labelsIter.hasNext()) {
-//            WebElement theButton = buttonIter.next();
-//            WebElement theLabel = labelsIter.next();
-//
-//            theButton.click();
-//            loLabels.add(theLabel.getText());
-//
-//        }
+        while (buttonIter.hasNext() && labelsIter.hasNext()) {
+            WebElement theButton = buttonIter.next();
+            WebElement theLabel = labelsIter.next();
+
+            theButton.click();
+            loLabels.add(theLabel.getText());
+
+        }
         while (buttonIter.hasNext()) {
             WebElement theButton = buttonIter.next();
 

@@ -307,7 +307,7 @@ public class CreatePatientPage extends CommonInfoSelectors
     public List<String> cycleThroughAgeOfOnset() {
         List <String> loLabels =
             preOrderTraverseAndClick(ageOfOnsetBtns, By.cssSelector("ul > li.term-entry > input"),
-                By.cssSelector("ul > li.term-entry"));
+                By.cssSelector("ul > li.term-entry > label"));
 
         clickOnElement(congenitalOnsentBtn);
 
@@ -324,7 +324,7 @@ public class CreatePatientPage extends CommonInfoSelectors
 
         return preOrderTraverseAndClick(modeOfInheritanceChkboxes,
             By.cssSelector("ul > li.term-entry > input"),
-            By.cssSelector("ul > li.term-entry"));
+            By.cssSelector("ul > li.term-entry > label"));
     }
 
     /**
