@@ -298,47 +298,33 @@ public class CreatePatientPage extends CommonInfoSelectors
     }
 
     /**
-     * Cycles through all the parent options for the age of onset buttons, clicks on each one.
-     * @return stay on the same page so return same object.
+     * Traverses through all the options for the age of onset buttons, clicks on each one.
+     * @return a List of Strings which represent the Age of Onset radio button labels in a
+     * 'pre-order' traversal.
      * TODO: Compare and Assert to an actual predefined array of values
      * TODO: Use byChained class properly to do a pre-order traversal of the trees
      */
-    public CreatePatientPage cycleThroughAgeOfOnset() {
-        waitForElementToBePresent(ageOfOnsetBtns);
-
-        List<WebElement> loAgeOfOnsetBtns = superDriver.findElements(new ByChained(ageOfOnsetBtns,
-            By.cssSelector("ul > li.term-entry > input"))); // Finds all children, no recursion needed?
-
-        forceScrollToElement(ageOfOnsetBtns);
-
-        for (WebElement e: loAgeOfOnsetBtns) {
-            e.click();
-        }
+    public List<String> cycleThroughAgeOfOnset() {
+        List <String> loLabels =
+            preOrderTraverseAndClick(ageOfOnsetBtns, By.cssSelector("ul > li.term-entry > input"),
+                By.cssSelector("ul > li.term-entry"));
 
         clickOnElement(congenitalOnsentBtn);
-        return this;
+
+        return loLabels;
     }
 
 
     /**
-     * Cycles through all the parent options for the mode of inheritance checkboxes.
-     * @return stay on the same page so return same object.
-     * TODO: Compare and Assert to an actual predefined array of values
-     * TODO: Ensure pre-order traversal is correct.
+     * Traverses through all the options for the mode of inheritance checkboxes.
+     * @return a List of Strings which represent the Mode Of Inheritance checkbox labels in a
+     * 'pre-order' traversal.
      */
-    public CreatePatientPage cycleThroughModeOfInheritance() {
-        waitForElementToBePresent(modeOfInheritanceChkboxes);
+    public List<String> cycleThroughModeOfInheritance() {
 
-        List<WebElement> loModeOfInheritanceChkboxes = superDriver
-            .findElements(new ByChained(modeOfInheritanceChkboxes, By.cssSelector("ul > li.term-entry > input")));
-
-        forceScrollToElement(modeOfInheritanceChkboxes);
-
-        for (WebElement e: loModeOfInheritanceChkboxes) {
-            e.click();
-        }
-
-        return this;
+        return preOrderTraverseAndClick(modeOfInheritanceChkboxes,
+            By.cssSelector("ul > li.term-entry > input"),
+            By.cssSelector("ul > li.term-entry"));
     }
 
     /**

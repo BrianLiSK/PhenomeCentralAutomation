@@ -1,5 +1,8 @@
 package TestCases;
 
+import java.util.List;
+
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import PageObjects.CreatePatientPage;
@@ -47,10 +50,14 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
             .setGender("Unknown")
             .setGender("Male");
 
-        aCreationPage.cycleThroughAgeOfOnset()
-            .cycleThroughModeOfInheritance()
-            .cycleThroughModeOfInheritance()
-            .setIndicationForReferral("Now cycle through the other sections...");
+        List<String> loAgeOnsetLabels = aCreationPage.cycleThroughAgeOfOnset();
+        List<String> loModeOfInheritanceLabels = aCreationPage.cycleThroughModeOfInheritance();
+
+        System.out.println(loAgeOnsetLabels);
+        System.out.println(loModeOfInheritanceLabels);
+
+        aCreationPage.cycleThroughModeOfInheritance();
+        aCreationPage.setIndicationForReferral("Now cycle through the other sections...");
 
     }
 }
