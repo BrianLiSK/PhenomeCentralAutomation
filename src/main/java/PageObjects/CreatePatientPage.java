@@ -9,6 +9,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.pagefactory.ByChained;
 import org.openqa.selenium.support.ui.Select;
 
 /**
@@ -51,7 +52,9 @@ public class CreatePatientPage extends CommonInfoSelectors
     private final By congenitalOnsentBtn = By.id("PhenoTips.PatientClass_0_global_age_of_onset_HP:0003577");
 
     private final By ageOfOnsetBtns = By.cssSelector("div.global_age_of_onset > div > div  > ul > li.term-entry");
-    private final By modeOfInheritanceChkboxes = By.cssSelector("div.global_mode_of_inheritance > div > div > ul > li");
+    private final By modeOfInheritanceChkboxes = By.cssSelector("div.global_mode_of_inheritance > div > div > ul > li.term-entry");
+
+    private final By indicationForReferralBox = By.id("PhenoTips.PatientClass_0_indication_for_referral");
 
     private final By updateBtn = By.cssSelector("#patient-consent-update > a:nth-child(1)");
 
@@ -139,6 +142,26 @@ public class CreatePatientPage extends CommonInfoSelectors
         superDriver.findElement(identifierBox).clear();
         clickAndTypeOnElement(identifierBox, identifer);
         unconditionalWaitNs(1); // Gives "identifier already exists" if we navigate away too fast.
+        return this;
+    }
+
+    /**
+     * Sets the Life Status dropdown of the patient.
+     * @param status is either "Alive" or "Deceased". Must be exact string otherwise defaults to "Alive".
+     * @return stay on the same page so return same object.
+     */
+    public CreatePatientPage setLifeStatus(String status)
+    {
+        waitForElementToBePresent(lifeStatusDrp);
+        Select statusDrp = new Select(superDriver.findElement(lifeStatusDrp));
+
+        try {
+            statusDrp.selectByVisibleText(status);
+        } catch (NoSuchElementException e) {
+            System.out.println("No such life status. Defaulting to Alive.");
+            statusDrp.selectByVisibleText("Alive");
+        }
+
         return this;
     }
 
@@ -275,12 +298,16 @@ public class CreatePatientPage extends CommonInfoSelectors
     }
 
     /**
-     * Cycles through all the parent options for the age of onset buttons.
+     * Cycles through all the parent options for the age of onset buttons, clicks on each one.
      * @return stay on the same page so return same object.
+     * TODO: Compare and Assert to an actual predefined array of values
+     * TODO: Use byChained class properly to do a pre-order traversal of the trees
      */
     public CreatePatientPage cycleThroughAgeOfOnset() {
         waitForElementToBePresent(ageOfOnsetBtns);
-        List<WebElement> loAgeOfOnsetBtns = superDriver.findElements(ageOfOnsetBtns);
+
+        List<WebElement> loAgeOfOnsetBtns = superDriver.findElements(new ByChained(ageOfOnsetBtns,
+            By.cssSelector("ul > li.term-entry > input"))); // Finds all children, no recursion needed?
 
         forceScrollToElement(ageOfOnsetBtns);
 
@@ -292,14 +319,18 @@ public class CreatePatientPage extends CommonInfoSelectors
         return this;
     }
 
+
     /**
      * Cycles through all the parent options for the mode of inheritance checkboxes.
      * @return stay on the same page so return same object.
+     * TODO: Compare and Assert to an actual predefined array of values
+     * TODO: Ensure pre-order traversal is correct.
      */
     public CreatePatientPage cycleThroughModeOfInheritance() {
         waitForElementToBePresent(modeOfInheritanceChkboxes);
 
-        List<WebElement> loModeOfInheritanceChkboxes = superDriver.findElements(modeOfInheritanceChkboxes);
+        List<WebElement> loModeOfInheritanceChkboxes = superDriver
+            .findElements(new ByChained(modeOfInheritanceChkboxes, By.cssSelector("ul > li.term-entry > input")));
 
         forceScrollToElement(modeOfInheritanceChkboxes);
 
@@ -307,6 +338,18 @@ public class CreatePatientPage extends CommonInfoSelectors
             e.click();
         }
 
+        return this;
+    }
+
+    /**
+     * Sets the "Indication for Referral box" in the Patient Information section.
+     * Currently, it does not clear the contents of the box, just concatenates to whatever is there.
+     * @param neededText is the String to enter into the input box.
+     * @return stay on the same page so return the same object.
+     */
+    public CreatePatientPage setIndicationForReferral(String neededText)
+    {
+        clickAndTypeOnElement(indicationForReferralBox, neededText);
         return this;
     }
 
