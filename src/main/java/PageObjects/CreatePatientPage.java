@@ -44,6 +44,12 @@ public class CreatePatientPage extends CommonInfoSelectors
     private final By dobYearDrp =
         By.cssSelector("#date-of-birth-block > div > div:nth-child(2) > div > div > span > select.year");
 
+    private final By doDeathMonthDrp =
+        By.cssSelector("#date-of-death-block > div > div:nth-child(2) > div > div > span > select.month");
+
+    private final By doDeathYearDrp =
+        By.cssSelector("#date-of-death-block > div > div:nth-child(2) > div > div > span > select.year");
+
     private final By maleGenderBtn = By.id("xwiki-form-gender-0-0");
     private final By femaleGenderBtn = By.id("xwiki-form-gender-0-1");
     private final By otherGenderBtn = By.id("xwiki-form-gender-0-2");
@@ -166,7 +172,7 @@ public class CreatePatientPage extends CommonInfoSelectors
     }
 
     /**
-     * Sets the date of birth of the patient under Patient Information.
+     * Sets the Date of Birth of the patient under Patient Information.
      * Will safely handle invalid strings by defaulting to 01/2019.
      * @param month the Month as a String (01 - 12). Must exactly match the dropdown.
      * @param year the year as a String (1500s - 2019). Must exactly match the dropdown.
@@ -187,6 +193,34 @@ public class CreatePatientPage extends CommonInfoSelectors
             System.out.println("Invalid DOB passed. Default set to 01/2019");
             monthDrp.selectByVisibleText("01");
             yearDrp.selectByVisibleText("2019");
+        }
+
+        return this;
+    }
+
+    /**
+     * Sets the Date of Death of the patient under Patient Information.
+     * Will safely handle invalid strings by defaulting to 01/2018.
+     * Requires: Life Status set to "Deceased" so that Date of Death dropdowns are visible.
+     * @param month the Month as a String (01 - 12). Must exactly match the dropdown.
+     * @param year the year as a String (1500s - 2019). Must exactly match the dropdown.
+     * @return stay on the same page so return same object.
+     */
+    public CreatePatientPage setDateOfDeath(String month, String year) {
+        Select monthDrp;
+        Select yearDrp;
+
+        waitForElementToBePresent(doDeathMonthDrp);
+        monthDrp = new Select(superDriver.findElement(doDeathMonthDrp));
+        yearDrp = new Select(superDriver.findElement(doDeathYearDrp));
+
+        try {
+            monthDrp.selectByVisibleText(month);
+            yearDrp.selectByVisibleText(year);
+        } catch (NoSuchElementException e) {
+            System.out.println("Invalid date of death passed. Default set to 01/2018");
+            monthDrp.selectByVisibleText("01");
+            yearDrp.selectByVisibleText("2018");
         }
 
         return this;

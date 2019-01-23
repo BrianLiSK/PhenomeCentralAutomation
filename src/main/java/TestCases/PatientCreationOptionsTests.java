@@ -1,5 +1,7 @@
 package TestCases;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.testng.Assert;
@@ -19,6 +21,20 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
 
     private CreatePatientPage aCreationPage = new CreatePatientPage(theDriver);
 
+    private final List<String> checkOnsetLabels = new ArrayList<String>(Arrays.asList(
+        "Unknown", "Congenital onset", "Antenatal onset", "Embryonal onset", "Fetal onset", "Neonatal onset",
+        "Infantile onset", "Childhood onset", "Juvenile onset", "Adult onset", "Young adult onset",
+        "Middle age onset", "Late onset"));
+
+    private final List<String> checkInheritanceLabels = new ArrayList<String>(Arrays.asList(
+        "Sporadic", "Autosomal dominant inheritance", "Sex-limited autosomal dominant",
+        "Male-limited autosomal dominant", "Autosomal dominant somatic cell mutation",
+        "Autosomal dominant contiguous gene syndrome", "Autosomal recessive inheritance",
+        "Gonosomal inheritance", "X-linked inheritance", "X-linked dominant inheritance",
+        "X-linked recessive inheritance", "Y-linked inheritance", "Multifactorial inheritance",
+        "Digenic inheritance", "Oligogenic inheritance", "Polygenic inheritance",
+        "Mitochondrial inheritance"));
+
     // Cycle through all the options on the "Patient Information" Section.
     @Test
     public void cycleThroughInfoOptions() {
@@ -32,19 +48,21 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
             .updateConsent()
             .setIdentifer("Auto Cycling Options")
             .setLifeStatus("Alive")
-            .setLifeStatus("Deceased")
-            .setLifeStatus("Alive");
+            .setLifeStatus("Deceased");
 
         for (int i = 1; i <= 12; ++i) {
             if (i < 10) {
                 aCreationPage.setDOB("0" + String.valueOf(i), "2019");
+                aCreationPage.setDateOfDeath("0" + String.valueOf(i), "2019");
             }
             else {
                 aCreationPage.setDOB(String.valueOf(i), "2019");
+                aCreationPage.setDateOfDeath(String.valueOf(i), "2019");
             }
         }
 
-        aCreationPage.setGender("Male")
+        aCreationPage.setLifeStatus("Alive")
+            .setGender("Male")
             .setGender("Female")
             .setGender("Other")
             .setGender("Unknown")
@@ -53,8 +71,8 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
         List<String> loAgeOnsetLabels = aCreationPage.cycleThroughAgeOfOnset();
         List<String> loModeOfInheritanceLabels = aCreationPage.cycleThroughModeOfInheritance();
 
-        System.out.println(loAgeOnsetLabels);
-        System.out.println(loModeOfInheritanceLabels);
+        Assert.assertEquals(loAgeOnsetLabels, checkOnsetLabels);
+        Assert.assertEquals(loModeOfInheritanceLabels, checkInheritanceLabels);
 
         aCreationPage.cycleThroughModeOfInheritance();
         aCreationPage.setIndicationForReferral("Now cycle through the other sections...");

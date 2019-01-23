@@ -275,6 +275,8 @@ public abstract class BasePage
      *          using this path.
      * @param childrenLabelLocation is the path to where the label text is located for the children.
      * @return a (might be empty) list of Strings representing the visits of the traversal.
+     *          In case of unequal lengths of the lists (i.e. it found more buttons than labels), it returns
+     *          a List containing one String of the error message. TODO: Figure out if returning null is better.
      */
     public List<String> preOrderTraverseAndClick(By rootPath, By childrenPath, By childrenLabelLocation)
     {
@@ -292,6 +294,7 @@ public abstract class BasePage
         Iterator<WebElement> buttonIter = loButtons.iterator();
         Iterator<WebElement> labelsIter = loButtonsLabels.iterator();
 
+        // Check that list of buttons size (clickable area) == size of list of labels (text strings)
         if (loButtons.size() != loButtonsLabels.size()) {
             loLabels.add("Unequal array sizes for buttons and labels in preOrderTraverseAndClick: " +
                 "Found Buttons: " + loButtons.size() + " but found Labels: " + loLabels.size());
@@ -306,13 +309,6 @@ public abstract class BasePage
 
             theButton.click();
             loLabels.add(theLabel.getText());
-
-        }
-        while (buttonIter.hasNext()) {
-            WebElement theButton = buttonIter.next();
-
-            theButton.click();
-            loLabels.add(theButton.getText());
 
         }
 
