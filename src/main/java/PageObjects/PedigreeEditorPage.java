@@ -47,6 +47,10 @@ public class PedigreeEditorPage extends BasePage
     private final By cancersTab = By.cssSelector(
         "div.person-node-menu > div.tabholder > dl.tabs > dd:nth-child(3)");
 
+    private final By linkPatientBox = By.cssSelector("input.suggest-patients");
+    private final By linkPatientFirstSuggestion = By.cssSelector("span.suggestValue"); // First suggestion
+    private final By createNewPatientBtn = By.cssSelector("span.patient-create-button");
+
 
     private final By maleGenderBtn = By.cssSelector("input[value=M]");
     private final By femaleGenderBtn = By.cssSelector("input[value=F]");
@@ -191,6 +195,8 @@ public class PedigreeEditorPage extends BasePage
      * @return stay on the same page so return same object.
      * TODO: Figure out how to traverse and search the possible nodes for a patient,
      *      The js might might make this interesting...
+     *      Ideas: Differentiate via width and height. rect.pedigree-hoverbox[width=180, height=243] for
+     *      people, rect.pedigree-hoverbox[width=52, height=92] for relationship node.
      */
     public PedigreeEditorPage openEditModal()
     {
@@ -201,6 +207,28 @@ public class PedigreeEditorPage extends BasePage
 
         //forceClickOnElement(hoverBox);
         waitForElementToBePresent(personalTab);
+        return this;
+    }
+
+    /**
+     * Links the currently focused node to an existing patient via the "Link to an existing patient record"
+     * box in the "Personal" tab.
+     * Requires a patient's information modal to be open.
+     * @param patientID is either "New" to indicate "Create New" should be clicked
+     *          or a patient ID in form of Pxxxxxxx
+     * @return Stay on the same page so return same object.
+     */
+    public PedigreeEditorPage linkPatient(String patientID)
+    {
+        if (patientID.equals("New")) {
+            clickOnElement(createNewPatientBtn);
+            waitForElementToBeClickable(personalTab);
+        }
+        else {
+            clickAndTypeOnElement(linkPatientBox, patientID);
+            clickOnElement(linkPatientFirstSuggestion);
+        }
+
         return this;
     }
 
