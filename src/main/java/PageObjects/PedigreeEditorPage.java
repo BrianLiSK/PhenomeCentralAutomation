@@ -8,6 +8,9 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+/**
+ * This is the pedigree editor page, i.e. http://localhost:8083/edit/Families/FAMxxxxxxx
+ */
 public class PedigreeEditorPage extends BasePage
 {
     public PedigreeEditorPage(WebDriver aDriver) {
@@ -58,6 +61,26 @@ public class PedigreeEditorPage extends BasePage
     private final By dobMonthDrp = By.cssSelector(
       "div.field-date_of_birth > div > div > span > select[title=month]");
 
+    private final By phenotypesList = By.cssSelector(
+        "div.field-hpo_positive > ul.accepted-suggestions > li > label.accepted-suggestion > span.value");
+    private final By phenotypeBox = By.cssSelector("input.suggest-hpo");
+
+    private final By candidateGeneBox = By.cssSelector(
+        "div.field-candidate_genes > input.suggest-genes");
+    private final By candidateGeneList = By.cssSelector(
+        "div.field-candidate_genes > ul.accepted-suggestions > li > label.accepted-suggestion > span.value");
+
+    private final By causalGeneBox = By.cssSelector(
+        "div.field-causal_genes > input.suggest-genes");
+    private final By causalGeneList = By.cssSelector(
+        "div.field-causal_genes > ul.accepted-suggestions > li > label.accepted-suggestion > span.value");
+
+    private final By carrierGeneBox = By.cssSelector(
+        "div.field-carrier_genes > input.suggest-genes");
+    private final By carrierGeneList = By.cssSelector(
+        "div.field-carrier_genes > ul.accepted-suggestions > li > label.accepted-suggestion > span.value");
+
+
 
     /**
      * Closes the editor and handles the warning dialogue if it appears. Requires that no modals are
@@ -94,10 +117,10 @@ public class PedigreeEditorPage extends BasePage
     public PedigreeEditorPage switchToTab(String infoTab)
     {
         switch (infoTab) {
-            case "Personal": clickOnElement(personalTab); break;
-            case "Clinical": clickOnElement(clinicalTab); break;
-            case "Cancers": clickOnElement(cancersTab); break;
-            default: clickOnElement(personalTab); break;
+            case "Personal": clickOnElement(personalTab); waitForElementToBePresent(ethnicitiesBox); break;
+            case "Clinical": clickOnElement(clinicalTab); waitForElementToBePresent(phenotypeBox); break;
+            case "Cancers": clickOnElement(cancersTab); break; // Should add wait here
+            default: clickOnElement(personalTab); waitForElementToBePresent(ethnicitiesBox); break;
         }
         return this;
     }
@@ -122,19 +145,42 @@ public class PedigreeEditorPage extends BasePage
     }
 
     /**
-     * Retrieves the ethnicities of the patient listed in the pedigree editor.
-     * @return
+     * Retrieves the ethnicities of the patient listed in the pedigree editor in the "Personal" tab.
+     * Requires a patient's information modal to be present.
+     * @return A, possibly empty, list of Strings representing the ethnicities that were found.
      */
     public List<String> getEthnicities()
     {
-        List<String> loEthnicities = new ArrayList<>();
-        List<WebElement> loFoundEthnicities = superDriver.findElements(ethnicitiesList);
+        switchToTab("Personal");
+        return getLabelsFromList(ethnicitiesList);
 
-        for (WebElement e : loFoundEthnicities) {
-            loEthnicities.add(e.getText());
+    }
+
+    /**
+     * Retrieves a list of entered phenotypes within the "Clinical" tab.
+     * Requires the patient information modal to be open.
+     * @return A, possibly empty, list of Strings containing the names of the phenotypes.
+     */
+    public List<String> getPhenotypes()
+    {
+        switchToTab("Clinical");
+        return getLabelsFromList(phenotypesList);
+    }
+
+    /**
+     * Retrieves a list of entered genes from the "Clinical" tab of the specified status.
+     * @param status is the gene status so it is one of "Candidate", "Confirmed Causal", "Carrier"
+     * @return a List of Strings, possibly empty, representing the text label for each entered gene.
+     */
+    public List<String> getGenes(String status)
+    {
+        switchToTab("Clinical");
+        switch(status) {
+            case "Candidate": return getLabelsFromList(candidateGeneList);
+            case "Confirmed Causal": return getLabelsFromList(causalGeneList);
+            case "Carrier": return getLabelsFromList(carrierGeneList);
+            default: return getLabelsFromList(candidateGeneList);
         }
-
-        return loEthnicities;
 
     }
 
