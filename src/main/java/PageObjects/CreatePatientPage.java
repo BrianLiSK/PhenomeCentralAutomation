@@ -380,6 +380,7 @@ public class CreatePatientPage extends CommonInfoSelectors
     /**
      * Navigates to the Pedigree Editor page by clicking "OK" on the "Assign patient to family" modal.
      * Assumes that the "Create a new family" radio option is selected by default.
+     * Requires the "Family History" section to be expanded
      * @param familyName is the family name to base the pedigree off of. Pass "" (empty string) to specify
      *          the "Create a new family" radio option. Otherwise, this must be a valid existing family name.
      * @return we navigate to the Pedigree Editor page so return new instance of that.
@@ -388,13 +389,18 @@ public class CreatePatientPage extends CommonInfoSelectors
     {
         clickOnElement(editPedigreeBox);
 
-        if (!familyName.equals("")) {
+        // Case where we want to specify a family, also need to ensure that the dialogue is actually there.
+        if (!familyName.equals("") && isElementPresent(editPedigreeOKBtn)) {
             clickOnElement(assignFamilyRadioBtn);
             clickAndTypeOnElement(familySearchInputBox, familyName);
             clickOnElement(firstFamilySuggestion);
         }
 
-        clickOnElement(editPedigreeOKBtn);
+        // If we are editing a pedigree, there is no family selection dialogue that appears, hence just
+        //   check for an OK button before trying to click.
+        if (isElementPresent(editPedigreeOKBtn)) {
+            clickOnElement(editPedigreeOKBtn);
+        }
 
         return new PedigreeEditorPage(superDriver);
     }

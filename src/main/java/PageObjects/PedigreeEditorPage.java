@@ -7,6 +7,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 
 /**
  * This is the pedigree editor page, i.e. http://localhost:8083/edit/Families/FAMxxxxxxx
@@ -20,6 +21,7 @@ public class PedigreeEditorPage extends BasePage
         //   and just assume that there was no modal in the first place.
         try {
             clickOnElement(probandTemplate);
+            waitForElementToBeClickable(hoverBox);
         } catch (TimeoutException e) {
             System.out.println("Seems like we are editing an existing pedigree, no template dialogue found.");
         }
@@ -182,6 +184,24 @@ public class PedigreeEditorPage extends BasePage
             default: return getLabelsFromList(candidateGeneList);
         }
 
+    }
+
+    /**
+     * Opens the edit patient modal for the first patient it can find on the editor.
+     * @return stay on the same page so return same object.
+     * TODO: Figure out how to traverse and search the possible nodes for a patient,
+     *      The js might might make this interesting...
+     */
+    public PedigreeEditorPage openEditModal()
+    {
+        unconditionalWaitNs(5); // Figure out how to wait for animation to finish
+        waitForElementToBePresent(hoverBox);
+        Actions action = new Actions(superDriver);
+        action.click(superDriver.findElement(hoverBox)).build().perform();
+
+        //forceClickOnElement(hoverBox);
+        waitForElementToBePresent(personalTab);
+        return this;
     }
 
 }
