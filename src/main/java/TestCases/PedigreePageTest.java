@@ -99,7 +99,9 @@ public class PedigreePageTest extends BaseTest implements CommonInfoEnums
         Assert.assertEquals(aPedigreeEditorPage.getNumberOfTotalPatientsInTree(), 3);
         Assert.assertEquals(aPedigreeEditorPage.getNumberOfPartnerLinks(), 1);
 
-        aPedigreeEditorPage.closeEditor("Don't Save")
+        aPedigreeEditorPage.createSibling(3)
+            .createPartnership(3, 5)
+            .closeEditor("Don't Save")
             .logOut();
     }
 

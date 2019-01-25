@@ -45,8 +45,9 @@ public class PedigreeEditorPage extends BasePage
 //    private final By createSiblingNode = By.cssSelector(
 //        "rect[transform=\"matrix(0.7071,0.7071,-0.7071,0.7071,16.7875,-94.5287)\"]");
     // CSS breaking from long text strings?
-    private final By createSiblingNode = By.xpath(
-        "//a[contains(text(), 'Click to create a sibling or drag to an existing parentless person (valid choices will be highlighted in green)')]");
+    private final By createSiblingNode = By.cssSelector(
+        //"rect[transform=\"matrix(0.7071,0.7071,-0.7071,0.7071,444.0081,62.5496)\"]");
+    "rect[transform=\"matrix(0.7071,0.7071,-0.7071,0.7071,277.7713,-105.7192)\"]");
 //    private final By createChildNode = By.xpath(
 //        "//a[contains(@title, 'Click to draw a child or drag to an existing person without parents (valid choices will be highlighted in green)'"
 //    );
@@ -55,9 +56,12 @@ public class PedigreeEditorPage extends BasePage
     private final By createChildNode = By.cssSelector(
         "rect[transform=\"matrix(0.7071,0.7071,-0.7071,0.7071,70.6066,-20.4594)\"]");
     private final By createPartnerNode = By.xpath(
-        "//a[contains(@title, 'Click to draw a partner or drag to an existing person to create a partnership (valid choices will be highlighted in green)'");
+        "//*[@*=\"Click to draw a partner or drag to an existing person to create a partnership (valid choices will be highlighted in green)\"]");
     private final By createParentNode = By.xpath(
         "//a[contains(@title, 'Click to draw parents or drag to an existing person or partnership (valid choices will be highlighted in green). Dragging to a person will create a new relationship.'");
+
+    private final By linkedPatientIDLink = By.cssSelector(
+        "text.pedigree-nodePatientTextLink > tspan");
 
 //    private final By createMaleNode = By.cssSelector("div.node-type-options > a.node-type-M");
     private final By createMaleNode = By.cssSelector("a.node-type-M");
@@ -326,6 +330,80 @@ public class PedigreeEditorPage extends BasePage
     public int getNumberOfTotalPatientsInTree()
     {
         return getNumberOfNodes() - getNumberOfPartnerLinks();
+    }
+
+    /**
+     * Finds a list of Patient IDs that have been linked and are visible on the pedigree editor.
+     * @return A list of Strings, possibly empty, which are the patient IDs for those who are linked
+     *          to a node on the pedigree editor. I.e. a List of Strings in the form of Pxxxxxxx
+     */
+    public List<String> getListOfLinkedPatients()
+    {
+        List<String> loPatientIDs = new ArrayList<>();
+        waitForElementToBePresent(closeEditor);
+        superDriver.findElements(linkedPatientIDLink)
+            .forEach(element -> loPatientIDs.add(element.getText()));
+
+        return loPatientIDs;
+    }
+
+    /**
+     * Supposed to create a partnership between two patient nodes by clicking and dragging
+     * on the leftmost circle. The partners are specified by the Nth hover box they represent on
+     * the page.
+     * @param partner1 is the patient node that has the left circle to be clicked and dragged on
+     * @param partner2 is the patient node that is meant to be dragged to wards
+     * @return Stay on the same page so return the same object.
+     */
+    // 4 and 5th boxes
+    public PedigreeEditorPage createPartnership(int partner1, int partner2)
+    {
+        Actions act = new Actions(superDriver);
+
+        waitForElementToBePresent(hoverBox);
+        List<WebElement> loHoverBoxes = superDriver.findElements(hoverBox);
+
+        act.moveToElement(loHoverBoxes.get(partner1 - 1))
+//            .pause(2000)
+            .build().perform();
+
+//        unconditionalWaitNs(3);
+
+        forceClickOnElement(createPartnerNode);
+        waitForElementToBePresent(createPartnerNode);
+        List<WebElement> loPartnerNodes = superDriver.findElements(createPartnerNode);
+
+        act.dragAndDrop(loPartnerNodes.get(partner1 - 1),
+                loHoverBoxes.get(partner2 - 1))
+            .build()
+            .perform();
+
+        return this;
+    }
+
+    /**
+     * Creates a sibling for the patient specified by the Nth hover box.
+     * Requires that the Nth hover box exists.
+     * @param NthHoverBox is the nth hover box for the patient that we want to create a sibling for.
+     * @return Stay on the same page, so return the same object.
+     */
+    public PedigreeEditorPage createSibling(int NthHoverBox)
+    {
+        waitForElementToBePresent(hoverBox);
+
+        Actions builder = new Actions(superDriver);
+        List<WebElement> loHoverBoxes = superDriver.findElements(hoverBox);
+
+        builder.moveToElement(loHoverBoxes.get(NthHoverBox - 1)).perform();
+        waitForElementToBeClickable(createSiblingNode);
+
+        List<WebElement> loChildCreateNodes = superDriver.findElements(createSiblingNode);
+        List<WebElement> loMaleNodes = superDriver.findElements(createMaleNode);
+
+        loChildCreateNodes.get(1).click();
+        loMaleNodes.get(1).click();
+
+        return this;
     }
 
 }
