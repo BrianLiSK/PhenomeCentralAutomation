@@ -39,6 +39,28 @@ public class PedigreeEditorPage extends BasePage
     // We should figure out how to traverse up the structure of nodes.
     // It looks like its just a linear list of nodes for now...
     // TODO: Think some more, probably will need JS
+    private final By hoverBoxPartnerLink = By.cssSelector(
+        "#work-area > #canvas > svg > rect.pedigree-hoverbox[width=\"52\"]");
+
+//    private final By createSiblingNode = By.cssSelector(
+//        "rect[transform=\"matrix(0.7071,0.7071,-0.7071,0.7071,16.7875,-94.5287)\"]");
+    // CSS breaking from long text strings?
+    private final By createSiblingNode = By.xpath(
+        "//a[contains(text(), 'Click to create a sibling or drag to an existing parentless person (valid choices will be highlighted in green)')]");
+//    private final By createChildNode = By.xpath(
+//        "//a[contains(@title, 'Click to draw a child or drag to an existing person without parents (valid choices will be highlighted in green)'"
+//    );
+//    private final By createChildNode = By.cssSelector(
+//        "#canvas > svg:nth-child(1) > a[title=\"Click to draw a child or drag to an existing person without parents (valid choices will be highlighted in green)\"]");
+    private final By createChildNode = By.cssSelector(
+        "rect[transform=\"matrix(0.7071,0.7071,-0.7071,0.7071,70.6066,-20.4594)\"]");
+    private final By createPartnerNode = By.xpath(
+        "//a[contains(@title, 'Click to draw a partner or drag to an existing person to create a partnership (valid choices will be highlighted in green)'");
+    private final By createParentNode = By.xpath(
+        "//a[contains(@title, 'Click to draw parents or drag to an existing person or partnership (valid choices will be highlighted in green). Dragging to a person will create a new relationship.'");
+
+//    private final By createMaleNode = By.cssSelector("div.node-type-options > a.node-type-M");
+    private final By createMaleNode = By.cssSelector("a.node-type-M");
 
     private final By personalTab = By.cssSelector(
         "div.person-node-menu > div.tabholder > dl.tabs > dd:nth-child(1)");
@@ -230,6 +252,80 @@ public class PedigreeEditorPage extends BasePage
         }
 
         return this;
+    }
+
+    /**
+     * Checks if a warning dialogue appears when trying to close the editor. Clicks on close
+     * and then tries to click on "Keep editing patient". Sometimes, the dialgoue isn't supposed to
+     * be there so it would have navigated away with no warning.
+     * Requires that the pedigree toolbar be interactable, not blocked by some other modal.
+     * @return A Boolean to indicate whether the dialogue, or more specifically, "keep editing pedigree"
+     *          button appears or not.
+     *          State afterwards would be navigation away from the Pedigree Editor to Patient Creation page
+     */
+    public Boolean doesWarningDialogueAppear()
+    {
+        clickOnElement(closeEditor);
+        Boolean appearance = isElementPresent(saveAndQuitBtn);
+        if (appearance) {
+            clickOnElement(saveAndQuitBtn);
+        }
+        // else, would have navigated back to create patient page.
+        return appearance;
+    }
+
+    /**
+     * Creates a child of the specified gender. Currently, it just does it for the first patient node
+     * that it can find.
+     * @param gender is one of the options on the gender toolbar that appears when trying to create a new node
+     * "Male", "Female", "Unknown", etc. TODO: Possibly create an enum.
+     * @return Stay on the same page so return the same object.
+     */
+    public PedigreeEditorPage createChild(String gender)
+    {
+        waitForElementToBePresent(hoverBox);
+
+        Actions builder = new Actions(superDriver);
+        builder.moveToElement(superDriver.findElement(hoverBox)).perform();
+        waitForElementToBeClickable(createChildNode);
+
+        List<WebElement> loChildCreateNodes = superDriver.findElements(createChildNode);
+        loChildCreateNodes.get(1).click();
+        forceClickOnElement(createMaleNode);
+
+        return this;
+    }
+
+    /**
+     * Returns the number of total hover boxes in the family tree. A hover box can either be a patient
+     * node or it can be a partnership linkage node.
+     * @return An integer >= 0 representing the number of clickable hover boxes within the tree.
+     */
+    public int getNumberOfNodes()
+    {
+        waitForElementToBePresent(closeEditor);
+        return superDriver.findElements(hoverBox).size();
+    }
+
+    /**
+     * Gives the number of partner links within the tree. This node is where the "Consanguinity of this relationship"
+     * appears in a modal.
+     * @return int >= 0 representing the number of partner links in the tree.
+     */
+    public int getNumberOfPartnerLinks()
+    {
+        waitForElementToBePresent(closeEditor);
+        return superDriver.findElements(hoverBoxPartnerLink).size();
+    }
+
+    /**
+     * Gives the total number of patients, regardless if linked to an existing patient or not, in the tree.
+     * I.e. it is total number of hover boxes - number of linkage hover boxes.
+     * @return Integer >= 0 representing the total number of patients on tree.
+     */
+    public int getNumberOfTotalPatientsInTree()
+    {
+        return getNumberOfNodes() - getNumberOfPartnerLinks();
     }
 
 }

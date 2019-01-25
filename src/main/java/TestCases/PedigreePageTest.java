@@ -65,17 +65,42 @@ public class PedigreePageTest extends BaseTest implements CommonInfoEnums
 
         List<String> loPhenotypesFound = aPedigreeEditorPage.getPhenotypes();
         List<String> loCandidateGenesFound = aPedigreeEditorPage.getGenes("Candidate");
+        String patientGender = aPedigreeEditorPage.getGender();
 
         Assert.assertEquals(loPhenotypesFound, checkPhenotypes);
         Assert.assertEquals(loCandidateGenesFound, checkCandidateGenes);
+        Assert.assertEquals(patientGender, "Female");
 
         aPedigreeEditorPage.closeEditor("Save")
             .saveAndViewSummary()
             .editThisPatient()
             .expandSection(SECTIONS.FamilyHistorySection)
-            .navigateToPedigreeEditor("") // TODO: Might fail here.
+            .navigateToPedigreeEditor("")
             .closeEditor("")
-            .saveAndViewSummary();
+            .saveAndViewSummary()
+            .logOut();
+    }
+
+    // Creates a child for the most recently created patient via the Pedigree editor.
+    // Asserts that two new patient nodes are created.
+    @Test
+    public void createChild()
+    {
+        aHomePage.navigateToLoginPage()
+            .loginAsAdmin()
+            .navigateToAllPatientsPage()
+            .sortPatientsDateDesc()
+            .viewFirstPatientInTable()
+            .editThisPatient()
+            .expandSection(SECTIONS.FamilyHistorySection)
+            .navigateToPedigreeEditor("");
+        aPedigreeEditorPage.createChild("male");
+
+        Assert.assertEquals(aPedigreeEditorPage.getNumberOfTotalPatientsInTree(), 3);
+        Assert.assertEquals(aPedigreeEditorPage.getNumberOfPartnerLinks(), 1);
+
+        aPedigreeEditorPage.closeEditor("Don't Save")
+            .logOut();
     }
 
 }
