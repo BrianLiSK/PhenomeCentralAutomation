@@ -79,7 +79,62 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
             .expandSection(SECTIONS.FamilyHistorySection);
 
         aCreationPage.navigateToPedigreeEditor("")
-            .closeEditor("save");
+            .closeEditor("save")
+            .logOut();
 
     }
+
+    @Test
+    public void cycleThroughFamilialConditions()
+    {
+        final List<String> checkFamilialConditionsLabels = new ArrayList<String>(Arrays.asList(
+            "Other affected relatives", "Consanguinity", "Parents with at least 3 miscarriages"));
+
+        aHomePage.navigateToLoginPage()
+            .loginAsUser()
+            .navigateToAllPatientsPage()
+            .sortPatientsDateDesc()
+            .viewFirstPatientInTable()
+            .editThisPatient()
+            .expandSection(SECTIONS.FamilyHistorySection);
+
+        List<String> loFamilialConditions = aCreationPage.cycleThroughFamilialHealthConditions();
+        Assert.assertEquals(loFamilialConditions, checkFamilialConditionsLabels);
+
+        aCreationPage.logOut();
+    }
+
+    @Test
+    public void cycleThroughPrenatalHistory()
+    {
+        final List<String> checkFamilialConditionsLabels = new ArrayList<String>(Arrays.asList(
+            "Multiple gestation", "Conception after fertility medication", "Intrauterine insemination (IUI)",
+            "In vitro fertilization", "Intra-cytoplasmic sperm injection", "Gestational surrogacy",
+            "Donor egg", "Donor sperm", "Hyperemesis gravidarum (excessive vomiting)",
+            "Maternal hypertension", "Maternal diabetes", "Maternal fever in pregnancy",
+            "Maternal seizures", "Maternal teratogenic exposure", "Toxemia of pregnancy",
+            "Abnormal maternal serum screening", "Intrauterine growth retardation",
+            "Oligohydramnios", "Polyhydramnios", "Decreased fetal movement",
+            "Increased fetal movement", "Premature birth", "Neonatal respiratory distress",
+            "Prolonged neonatal jaundice", "Poor suck", "Neonatal hypoglycemia",
+            "Neonatal sepsis", "Abnormal delivery (Non-NSVD)", "Small for gestational age (<-2SD)",
+            "Large for gestational age (>+2SD)", "Small birth length (<-2SD)", "Large birth length (>+2SD)",
+            "Congenital microcephaly (<-3SD)", "Congenital macrocephaly (>+2SD)"));
+
+        aHomePage.navigateToLoginPage()
+            .loginAsUser()
+            .navigateToAllPatientsPage()
+            .filterByPatientID("P0000008") // TODO: Change to someone else, ie, just first patient in table.
+            .viewFirstPatientInTable()
+            .editThisPatient()
+            .expandSection(SECTIONS.PrenatalHistorySection);
+
+        List<String> loPrenatalYesNoBoxes = aCreationPage.cycleThroughPrenatalHistory();
+        Assert.assertEquals(loPrenatalYesNoBoxes, checkFamilialConditionsLabels);
+        System.out.println(loPrenatalYesNoBoxes);
+
+        aCreationPage.logOut();
+    }
+
+
 }

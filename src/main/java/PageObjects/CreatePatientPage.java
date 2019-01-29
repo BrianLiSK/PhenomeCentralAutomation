@@ -339,8 +339,6 @@ public class CreatePatientPage extends CommonInfoSelectors
      * Traverses through all the options for the age of onset buttons, clicks on each one.
      * @return a List of Strings which represent the Age of Onset radio button labels in a
      * 'pre-order' traversal.
-     * TODO: Compare and Assert to an actual predefined array of values
-     * TODO: Use byChained class properly to do a pre-order traversal of the trees
      */
     public List<String> cycleThroughAgeOfOnset() {
         List <String> loLabels =
@@ -403,6 +401,67 @@ public class CreatePatientPage extends CommonInfoSelectors
         }
 
         return new PedigreeEditorPage(superDriver);
+    }
+
+    /**
+     * Traverses through the options for the health conditions found in family yes/no boxes.
+     * @return a List of Strings which represent the health conditions found under "Family history and pedigree"
+     */
+    public List<String> cycleThroughFamilialHealthConditions() {
+
+        return preOrderTraverseAndClick(By.cssSelector("div.family-info > div.fieldset"),
+            By.cssSelector("div.displayed-value > span.yes-no-picker > label.yes"),
+            By.cssSelector("div.displayed-value > label.yes-no-picker-label"));
+    }
+
+    public void expandAll(By selector, String collapsedText)
+    {
+        List<WebElement> result = superDriver.findElements(selector);
+
+        for (WebElement e : superDriver.findElements(selector)) {
+            ((JavascriptExecutor)superDriver).executeScript("arguments[0].scrollIntoView();", e);
+            e.click();
+        }
+
+    }
+
+    /**
+     * Traverses through the options for the health conditions found in
+     * Prenatal and perinatal history yes/no boxes.
+     * @return a List of Strings which represent the health conditions found under the yes/no boxes of
+     *          "Prenatal and perinatal history"
+     */
+    public List<String> cycleThroughPrenatalHistory() {
+
+        List<String> loLabels = new ArrayList<>();
+
+        List<String> loUncategorizedLabels = preOrderTraverseAndClick(By.cssSelector("div.prenatal-info"),
+            By.cssSelector("div.fieldset > div.displayed-value > span.yes-no-picker > label.yes"),
+            By.cssSelector("div.fieldset > div.displayed-value > label.yes-no-picker-label"));
+
+//      Expand all dropdowns, lets them load first
+        preOrderTraverseAndClick(
+            By.cssSelector("div.prenatal-info > div > div > div"),
+            By.cssSelector("span[class=expand-tool]"),
+            By.cssSelector("span[class=expand-tool]"));
+
+        List<String> loCategorizedLabels = preOrderTraverseAndClick(
+            By.cssSelector("div.prenatal-info > div > div.prenatal_phenotype-main > div[class*=term-entry]"),
+            By.cssSelector("span.yes-no-picker > label.yes"),
+            By.cssSelector("span:nth-child(3) > label.yes-no-picker-label"));
+
+        List<String> loCategorizedLabels2 = preOrderTraverseAndClick(
+            By.xpath("//div[contains(@class, \"prenatal-info\")]/div/div[contains(@class, \"prenatal_phenotype-main\")]/div[contains(@class, \"subsection\") or contains(@class, \"section\")]/div[contains(@class,\"term-entry\")]"),
+            By.cssSelector("span.yes-no-picker > label.yes"),
+            By.cssSelector("span:nth-child(3) > label.yes-no-picker-label"));
+
+        loLabels.addAll(loUncategorizedLabels);
+        loLabels.addAll(loCategorizedLabels);
+        loLabels.addAll(loCategorizedLabels2);
+
+        unconditionalWaitNs(5);
+
+        return loLabels;
     }
 
 
