@@ -150,5 +150,36 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
         aCreationPage.logOut();
     }
 
+    @Test
+    public void cycleThroughPhenotypeDetails()
+    {
+        final List<String> checkPhenotypeDetailsLabels = new ArrayList<String>(Arrays.asList(
+            "","","Age of onset:", "Unknown", "Congenital onset", "Antenatal onset",
+            "Embryonal onset", "Fetal onset", "Neonatal onset", "Infantile onset", "Childhood onset",
+            "Juvenile onset", "Adult onset", "Young adult onset", "Middle age onset", "Late onset",
+            "Pace of progression:", "Unknown", "Nonprogressive", "Slow progression", "Progressive",
+            "Rapidly progressive", "Variable progression rate", "Severity:", "Unknown", "Borderline",
+            "Mild", "Moderate", "Severe", "Profound", "Temporal pattern:", "Unknown", "Insidious onset",
+            "Chronic", "Subacute", "Acute", "Spatial pattern:", "Unknown", "Generalized", "Localized", "Distal",
+            "Proximal", "Laterality:", "Unknown", "Bilateral", "Unilateral", "Right", "Left", "Comments:",
+            "Image / photo (optional):", "+", "Medical report (optional):", "+"));
+
+        aHomePage.navigateToLoginPage()
+            .loginAsUser()
+            .navigateToAllPatientsPage()
+            .sortPatientsDateDesc()
+            .viewFirstPatientInTable()
+            .editThisPatient()
+            .expandSection(SECTIONS.ClinicalSymptomsSection)
+            .addPhenotype("Small earlobe")
+            .addDetailsToNthPhenotype(1);
+
+        List<String> loPhenotypeDetailsOptions = aCreationPage.cycleThroughPhenotypeDetailsLabels();
+        System.out.println(loPhenotypeDetailsOptions);
+        Assert.assertEquals(loPhenotypeDetailsOptions, checkPhenotypeDetailsLabels);
+
+        aCreationPage.logOut();
+    }
+
 
 }

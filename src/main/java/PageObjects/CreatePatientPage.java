@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
@@ -77,6 +78,14 @@ public class CreatePatientPage extends CommonInfoSelectors
 
     private final By phenotypeSearchBox = By.id("quick-phenotype-search");
     private final By firstPhenotypeSuggestion = By.cssSelector("li.xitem > div");
+    private final By addPhenotypeDetailsBtns = By.cssSelector("button.add");
+    private final By editPhenotypeDetailsBtns = By.cssSelector("button.edit");
+    private final By expandCaretBtns = By.cssSelector(
+        "div.phenotype-details.focused span.collapse-button, div.phenotype-details.focused span.expand-tool");
+    private final By phenotypeDetailsLabels = By.cssSelector("div.phenotype-details.focused label");
+    private final By phenotypesSelectedLabels = By.cssSelector("div.summary-item > label.yes");
+//    private final By phenotypesSelectedDivs = By.cssSelector("div.summary-item");
+
     private final By addGeneBtn = By.cssSelector("a[title*='Add gene']");
 
     private final By geneNameBoxes = By.cssSelector(
@@ -481,6 +490,55 @@ public class CreatePatientPage extends CommonInfoSelectors
         loLabels.addAll(loCategorizedLabels);
 
         return loLabels;
+    }
+
+    /**
+     * Gets all the labels for the labels within the Edit Phenotype Details box. This does not do a tree
+     * traversal due to the dropdowns having issues hiding/showing for now.
+     * Requires: A phenotype to already be present and "Add Details" to already be pressed so that the details box appears.
+     * @return A list of strings representing the labels found in the Edit Phenotype Details Box. This should not be
+     *          empty.
+     */
+    public List<String> cycleThroughPhenotypeDetailsLabels()
+    {
+        waitForElementToBePresent(phenotypeDetailsLabels);
+
+        List<WebElement> loExpandCarets = superDriver.findElements(expandCaretBtns);
+        List<String> loLabels = new ArrayList<>();
+
+        //Expand all first
+        for (WebElement aCaret : loExpandCarets) {
+            if (aCaret.getText().equals("►")) {
+                try {
+                    aCaret.click();
+                } catch (ElementNotInteractableException e) {
+                    // TODO: Abstract out this, or even better, figure out why Selenium is not scrolling in this case
+                    ((JavascriptExecutor)superDriver).executeScript("arguments[0].scrollIntoView();", aCaret);
+                    aCaret.click();
+                }
+
+            }
+        }
+
+        superDriver.findElements(phenotypeDetailsLabels).forEach(x -> loLabels.add(x.getText()));
+
+        return loLabels;
+    }
+
+    /**
+     * Adds phenotype details to the nth detail-less phenotype (done it this way due to the simplicity of implementation)
+     * in the list of phenotypes already present. Makes the grey phenotype details box appear.
+     * @param n is the nth phenotype WITHOUT any details added yet.
+     * @return Stay on the same page so return same object.
+     */
+    public CreatePatientPage addDetailsToNthPhenotype(int n) {
+        waitForElementToBePresent(addPhenotypeDetailsBtns);
+        List<WebElement> loPhenotypeAddBtnsPresent = superDriver.findElements(addPhenotypeDetailsBtns);
+
+        loPhenotypeAddBtnsPresent.get(n - 1).click();
+
+        waitForElementToBePresent(phenotypeDetailsLabels);
+        return this;
     }
 
 
