@@ -143,6 +143,23 @@ public abstract class BasePage
     }
 
     /**
+     * Overloaded this function to allow for a located WebElement (instead of a selector) to be passed to it.
+     * This function catches the ElementNotInteractableException that can happen during a click which is due to the element
+     * being outside of Selenium's viewport. Strangely, sometimes we have to issue an explicit scroll using JS as Selenium
+     * fails to do so automatically in its built in .click() method. TODO: Figure out why... Dependency version mismatch?
+     * @param aWebElement the element to click on. It will scroll to this element if outside of viewport.
+     */
+    public void clickOnElement(WebElement aWebElement)
+    {
+        try {
+            aWebElement.click();
+        } catch (ElementNotInteractableException e) {
+            ((JavascriptExecutor)superDriver).executeScript("arguments[0].scrollIntoView();", aWebElement);
+            aWebElement.click();
+        }
+    }
+
+    /**
      * Similar to {@link BasePage#clickOnElement(By)}. Just sends a specified input string to the element.
      * This usually should be a text box.
      * @Throws Some kind of Element-not-interactable exception (implicit) when element cannot accept keyboard string
@@ -309,14 +326,8 @@ public abstract class BasePage
             WebElement theLabel = labelsIter.next();
 
             // Might need to force a scroll to a checklist item again
-            try {
-                theButton.click();
-                System.out.println("DEBUG: Clicking on: " + theLabel.getText());
-            } catch (ElementClickInterceptedException e) {
-                ((JavascriptExecutor)superDriver).executeScript("arguments[0].scrollIntoView();", theButton);
-                System.out.println("DEBUG: ElementClickInterceptedException Cannot click on: " + theButton);
-                theButton.click();
-            }
+            clickOnElement(theButton);
+            System.out.println("DEBUG: Clicking on: " + theLabel.getText());
 
             loLabels.add(theLabel.getText());
 

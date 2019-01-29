@@ -509,14 +509,7 @@ public class CreatePatientPage extends CommonInfoSelectors
         //Expand all first
         for (WebElement aCaret : loExpandCarets) {
             if (aCaret.getText().equals("►")) {
-                try {
-                    aCaret.click();
-                } catch (ElementNotInteractableException e) {
-                    // TODO: Abstract out this, or even better, figure out why Selenium is not scrolling in this case
-                    ((JavascriptExecutor)superDriver).executeScript("arguments[0].scrollIntoView();", aCaret);
-                    aCaret.click();
-                }
-
+                clickOnElement(aCaret);
             }
         }
 
