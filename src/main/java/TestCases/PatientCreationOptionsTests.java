@@ -21,23 +21,23 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
 
     private CreatePatientPage aCreationPage = new CreatePatientPage(theDriver);
 
-    private final List<String> checkOnsetLabels = new ArrayList<String>(Arrays.asList(
-        "Unknown", "Congenital onset", "Antenatal onset", "Embryonal onset", "Fetal onset", "Neonatal onset",
-        "Infantile onset", "Childhood onset", "Juvenile onset", "Adult onset", "Young adult onset",
-        "Middle age onset", "Late onset"));
-
-    private final List<String> checkInheritanceLabels = new ArrayList<String>(Arrays.asList(
-        "Sporadic", "Autosomal dominant inheritance", "Sex-limited autosomal dominant",
-        "Male-limited autosomal dominant", "Autosomal dominant somatic cell mutation",
-        "Autosomal dominant contiguous gene syndrome", "Autosomal recessive inheritance",
-        "Gonosomal inheritance", "X-linked inheritance", "X-linked dominant inheritance",
-        "X-linked recessive inheritance", "Y-linked inheritance", "Multifactorial inheritance",
-        "Digenic inheritance", "Oligogenic inheritance", "Polygenic inheritance",
-        "Mitochondrial inheritance"));
-
     // Cycle through all the options on the "Patient Information" Section.
     @Test
     public void cycleThroughInfoOptions() {
+        final List<String> checkOnsetLabels = new ArrayList<String>(Arrays.asList(
+            "Unknown", "Congenital onset", "Antenatal onset", "Embryonal onset", "Fetal onset", "Neonatal onset",
+            "Infantile onset", "Childhood onset", "Juvenile onset", "Adult onset", "Young adult onset",
+            "Middle age onset", "Late onset"));
+
+        final List<String> checkInheritanceLabels = new ArrayList<String>(Arrays.asList(
+            "Sporadic", "Autosomal dominant inheritance", "Sex-limited autosomal dominant",
+            "Male-limited autosomal dominant", "Autosomal dominant somatic cell mutation",
+            "Autosomal dominant contiguous gene syndrome", "Autosomal recessive inheritance",
+            "Gonosomal inheritance", "X-linked inheritance", "X-linked dominant inheritance",
+            "X-linked recessive inheritance", "Y-linked inheritance", "Multifactorial inheritance",
+            "Digenic inheritance", "Oligogenic inheritance", "Polygenic inheritance",
+            "Mitochondrial inheritance"));
+
         aHomePage.navigateToLoginPage()
             .loginAsUser()
             .navigateToCreateANewPatientPage()
@@ -96,7 +96,10 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
             .sortPatientsDateDesc()
             .viewFirstPatientInTable()
             .editThisPatient()
-            .expandSection(SECTIONS.FamilyHistorySection);
+            .expandSection(SECTIONS.FamilyHistorySection)
+            .setEthnicity("Paternal", "Han Chinese")
+            .setEthnicity("Maternal", "European Americans")
+            .setHealthConditionsFoundInFamily("There are some conditions here: \n Bla bla bla");
 
         List<String> loFamilialConditions = aCreationPage.cycleThroughFamilialHealthConditions();
         Assert.assertEquals(loFamilialConditions, checkFamilialConditionsLabels);
@@ -107,7 +110,7 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
     @Test
     public void cycleThroughPrenatalHistory()
     {
-        final List<String> checkFamilialConditionsLabels = new ArrayList<String>(Arrays.asList(
+        final List<String> checkPrenatalConditionsLabels = new ArrayList<String>(Arrays.asList(
             "Multiple gestation", "Conception after fertility medication", "Intrauterine insemination (IUI)",
             "In vitro fertilization", "Intra-cytoplasmic sperm injection", "Gestational surrogacy",
             "Donor egg", "Donor sperm", "Hyperemesis gravidarum (excessive vomiting)",
@@ -142,7 +145,7 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
             .expandSection(SECTIONS.PrenatalHistorySection);
 
         List<String> loPrenatalYesNoBoxes = aCreationPage.cycleThroughPrenatalHistory();
-        Assert.assertEquals(loPrenatalYesNoBoxes, checkFamilialConditionsLabels);
+        Assert.assertEquals(loPrenatalYesNoBoxes, checkPrenatalConditionsLabels);
 
         aCreationPage.logOut();
     }

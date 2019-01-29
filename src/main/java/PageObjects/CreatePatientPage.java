@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -69,6 +70,10 @@ public class CreatePatientPage extends CommonInfoSelectors
     private final By assignFamilyRadioBtn = By.id("pedigreeInputAssignFamily");
     private final By familySearchInputBox = By.id("family-search-input");
     private final By firstFamilySuggestion = By.cssSelector("span.suggestValue");
+    private final By paternalEthnicityBox = By.id("PhenoTips.PatientClass_0_paternal_ethnicity_2");
+    private final By maternalEthnicityBox = By.id("PhenoTips.PatientClass_0_maternal_ethnicity_2");
+    private final By addEthnicityBtns = By.cssSelector("div.family-info a[title=add]");
+    private final By healthConditionsFoundInFamily = By.id("PhenoTips.PatientClass_0_family_history");
 
     private final By phenotypeSearchBox = By.id("quick-phenotype-search");
     private final By firstPhenotypeSuggestion = By.cssSelector("li.xitem > div");
@@ -415,8 +420,40 @@ public class CreatePatientPage extends CommonInfoSelectors
     }
 
     /**
+     * Sets the ethnicity of the patient in the "Family History and Pedigree" section. Defaults to Maternal ethnicity
+     * in case of invalid maternity passed. Will select the first option in the suggestions.
+     * @param maternity pass either "Paternal" or "Maternal"
+     * @param ethnicity is the ethncity to set. Requires this to be as close as possible to an exact match to suggestions dropdown.
+     * @return Stay on the same page so return the same object.
+     */
+    public CreatePatientPage setEthnicity(String maternity, String ethnicity) {
+        if (maternity.equals("Paternal")) {
+            clickAndTypeOnElement(paternalEthnicityBox, ethnicity);
+            clickOnElement(firstFamilySuggestion);
+        }
+        else {
+            clickAndTypeOnElement(maternalEthnicityBox, ethnicity);
+            clickOnElement(firstFamilySuggestion);
+        }
+        return this;
+    }
+
+    /**
+     * Inputs a note into the Health Conditions within the "Family History and pedigree" section.
+     * @param note to type into the box. Any string. Will concatenate to what is there already.
+     * @return Stay on the same page so return the same object.
+     */
+    public CreatePatientPage setHealthConditionsFoundInFamily(String note) {
+        clickAndTypeOnElement(healthConditionsFoundInFamily, note);
+        return this;
+    }
+
+    /**
      * Traverses through the options for the health conditions found in
      * Prenatal and perinatal history yes/no boxes.
+     * Requires: The "Prenatal and perinatal history" section to be expanded and that
+     *              none of the yes/no options are already selected/expanded (i.e. should be at the state of a new patient)
+     *               Otherwise, traversal result might be off due to presence of additional (appearing) selectors.
      * @return a List of Strings which represent the health conditions found under the yes/no boxes of
      *          "Prenatal and perinatal history"
      */
