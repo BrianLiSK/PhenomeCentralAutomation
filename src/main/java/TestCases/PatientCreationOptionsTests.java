@@ -112,26 +112,37 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
             "In vitro fertilization", "Intra-cytoplasmic sperm injection", "Gestational surrogacy",
             "Donor egg", "Donor sperm", "Hyperemesis gravidarum (excessive vomiting)",
             "Maternal hypertension", "Maternal diabetes", "Maternal fever in pregnancy",
-            "Maternal seizures", "Maternal teratogenic exposure", "Toxemia of pregnancy",
-            "Abnormal maternal serum screening", "Intrauterine growth retardation",
+            "Intrapartum fever", "Maternal first trimester fever", "Maternal seizures",
+            "Maternal teratogenic exposure", "Toxemia of pregnancy", "Eclampsia",
+            "Maternal hypertension", "Preeclampsia", "Abnormal maternal serum screening",
+            "High maternal serum alpha-fetoprotein", "High maternal serum chorionic gonadotropin",
+            "Low maternal serum PAPP-A", "Low maternal serum alpha-fetoprotein", "Low maternal serum chorionic gonadotropin",
+            "Low maternal serum estriol", "Intrauterine growth retardation", "Mild intrauterine growth retardation",
+            "Moderate intrauterine growth retardation", "Severe intrauterine growth retardation",
             "Oligohydramnios", "Polyhydramnios", "Decreased fetal movement",
-            "Increased fetal movement", "Premature birth", "Neonatal respiratory distress",
-            "Prolonged neonatal jaundice", "Poor suck", "Neonatal hypoglycemia",
-            "Neonatal sepsis", "Abnormal delivery (Non-NSVD)", "Small for gestational age (<-2SD)",
-            "Large for gestational age (>+2SD)", "Small birth length (<-2SD)", "Large birth length (>+2SD)",
-            "Congenital microcephaly (<-3SD)", "Congenital macrocephaly (>+2SD)"));
+            "Fetal akinesia sequence", "Increased fetal movement", "Abnormal delivery (Non-NSVD)",
+            "Vaginal birth after Caesarian", "Induced vaginal delivery", "Breech presentation",
+            "Complete breech presentation", "Frank breech presentation", "Incomplete breech presentation",
+            "Caesarian section", "Primary Caesarian section", "Secondary Caesarian section",
+            "Forceps delivery", "Ventouse delivery", "Delivery by Odon device",
+            "Spontaneous abortion", "Recurrent spontaneous abortion", "Premature birth",
+            "Premature birth following premature rupture of fetal membranes",
+            "Premature delivery because of cervical insufficiency or membrane fragility",
+            "Small for gestational age (<-2SD)", "Large for gestational age (>+2SD)", "Small birth length (<-2SD)",
+            "Large birth length (>+2SD)", "Congenital microcephaly (<-3SD)", "Congenital macrocephaly (>+2SD)",
+            "Neonatal respiratory distress", "Neonatal asphyxia", "Neonatal inspiratory stridor",
+            "Prolonged neonatal jaundice", "Poor suck", "Neonatal hypoglycemia", "Neonatal sepsis"));
 
         aHomePage.navigateToLoginPage()
             .loginAsUser()
             .navigateToAllPatientsPage()
-            .filterByPatientID("P0000008") // TODO: Change to someone else, ie, just first patient in table.
+            .sortPatientsDateDesc()
             .viewFirstPatientInTable()
             .editThisPatient()
             .expandSection(SECTIONS.PrenatalHistorySection);
 
         List<String> loPrenatalYesNoBoxes = aCreationPage.cycleThroughPrenatalHistory();
         Assert.assertEquals(loPrenatalYesNoBoxes, checkFamilialConditionsLabels);
-        System.out.println(loPrenatalYesNoBoxes);
 
         aCreationPage.logOut();
     }
