@@ -571,4 +571,18 @@ public class CreatePatientPage extends CommonInfoSelectors
         return loLabels;
     }
 
+    /**
+     * Retrieves the phenotypes already present in the Patient Information Form
+     * Requires: The "Clinical symptoms and physical findings" section to be expanded
+     * @return A (potentially empty) list of Strings representing the names of the phenotypes found.
+     */
+    public List<String> getPresentPhenotypes()
+    {
+        List<String> loPhenotypesFound = new ArrayList<>();
+        waitForElementToBePresent(phenotypeSearchBox);
+        superDriver.findElements(phenotypesSelectedLabels).forEach(x -> loPhenotypesFound.add(x.getText()));
+
+        return loPhenotypesFound;
+    }
+
 }
