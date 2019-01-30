@@ -566,7 +566,7 @@ public class CreatePatientPage extends CommonInfoSelectors
 
         loLabels.addAll(loCategorizedLabels);
 
-        unconditionalWaitNs(25);
+    //    unconditionalWaitNs(25);
 
         return loLabels;
     }

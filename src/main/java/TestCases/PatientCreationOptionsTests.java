@@ -22,7 +22,7 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
     private CreatePatientPage aCreationPage = new CreatePatientPage(theDriver);
 
     // Cycle through all the options on the "Patient Information" Section.
-    @Test
+    @Test(priority = 1)
     public void cycleThroughInfoOptions() {
         final List<String> checkOnsetLabels = new ArrayList<String>(Arrays.asList(
             "Unknown", "Congenital onset", "Antenatal onset", "Embryonal onset", "Fetal onset", "Neonatal onset",
@@ -84,7 +84,7 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
 
     }
 
-    @Test
+    @Test(priority = 2)
     public void cycleThroughFamilialConditions()
     {
         final List<String> checkFamilialConditionsLabels = new ArrayList<String>(Arrays.asList(
@@ -107,7 +107,7 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
         aCreationPage.logOut();
     }
 
-    @Test
+    @Test(priority = 3)
     public void cycleThroughPrenatalHistory()
     {
         final List<String> checkPrenatalConditionsLabels = new ArrayList<String>(Arrays.asList(
@@ -150,7 +150,7 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
         aCreationPage.logOut();
     }
 
-    @Test
+    @Test(priority = 4)
     public void cycleThroughPhenotypeDetails()
     {
         final List<String> checkPhenotypeDetailsLabels = new ArrayList<String>(Arrays.asList(
@@ -181,7 +181,7 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
         aCreationPage.logOut();
     }
 
-    @Test
+    @Test(priority = 5)
     public void cycleThroughAllPhenotypes()
     {
         aHomePage.navigateToLoginPage()
