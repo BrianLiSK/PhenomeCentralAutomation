@@ -14,6 +14,7 @@ import net.bytebuddy.utility.RandomString;
 
 /**
  * Tests for the Pedigree Editor page and the sync with the patient info page.
+ * There are cases for creation of a patient and input information both via Pedigree Editor
  */
 public class PedigreePageTest extends BaseTest implements CommonInfoEnums
 {
@@ -62,8 +63,6 @@ public class PedigreePageTest extends BaseTest implements CommonInfoEnums
             .addGene("IVD", "Candidate", "Sequencing")
             .addGene("IVL", "Confirmed causal", "Sequencing")
             .addGene("OR6B1", "Carrier", "Sequencing")
-            .saveAndViewSummary()
-            .editThisPatient()
             .expandSection(SECTIONS.FamilyHistorySection)
             .navigateToPedigreeEditor("")
             .openNthEditModal(1);
@@ -81,11 +80,6 @@ public class PedigreePageTest extends BaseTest implements CommonInfoEnums
         Assert.assertEquals(patientGender, "Female");
 
         aPedigreeEditorPage.closeEditor("Save")
-            .saveAndViewSummary()
-            .editThisPatient()
-            .expandSection(SECTIONS.FamilyHistorySection)
-            .navigateToPedigreeEditor("")
-            .closeEditor("")
             .saveAndViewSummary()
             .logOut();
     }

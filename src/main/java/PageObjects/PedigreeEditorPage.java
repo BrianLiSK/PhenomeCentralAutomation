@@ -311,6 +311,7 @@ public class PedigreeEditorPage extends BasePage
             clickOnElement(createNewPatientBtn);
             clickOnElement(confirmNewPatientBtn);
             waitForElementToBeClickable(personalTab);
+            unconditionalWaitNs(5);
         }
         else {
             clickAndTypeOnElement(linkPatientBox, patientID);
