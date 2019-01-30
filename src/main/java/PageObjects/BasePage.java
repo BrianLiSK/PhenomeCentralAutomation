@@ -155,7 +155,13 @@ public abstract class BasePage
             aWebElement.click();
         } catch (ElementNotInteractableException e) {
             ((JavascriptExecutor)superDriver).executeScript("arguments[0].scrollIntoView();", aWebElement);
-            aWebElement.click();
+            try {
+                aWebElement.click();
+            } catch (ElementNotInteractableException f) {
+                ((JavascriptExecutor)superDriver).executeScript("arguments[0].click();", aWebElement);
+                System.out.println("Force click on element: " + aWebElement);
+            }
+
         }
     }
 

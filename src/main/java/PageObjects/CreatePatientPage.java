@@ -534,5 +534,41 @@ public class CreatePatientPage extends CommonInfoSelectors
         return this;
     }
 
+    /**
+     * Traverses through the options for phenotypes in the Clinical Symptoms and Physical Findings Section
+     * Requires: The "Clinical Symptoms and Physical Findings" section to be expanded and that
+     *              none of the yes/no options are already selected/expanded (i.e. should be at the state of a new patient)
+     *               Otherwise, traversal result might be off due to presence of additional (appearing) selectors.
+     * @return a List of Strings which represent the health conditions found under the yes/no boxes of
+     *          "Clinical Symptoms and Physical Findings"
+     */
+    public List<String> cycleThroughAllPhenotypes() {
+
+        By expandAllBtn = By.cssSelector("span.expand-all");
+
+        clickOnElement(expandAllBtn);
+
+        // TODO: Those selectors are used once, okay to leave them without variable?
+        By expandToolSpan = By.cssSelector("span[class=expand-tool]");
+
+        List<String> loLabels = new ArrayList<>();
+
+        forceScrollToElement(By.cssSelector("div.phenotype > div > div > div"));
+
+//      Expand all dropdowns, lets them load first
+        preOrderTraverseAndClick(
+            By.cssSelector("div.phenotype > div > div > div"), expandToolSpan, expandToolSpan);
+
+        List<String> loCategorizedLabels = preOrderTraverseAndClick(
+            By.cssSelector("div.phenotype div[class=dropdown] div[class=entry-data], div.prenatal-info div[class*=term-entry]"),
+            By.cssSelector("span.yes-no-picker > label.na"),
+            By.cssSelector("label.yes-no-picker-label, span.yes-no-picker-label > span.value"));
+
+        loLabels.addAll(loCategorizedLabels);
+
+        unconditionalWaitNs(25);
+
+        return loLabels;
+    }
 
 }

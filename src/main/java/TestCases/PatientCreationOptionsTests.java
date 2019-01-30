@@ -181,5 +181,23 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
         aCreationPage.logOut();
     }
 
+    @Test
+    public void cycleThroughAllPhenotypes()
+    {
+        aHomePage.navigateToLoginPage()
+            .loginAsUser()
+            .navigateToAllPatientsPage()
+            .sortPatientsDateDesc()
+            .viewFirstPatientInTable()
+            .editThisPatient()
+            .expandSection(SECTIONS.ClinicalSymptomsSection);
+
+        List<String> loAllPhenotypes = aCreationPage.cycleThroughAllPhenotypes();
+        System.out.println(loAllPhenotypes);
+//        Assert.assertEquals(loPhenotypeDetailsOptions, checkPhenotypeDetailsLabels);
+
+        aCreationPage.logOut();
+    }
+
 
 }
