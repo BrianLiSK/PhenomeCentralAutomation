@@ -16,6 +16,8 @@ import net.bytebuddy.utility.RandomString;
 /**
  * Tests for the Pedigree Editor page and the sync with the patient info page.
  * There are cases for creation of a patient and input information both via Pedigree Editor
+ * This should be run as an entire class due to the pedigree editor requiring certain kinds of patients
+ * to be present for the selectors to work.
  */
 public class PedigreePageTest extends BaseTest implements CommonInfoEnums
 {
@@ -32,7 +34,7 @@ public class PedigreePageTest extends BaseTest implements CommonInfoEnums
     // Creates a patient with phenotypes and genes. Asserts that they are reflected
     //   in the pedigree editor after a save. This tests the pedigree editor when one patient/node is present.
     //   Checks that Patient Form Info -> Pedigree Editor Info
-    @Test
+    @Test(priority = 1)
     public void basicPedigree()
     {
         final List<String> checkPhenotypes = new ArrayList<String>(Arrays.asList(
@@ -81,7 +83,7 @@ public class PedigreePageTest extends BaseTest implements CommonInfoEnums
 
     // Creates a child for the most recently created patient via the Pedigree editor.
     // Asserts that two new patient nodes are created.
-    @Test
+    @Test(priority = 2)
     public void createChild()
     {
         aHomePage.navigateToLoginPage()
@@ -92,12 +94,13 @@ public class PedigreePageTest extends BaseTest implements CommonInfoEnums
             .editThisPatient()
             .expandSection(SECTIONS.FamilyHistorySection)
             .navigateToPedigreeEditor("");
-        aPedigreeEditorPage.createChild("male");
+        aPedigreeEditorPage.openNthEditModal(1)
+            .createChild("male");
 
         Assert.assertEquals(aPedigreeEditorPage.getNumberOfTotalPatientsInTree(), 3);
         Assert.assertEquals(aPedigreeEditorPage.getNumberOfPartnerLinks(), 1);
 
-        aPedigreeEditorPage.createSibling(3);
+        aPedigreeEditorPage.openNthEditModal(3).createSibling(3);
 
         Assert.assertEquals(aPedigreeEditorPage.getNumberOfTotalPatientsInTree(), 4);
         Assert.assertEquals(aPedigreeEditorPage.getNumberOfPartnerLinks(), 1);
@@ -106,7 +109,7 @@ public class PedigreePageTest extends BaseTest implements CommonInfoEnums
             .logOut();
     }
 
-    @Test
+    @Test(priority = 3)
     public void editorToPatientForm()
     {
         List<String> loPhenotypesToAdd = new ArrayList<>(Arrays.asList("Small hand", "Large knee", "Acne"));
@@ -144,7 +147,7 @@ public class PedigreePageTest extends BaseTest implements CommonInfoEnums
             .logOut();
     }
 
-    @Test
+    @Test(priority = 4)
     public void createNewPatientViaEditor()
     {
         List<String> loPhenotypesToAdd = new ArrayList<>(Arrays.asList("Small hand", "Large knee", "Acne"));

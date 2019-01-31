@@ -283,15 +283,22 @@ public class PedigreeEditorPage extends BasePage
      */
     public PedigreeEditorPage openNthEditModal(int n)
     {
-        unconditionalWaitNs(3); // Figure out how to wait for animation to finish
         waitForElementToBePresent(hoverBox);
+        unconditionalWaitNs(3); // Figure out how to wait for animation to finish
+
+        System.out.println("Wait for hover box is done - 3 secs. Now find and click.");
+
         List<WebElement> loHoverBoxes = superDriver.findElements(hoverBox);
 
+        System.out.println("Found hoverboxes: " + loHoverBoxes.size());
+
         Actions action = new Actions(superDriver);
-        action.click(loHoverBoxes.get(n - 1)).build().perform();
+        action.moveToElement(loHoverBoxes.get(n - 1))
+            .click(loHoverBoxes.get(n - 1))
+            .build().perform();
 
         //forceClickOnElement(hoverBox);
-        waitForElementToBePresent(personalTab);
+        waitForElementToBeClickable(personalTab);
         return this;
     }
 
