@@ -14,6 +14,8 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.pagefactory.ByChained;
 import org.openqa.selenium.support.ui.Select;
 
+import TestCases.CommonPatientMeasurement;
+
 /**
  * Represents the page reached when "Create... -> New patient" is clicked on the navbar
  * Ex. http://localhost:8083/edit/data/Pxxxxxxx (new patient ID)
@@ -75,6 +77,26 @@ public class CreatePatientPage extends CommonInfoSelectors
     private final By maternalEthnicityBox = By.id("PhenoTips.PatientClass_0_maternal_ethnicity_2");
     private final By addEthnicityBtns = By.cssSelector("div.family-info a[title=add]");
     private final By healthConditionsFoundInFamily = By.id("PhenoTips.PatientClass_0_family_history");
+
+    private final By addMeasurementBtn = By.cssSelector("div.measurement-info a.add-data-button");
+    private final By weightBox = By.id("PhenoTips.MeasurementsClass_0_weight");
+    private final By heightBox = By.id("PhenoTips.MeasurementsClass_0_height");
+    private final By armSpanBox = By.id("PhenoTips.MeasurementsClass_0_armspan");
+    private final By sittingHeightBox = By.id("PhenoTips.MeasurementsClass_0_sitting");
+    private final By headCircumferenceBox = By.id("PhenoTips.MeasurementsClass_0_hc");
+    private final By philtrumLengthBox = By.id("PhenoTips.MeasurementsClass_0_philtrum");
+    private final By leftEarLengthBox = By.id("PhenoTips.MeasurementsClass_0_ear");
+    private final By rightEarLengthBox = By.id("PhenoTips.MeasurementsClass_0_ear_right");
+    private final By outherCanthalDistanceBox = By.id("PhenoTips.MeasurementsClass_0_ocd");
+    private final By innterCanthalDistanceBox = By.id("PhenoTips.MeasurementsClass_0_icd");
+    private final By palpebralFissureLengthBox = By.id("PhenoTips.MeasurementsClass_0_pfl");
+    private final By interpupilaryDistanceBox = By.id("PhenoTips.MeasurementsClass_0_ipd");
+    private final By leftHandLengthBox = By.id("PhenoTips.MeasurementsClass_0_hand");
+    private final By leftPalmLengthBox = By.id("PhenoTips.MeasurementsClass_0_palm");
+    private final By leftFootLengthBox = By.id("PhenoTips.MeasurementsClass_0_foot");
+    private final By rightHandLengthBox = By.id("PhenoTips.MeasurementsClass_0_hand_right");
+    private final By rightPalmLengthBox = By.id("PhenoTips.MeasurementsClass_0_palm_right");
+    private final By rightFootLengthBox = By.id("PhenoTips.MeasurementsClass_0_foot_right");
 
     private final By phenotypeSearchBox = By.id("quick-phenotype-search");
     private final By firstPhenotypeSuggestion = By.cssSelector("li.xitem > div");
@@ -612,6 +634,38 @@ public class CreatePatientPage extends CommonInfoSelectors
         superDriver.findElements(phenotypesSelectedLabels).forEach(x -> loPhenotypesFound.add(x.getText()));
 
         return loPhenotypesFound;
+    }
+
+    /**
+     * Adds a new entry of measurement data to the patient under the "Measurements" section.
+     * TODO: Check that it truncates floats within the measurements object to something that can be input to the box.
+     * Requires: The "Measurements" section to already be expanded.
+     * @param aMeasurement is a measurement object (instantiated struct) containing all the measurement fields to enter.
+     * @return Stay on the same page so return the same object.
+     */
+    public CreatePatientPage addMeasurement(CommonPatientMeasurement aMeasurement)
+    {
+        clickOnElement(addMeasurementBtn);
+        clickAndTypeOnElement(weightBox, String.valueOf(aMeasurement.weight));
+        clickAndTypeOnElement(heightBox, String.valueOf(aMeasurement.height));
+        clickAndTypeOnElement(armSpanBox, String.valueOf(aMeasurement.armSpan));
+        clickAndTypeOnElement(sittingHeightBox, String.valueOf(aMeasurement.sittingHeight));
+        clickAndTypeOnElement(headCircumferenceBox, String.valueOf(aMeasurement.headCircumference));
+        clickAndTypeOnElement(philtrumLengthBox, String.valueOf(aMeasurement.philtrumLength));
+        clickAndTypeOnElement(leftEarLengthBox, String.valueOf(aMeasurement.leftEarLength));
+        clickAndTypeOnElement(rightEarLengthBox, String.valueOf(aMeasurement.rightEarLength));
+        clickAndTypeOnElement(outherCanthalDistanceBox, String.valueOf(aMeasurement.outerCanthalDistance));
+        clickAndTypeOnElement(innterCanthalDistanceBox, String.valueOf(aMeasurement.inntercanthalDistance));
+        clickAndTypeOnElement(palpebralFissureLengthBox, String.valueOf(aMeasurement.palpebralFissureLength));
+        clickAndTypeOnElement(interpupilaryDistanceBox, String.valueOf(aMeasurement.interpupilaryDistance));
+        clickAndTypeOnElement(leftHandLengthBox, String.valueOf(aMeasurement.leftHandLength));
+        clickAndTypeOnElement(leftPalmLengthBox, String.valueOf(aMeasurement.leftPalmLength));
+        clickAndTypeOnElement(leftFootLengthBox, String.valueOf(aMeasurement.leftFootLength));
+        clickAndTypeOnElement(rightHandLengthBox, String.valueOf(aMeasurement.rightHandLength));
+        clickAndTypeOnElement(rightPalmLengthBox, String.valueOf(aMeasurement.rightPalmLength));
+        clickAndTypeOnElement(rightFootLengthBox, String.valueOf(aMeasurement.rightFootLength));
+
+        return this;
     }
 
 }

@@ -139,7 +139,8 @@ public abstract class BasePage
     public void clickOnElement(By elementSelector)
     {
         waitForElementToBePresent(elementSelector);
-        superDriver.findElement(elementSelector).click();
+//        superDriver.findElement(elementSelector).click();
+        clickOnElement(superDriver.findElement(elementSelector));
     }
 
     /**

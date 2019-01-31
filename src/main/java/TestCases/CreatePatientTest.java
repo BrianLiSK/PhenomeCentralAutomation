@@ -218,5 +218,26 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
             .deleteAllPatients();
     }
 
+    @Test(priority = 7)
+    public void addMeasurements()
+    {
+        CommonPatientMeasurement measurements = new CommonPatientMeasurement(
+            1, 2, 3,4, 5,
+            6,7,8,9,10,
+            11,12,13,14,15,
+            16,17,18);
+
+        aHomePage.navigateToLoginPage()
+            .loginAsUser()
+            .navigateToCreateANewPatientPage()
+            .toggleFirstFourConsentBoxes()
+            .updateConsent()
+            .expandSection(SECTIONS.MeasurementSection)
+            .addMeasurement(measurements)
+            .saveAndViewSummary();
+
+        // Assert something.
+    }
+
 
 }
