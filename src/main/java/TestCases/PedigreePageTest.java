@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 import PageObjects.CreatePatientPage;
 import PageObjects.HomePage;
 import PageObjects.PedigreeEditorPage;
+import PageObjects.ViewPatientPage;
 import net.bytebuddy.utility.RandomString;
 
 /**
@@ -23,6 +24,8 @@ public class PedigreePageTest extends BaseTest implements CommonInfoEnums
     final private PedigreeEditorPage aPedigreeEditorPage = new PedigreeEditorPage(theDriver);
 
     final private CreatePatientPage aCreatePatientPage = new CreatePatientPage(theDriver);
+
+    final private ViewPatientPage aViewPatientPage = new ViewPatientPage(theDriver);
 
     final private String randomChars = RandomString.make(5);
 
@@ -170,6 +173,8 @@ public class PedigreePageTest extends BaseTest implements CommonInfoEnums
 
         aPedigreeEditorPage.addPhenotypes(loPhenotypesToAdd)
             .addGene("Candidate", "LIN7C")
+            .addGene("Confirmed Causal", "TAOK3")
+            .addGene("Carrier", "YKT6")
             .closeEditor("Save")
             .saveAndViewSummary()
             .navigateToAllPatientsPage()
@@ -192,9 +197,26 @@ public class PedigreePageTest extends BaseTest implements CommonInfoEnums
         System.out.println("After: " + foundPhenotypesFromPatientPage);
         System.out.println("After loAdding: " + loPhenotypesToAdd);
 
-        aCreatePatientPage
-            .saveAndViewSummary()
-            .logOut();
+        aCreatePatientPage.saveAndViewSummary();
+
+        List<String> foundGeneNamesOnPatientForm = aViewPatientPage.getGeneNames();
+        List<String> checkGeneNames = new ArrayList<>(Arrays.asList("LIN7C", "TAOK3", "YKT6"));
+
+        List<String> foundGeneStatusesOnPatientForm = aViewPatientPage.getGeneStatus();
+        List<String> checkGeneStatuses = new ArrayList<>(Arrays.asList("Candidate", "Confirmed Causal", "Carrier"));
+
+        List<String> foundGeneStrategiesOnPatientForm = aViewPatientPage.getGeneStrategies();
+        List<String> checkGeneStrategies = new ArrayList<>(Arrays.asList("", "", ""));
+
+        List<String> foundGeneCommentsOnPatientForm = aViewPatientPage.getGeneComments();
+        List<String> checkGeneComments = new ArrayList<>(Arrays.asList("", "", ""));
+
+        Assert.assertEquals(foundGeneNamesOnPatientForm, checkGeneNames);
+        Assert.assertEquals(foundGeneStatusesOnPatientForm, checkGeneStatuses);
+        Assert.assertEquals(foundGeneStrategiesOnPatientForm, checkGeneStrategies);
+        Assert.assertEquals(foundGeneCommentsOnPatientForm, checkGeneComments);
+
+        aViewPatientPage.logOut();
     }
 
 }
