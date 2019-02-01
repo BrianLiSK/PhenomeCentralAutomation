@@ -682,8 +682,10 @@ public class CreatePatientPage extends CommonInfoSelectors
      * @param year is the year as a String "1920" to current year (ex. "2019"). Must be exact.
      * @return Stay on the same page so return the same object.
      */
-    public CreatePatientPage changeMeasurementDate(String month, String year)
+    public CreatePatientPage changeMeasurementDate(String day, String month, String year)
     {
+        By calendarDayBtn = By.xpath("//div[contains(text(), '" + day + "')]");
+
         clickOnElement(measurementDateBoxes);
 
         waitForElementToBePresent(measurementMonthDrp);
@@ -698,6 +700,9 @@ public class CreatePatientPage extends CommonInfoSelectors
             monthDrp.selectByVisibleText("January");
             yearDrp.selectByVisibleText("2018");
         }
+
+        clickOnElement(calendarDayBtn);
+        waitForElementToBeGone(measurementMonthDrp);
 
         return this;
     }

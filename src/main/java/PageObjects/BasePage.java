@@ -106,6 +106,18 @@ public abstract class BasePage
     }
 
     /**
+     * Explicitly wait for the passed element to disappear, upto the timeout specified in {@code pause}
+     * Checks immediately and then keeps polling at the default interval. Will return immediately if it
+     * cannot find element on that immediate first try.
+     * @Throws TimeOutException (implicit) from selenium if it fails to locate element within timeout
+     * @param elementSelector specifies the element selector on the page. Must not be {@code null}
+     */
+    public void waitForElementToBeGone(By elementSelector)
+    {
+        pause.until(ExpectedConditions.invisibilityOfElementLocated(elementSelector));
+    }
+
+    /**
      * Explicitly wait for the specified element to be clickable. Useful for when a modal blocks the
      * access of the rest of the page (i.e. waiting for the modal to close).
      * @param elementSelector specifies the element to wait for clickable. Must not be {@code null}

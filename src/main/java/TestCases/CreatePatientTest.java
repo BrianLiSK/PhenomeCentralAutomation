@@ -8,6 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import PageObjects.AdminRefreshMatchesPage;
+import PageObjects.CreatePatientPage;
 import PageObjects.EmailUIPage;
 import net.bytebuddy.utility.RandomString;
 import PageObjects.HomePage;
@@ -24,8 +25,10 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
 {
     final private HomePage aHomePage = new HomePage(theDriver);
 
+    // At some point we need to restart the view patients page.
     final private ViewPatientPage aViewPatientPage = new ViewPatientPage(theDriver);
-        // At some point we need to restart the view patients page.
+    final private CreatePatientPage aCreatePatientPage = new CreatePatientPage(theDriver);
+
 
     final private SECTIONS[] checkForTheseSections = {
         SECTIONS.PatientInfoSection,
@@ -234,9 +237,18 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
             .updateConsent()
             .expandSection(SECTIONS.MeasurementSection)
             .addMeasurement(measurements)
-            .saveAndViewSummary();
+            .changeMeasurementDate("11", "March", "2015")
+            .saveAndViewSummary()
+            .editThisPatient()
+            .expandSection(SECTIONS.MeasurementSection);
 
-        // Assert something.
+        CommonPatientMeasurement foundMeasurementOnPatientForm = aCreatePatientPage.getPatientMeasurement();
+        System.out.println(foundMeasurementOnPatientForm);
+        Assert.assertEquals(foundMeasurementOnPatientForm, measurements);
+
+        aCreatePatientPage
+            .saveAndViewSummary()
+            .logOut();
     }
 
 
