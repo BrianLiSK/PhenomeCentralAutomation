@@ -130,7 +130,7 @@ public class PedigreePageTest extends BaseTest implements CommonInfoEnums
             .closeEditor("Save")
             .expandSection(SECTIONS.ClinicalSymptomsSection);
 
-        List<String> foundPhenotypesOnPatientForm = aCreatePatientPage.getPresentPhenotypes();
+        List<String> foundPhenotypesOnPatientForm = aCreatePatientPage.getAllPhenotypes();
 
         System.out.println("Before: " + foundPhenotypesOnPatientForm);
         System.out.println("Before loAdding: " + loPhenotypesToAdd);
@@ -188,7 +188,7 @@ public class PedigreePageTest extends BaseTest implements CommonInfoEnums
             .updateConsent()
             .expandSection(SECTIONS.ClinicalSymptomsSection);
 
-        List<String> foundPhenotypesFromPatientPage = aCreatePatientPage.getPresentPhenotypes();
+        List<String> foundPhenotypesFromPatientPage = aCreatePatientPage.getAllPhenotypes();
 
         System.out.println("Before: " + foundPhenotypesFromPatientPage);
         System.out.println("Before loAdding: " + loPhenotypesToAdd);

@@ -251,5 +251,39 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
             .logOut();
     }
 
+    @Test(priority = 8)
+    public void checkPhenotypesDueToMeasurements()
+    {
+        final List<String> automaticallyAddedPhenotypesToCheck = new ArrayList<>(
+            Arrays.asList("Decreased body weight", "Short stature", "Microcephaly",
+                "Obesity", "Long philtrum", "Long palpebral fissure",
+                "Hypertelorism", "Macrotia", "Small hand", "Short foot"));
+
+        final List<String> manuallyAddedPhenotypesToCheck = new ArrayList<>(Arrays.asList("Blue irides"));
+
+        aHomePage.navigateToLoginPage()
+            .loginAsUser()
+            .navigateToAllPatientsPage()
+            .sortPatientsDateDesc()
+            .viewFirstPatientInTable()
+            .editThisPatient()
+            .setDOB("10", "1992")
+            .expandSection(SECTIONS.ClinicalSymptomsSection)
+            .addPhenotype("Blue irides");
+
+        List<String> automaticallyAddedPhenotypesFound = aCreatePatientPage.getPhenotypesLightning();
+        System.out.println(automaticallyAddedPhenotypesFound);
+
+        List<String> manuallyAddedPhenotypesFound = aCreatePatientPage.getPhenotypesNonLightning();
+        System.out.println(manuallyAddedPhenotypesFound);
+
+        Assert.assertEquals(automaticallyAddedPhenotypesFound, automaticallyAddedPhenotypesToCheck);
+        Assert.assertEquals(manuallyAddedPhenotypesFound, manuallyAddedPhenotypesToCheck);
+
+        aCreatePatientPage
+//            .saveAndViewSummary()
+            .logOut();
+    }
+
 
 }

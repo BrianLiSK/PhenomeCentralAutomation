@@ -112,6 +112,10 @@ public class CreatePatientPage extends CommonInfoSelectors
         "div.phenotype-details.focused span.collapse-button, div.phenotype-details.focused span.expand-tool");
     private final By phenotypeDetailsLabels = By.cssSelector("div.phenotype-details.focused label");
     private final By phenotypesSelectedLabels = By.cssSelector("div.summary-item > label.yes");
+    // Different selectors for when the thunderbolt symbol is present or not. Lightning appears when auto added
+    //   by measurement information.
+    private final By phenotypesAutoSelectedByMeasurementLabels = By.xpath("//div[@class='summary-item' and span[@class='fa fa-bolt']]/label[@class='yes']");
+    private final By phenotypesManuallySelectedLabels = By.xpath("//div[@class='summary-item' and not(span[@class='fa fa-bolt'])]/label[@class='yes']");
 //    private final By phenotypesSelectedDivs = By.cssSelector("div.summary-item");
 
     private final By addGeneBtn = By.cssSelector("a[title*='Add gene']");
@@ -629,17 +633,56 @@ public class CreatePatientPage extends CommonInfoSelectors
     }
 
     /**
-     * Retrieves the phenotypes already present in the Patient Information Form
+     * Retrieves the phenotypes specified by the passed selector. This is a helper method that is used to
+     * differentiate between different phenotypes such as ones automatically added via measurements data vs. manual input
      * Requires: The "Clinical symptoms and physical findings" section to be expanded
-     * @return A (potentially empty) list of Strings representing the names of the phenotypes found.
+     * @param phenotypeLabelsSelector The By selector of the phenotype label.
+     *      There are three so far: - phenotypesSelectedLabels (all),
+     *                              - phenotypesAutoSelectedByMeasurementLabels (lightning bolt/auto ones),
+     *                              - phenotypesManuallySelectedLabels (non-lightning bolt/manual ones)
+     * @return A List of Strings representing the names of the phenotypes found. Can potentially be empty.
      */
-    public List<String> getPresentPhenotypes()
+    private List<String> getPresentPhenotypes(By phenotypeLabelsSelector)
     {
         List<String> loPhenotypesFound = new ArrayList<>();
         waitForElementToBePresent(phenotypeSearchBox);
-        superDriver.findElements(phenotypesSelectedLabels).forEach(x -> loPhenotypesFound.add(x.getText()));
+        superDriver.findElements(phenotypeLabelsSelector).forEach(x -> loPhenotypesFound.add(x.getText()));
 
         return loPhenotypesFound;
+    }
+
+    /**
+     * Retrieves all of the phenotypes already present (entered) in the Patient Information Form
+     * Requires: The "Clinical symptoms and physical findings" section to be expanded
+     * @return A (potentially empty) list of Strings representing the names of the phenotypes found.
+     */
+    public List<String> getAllPhenotypes()
+    {
+        return getPresentPhenotypes(phenotypesSelectedLabels);
+    }
+
+    /**
+     * Retrieves a list of phenotypes entered automatically due to measurement data. These are the phenotypes
+     * with the lightning symbol beside them.
+     * Requires: The "Clinical symptoms and physical findings" section to be expanded
+     * @return A, possibly empty, list of Strings representing phenotypes that have a lightning symbol beside them
+     *          due to them being automatically added from data contained on a measurements entry.
+     */
+    public List<String> getPhenotypesLightning()
+    {
+        return getPresentPhenotypes(phenotypesAutoSelectedByMeasurementLabels);
+    }
+
+    /**
+     * Retrieves a list of phenotypes that were manually entered. These are the ones that are not prefixed with a
+     * lightning symbol.
+     * Requires: The "Clinical symptoms and physical findings" section to be expanded
+     * @return A List of Strings, possibly empty, of the phenotypes that were manually entered (do not have a lightning
+     *          symbol in front of them).
+     */
+    public List<String> getPhenotypesNonLightning()
+    {
+        return getPresentPhenotypes(phenotypesManuallySelectedLabels);
     }
 
     /**
@@ -709,6 +752,7 @@ public class CreatePatientPage extends CommonInfoSelectors
 
     /**
      * Retrieves the first measurement entry for the patient that has measurement data entered.
+     * Requires: The "Measurement" section to be open and there be at least one measurmenet entry already there.
      * @return A Measurement object constructed with the measurement data gathered from the patient.
      */
     public CommonPatientMeasurement getPatientMeasurement()
