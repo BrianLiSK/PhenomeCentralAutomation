@@ -33,6 +33,7 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
             "Sporadic", "Autosomal dominant inheritance", "Sex-limited autosomal dominant",
             "Male-limited autosomal dominant", "Autosomal dominant somatic cell mutation",
             "Autosomal dominant contiguous gene syndrome", "Autosomal recessive inheritance",
+            "Sex-limited autosomal recessive inheritance",
             "Gonosomal inheritance", "X-linked inheritance", "X-linked dominant inheritance",
             "X-linked recessive inheritance", "Y-linked inheritance", "Multifactorial inheritance",
             "Digenic inheritance", "Oligogenic inheritance", "Polygenic inheritance",
