@@ -79,6 +79,12 @@ public class CreatePatientPage extends CommonInfoSelectors
     private final By healthConditionsFoundInFamily = By.id("PhenoTips.PatientClass_0_family_history");
 
     private final By addMeasurementBtn = By.cssSelector("div.measurement-info a.add-data-button");
+    private final By measurementYearDrp = By.cssSelector("div.calendar_date_select select.year");
+    private final By measurementMonthDrp = By.cssSelector("div.calendar_date_select select.month");
+    private final By todayCalendarLink = By.linkText("Today");
+    private final By MondayOfTheThirdWeek = By.cssSelector(
+        "#body > div.calendar_date_select > div.cds_part.cds_body > table > tbody > tr.row_2 > td:nth-child(2) > div");
+    private final By measurementDateBoxes = By.id("PhenoTips.MeasurementsClass_0_date");
     private final By weightBox = By.id("PhenoTips.MeasurementsClass_0_weight");
     private final By heightBox = By.id("PhenoTips.MeasurementsClass_0_height");
     private final By armSpanBox = By.id("PhenoTips.MeasurementsClass_0_armspan");
@@ -667,5 +673,72 @@ public class CreatePatientPage extends CommonInfoSelectors
 
         return this;
     }
+
+    /**
+     * Changes the date of the first measurement to the specified month and year. Defaults to January 2018
+     * upon invalid input.
+     * Requires: The measurement section to be open and at least one measurement entry to be present.
+     * @param month is the month as a String "January" to "December". Must be exact.
+     * @param year is the year as a String "1920" to current year (ex. "2019"). Must be exact.
+     * @return Stay on the same page so return the same object.
+     */
+    public CreatePatientPage changeMeasurementDate(String month, String year)
+    {
+        clickOnElement(measurementDateBoxes);
+
+        waitForElementToBePresent(measurementMonthDrp);
+        Select monthDrp = new Select(superDriver.findElement(measurementMonthDrp));
+        Select yearDrp = new Select(superDriver.findElement(measurementYearDrp));
+
+        try {
+            monthDrp.selectByVisibleText(month);
+            yearDrp.selectByVisibleText(year);
+        } catch (NoSuchElementException e) {
+            System.out.println("Invalid dropdown month or year passed. Defaulting to January 2018");
+            monthDrp.selectByVisibleText("January");
+            yearDrp.selectByVisibleText("2018");
+        }
+
+        return this;
+    }
+
+    /**
+     * Retrieves the first measurement entry for the patient that has measurement data entered.
+     * @return A Measurement object constructed with the measurement data gathered from the patient.
+     */
+    public CommonPatientMeasurement getPatientMeasurement()
+    {
+        waitForElementToBePresent(weightBox);
+
+        float weight = Float.parseFloat(superDriver.findElement(weightBox).getAttribute("value"));
+        float armSpan = Float.parseFloat(superDriver.findElement(armSpanBox).getAttribute("value"));
+        float headCircumference = Float.parseFloat(superDriver.findElement(headCircumferenceBox).getAttribute("value"));
+        float outerCanthalDistance = Float.parseFloat(superDriver.findElement(outherCanthalDistanceBox).getAttribute("value"));
+        float leftHandLength = Float.parseFloat(superDriver.findElement(leftHandLengthBox).getAttribute("value"));
+        float rightHandLength = Float.parseFloat(superDriver.findElement(rightHandLengthBox).getAttribute("value"));
+
+        float height = Float.parseFloat(superDriver.findElement(heightBox).getAttribute("value"));
+        float sittingHeight = Float.parseFloat(superDriver.findElement(sittingHeightBox).getAttribute("value"));
+        float philtrumLength = Float.parseFloat(superDriver.findElement(philtrumLengthBox).getAttribute("value"));
+        float inntercanthalDistance = Float.parseFloat(superDriver.findElement(innterCanthalDistanceBox).getAttribute("value"));
+        float leftPalmLength = Float.parseFloat(superDriver.findElement(leftPalmLengthBox).getAttribute("value"));
+        float rightPalmLength = Float.parseFloat(superDriver.findElement(rightPalmLengthBox).getAttribute("value"));
+
+        float leftEarLength = Float.parseFloat(superDriver.findElement(leftEarLengthBox).getAttribute("value"));
+        float palpebralFissureLength = Float.parseFloat(superDriver.findElement(palpebralFissureLengthBox).getAttribute("value"));
+        float leftFootLength = Float.parseFloat(superDriver.findElement(leftFootLengthBox).getAttribute("value"));
+        float rightFootLength = Float.parseFloat(superDriver.findElement(rightFootLengthBox).getAttribute("value"));
+
+        float rightEarLength = Float.parseFloat(superDriver.findElement(rightEarLengthBox).getAttribute("value"));
+        float interpupilaryDistance = Float.parseFloat(superDriver.findElement(interpupilaryDistanceBox).getAttribute("value"));
+
+        return new CommonPatientMeasurement(
+            weight, armSpan, headCircumference, outerCanthalDistance, leftHandLength, rightHandLength,
+            height, sittingHeight, philtrumLength, inntercanthalDistance, leftPalmLength, rightPalmLength,
+            leftEarLength, palpebralFissureLength, leftFootLength, rightFootLength,
+            rightEarLength, interpupilaryDistance);
+    }
+
+
 
 }

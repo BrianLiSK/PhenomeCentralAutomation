@@ -294,8 +294,10 @@ public class PedigreeEditorPage extends BasePage
 
         Actions action = new Actions(superDriver);
         action.moveToElement(loHoverBoxes.get(n - 1))
+            .pause(1000)
             .click(loHoverBoxes.get(n - 1))
-            .build().perform();
+            .build()
+            .perform();
 
         //forceClickOnElement(hoverBox);
         waitForElementToBeClickable(personalTab);
