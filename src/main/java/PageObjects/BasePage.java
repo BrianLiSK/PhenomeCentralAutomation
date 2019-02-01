@@ -128,6 +128,21 @@ public abstract class BasePage
     }
 
     /**
+     * Determines if the passed element is clickable or not.
+     * @param elementSelector is the element to check for clickability
+     * @return a boolean stating whether it was clickable or not. true for clickable, and false for unclickable.
+     */
+    public boolean isElementClickable(By elementSelector)
+    {
+        try {
+            waitForElementToBeClickable(elementSelector);
+        } catch (TimeoutException e) {
+            return false; // Could not find element, took too long
+        }
+        return true;
+    }
+
+    /**
      * Explicitly sleep for a full n seconds. Does not wait on anything specific. Useful when it is difficult
      * to specify an element to wait and check upon. Ex. Filtering update
      * @Throws InterruptedException (implicit) if thread is interrupted, ex. SIGIGNT.
