@@ -199,5 +199,26 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
         aCreationPage.logOut();
     }
 
+    @Test(priority = 6)
+    public void cycleThroughDiagnosis()
+    {
+        aHomePage.navigateToLoginPage()
+            .loginAsUser()
+            .navigateToAllPatientsPage()
+            .sortPatientsDateDesc()
+            .viewFirstPatientInTable()
+            .editThisPatient()
+            .expandSection(SECTIONS.DiagnosisSection);
+
+        System.out.println("Case Solved should be False: " + aCreationPage.isCaseSolved());
+
+        aCreationPage.cycleThroughDiagnosisBoxes();
+        System.out.println("Case Solved should be True: " + aCreationPage.isCaseSolved());
+
+        aCreationPage.toggleCaseSolved();
+        System.out.println("Case Solved should be False: " + aCreationPage.isCaseSolved());
+        aCreationPage.logOut();
+    }
+
 
 }
