@@ -1009,8 +1009,16 @@ public class CreatePatientPage extends CommonInfoSelectors
     {
         addClinicalDiagnosis("Allergic bronchopulmonary aspergillosis");
         addClinicalDiagnosis("Essential iris atrophy");
+        toggleNthClinicalDiagnosisCheckbox(1);
+        toggleNthClinicalDiagnosisCheckbox(1);
+        toggleNthClinicalDiagnosisCheckbox(2);
+        toggleNthClinicalDiagnosisCheckbox(2);
         addFinalDiagnosis("ALLERGIC RHINITIS");
         addFinalDiagnosis("KOOLEN-DE VRIES SYNDROME");
+        toggleNthFinalDiagnosisCheckbox(1);
+        toggleNthFinalDiagnosisCheckbox(1);
+        toggleNthFinalDiagnosisCheckbox(2);
+        toggleNthFinalDiagnosisCheckbox(2);
         addAdditionalComments("Comment in Additional Comments");
         toggleCaseSolved();
         addPubMedID("30699054");
@@ -1029,7 +1037,7 @@ public class CreatePatientPage extends CommonInfoSelectors
     public CreatePatientPage toggleNthClinicalDiagnosisCheckbox(int n)
     {
         waitForElementToBePresent(clinicalDiagnosisCheckboxes);
-        superDriver.findElements(clinicalDiagnosisCheckboxes).get(n - 1).click();
+        clickOnElement(superDriver.findElements(clinicalDiagnosisCheckboxes).get(n - 1));
 
         return this;
     }
@@ -1043,9 +1051,18 @@ public class CreatePatientPage extends CommonInfoSelectors
     public CreatePatientPage toggleNthFinalDiagnosisCheckbox(int n)
     {
         waitForElementToBePresent(finalDiagnosisCheckboxes);
-        superDriver.findElements(finalDiagnosisCheckboxes).get(n - 1).click();
+        clickOnElement(superDriver.findElements(finalDiagnosisCheckboxes).get(n - 1));
 
         return this;
+    }
+
+    /**
+     * Checks for the visibility of the pubMed ID boxes and Resolution Notes box.
+     * @return bool indicating the presence of those two boxes. True for present, and false if not present.
+     */
+    public boolean isPubMedAndResolutionBoxesPresent()
+    {
+        return (isElementPresent(pubMDIDBoxes) && (isElementPresent(resolutionNotesBox)));
     }
 
 

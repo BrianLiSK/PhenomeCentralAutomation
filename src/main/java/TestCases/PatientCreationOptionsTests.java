@@ -211,12 +211,19 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
             .expandSection(SECTIONS.DiagnosisSection);
 
         System.out.println("Case Solved should be False: " + aCreationPage.isCaseSolved());
+        Assert.assertFalse(aCreationPage.isCaseSolved());
+        Assert.assertFalse(aCreationPage.isPubMedAndResolutionBoxesPresent());
 
         aCreationPage.cycleThroughDiagnosisBoxes();
         System.out.println("Case Solved should be True: " + aCreationPage.isCaseSolved());
+        Assert.assertTrue(aCreationPage.isCaseSolved());
+        Assert.assertTrue(aCreationPage.isPubMedAndResolutionBoxesPresent());
 
         aCreationPage.toggleCaseSolved();
         System.out.println("Case Solved should be False: " + aCreationPage.isCaseSolved());
+        Assert.assertFalse(aCreationPage.isCaseSolved());
+        Assert.assertFalse(aCreationPage.isPubMedAndResolutionBoxesPresent());
+        
         aCreationPage.logOut();
     }
 
