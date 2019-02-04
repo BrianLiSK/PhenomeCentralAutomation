@@ -1,6 +1,7 @@
 package PageObjects;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -78,6 +79,19 @@ public class CreatePatientPage extends CommonInfoSelectors
     private final By addEthnicityBtns = By.cssSelector("div.family-info a[title=add]");
     private final By healthConditionsFoundInFamily = By.id("PhenoTips.PatientClass_0_family_history");
 
+    private final By termBirthCheckbox = By.id("PhenoTips.PatientClass_0_gestation_term");
+    private final By gestationWeeksBox = By.cssSelector("input[type=text][name=\"PhenoTips.PatientClass_0_gestation\"]");
+    private final By maternalAgeBox = By.id("PhenoTips.ParentalInformationClass_0_maternal_age");
+    private final By paternalAgeBox = By.id("PhenoTips.ParentalInformationClass_0_paternal_age");
+    private final By APGARScore1MinDrp = By.id("PhenoTips.PatientClass_0_apgar1");
+    private final By APGARScore5MinDrp = By.id("PhenoTips.PatientClass_0_apgar5");
+    private final By otherPregnancyPhenotypeBox = By.xpath("//*[@id='HPregnancy-history']/parent::*/div[@class='prenatal_phenotype-other custom-entries']/input[@type='text']");
+    private final By otherDevelopmentPhenotypeBox = By.xpath("//*[@id='HPrenatal-development']/parent::*/div[@class='prenatal_phenotype-other custom-entries']/input[@type='text']");
+    private final By otherDeliveryPhenotypeBox = By.xpath("//*[@id='HDelivery']/parent::*/div[@class='prenatal_phenotype-other custom-entries']/input[@type='text']");
+    private final By otherGrowthPhenotypeBox = By.xpath("//*[@id='HNeonatal-growth-parameters']/parent::*/div[@class='prenatal_phenotype-other custom-entries']/input[@type='text']");
+    private final By otherComplicationsPhenotypeBox = By.xpath("//*[@id='HPerinatal-complications']/parent::*/div[@class='prenatal_phenotype-other custom-entries']/input[@type='text']");
+    private final By prenatalNotesBox = By.id("PhenoTips.PatientClass_0_prenatal_development");
+
     private final By addMeasurementBtn = By.cssSelector("div.measurement-info a.add-data-button");
     private final By measurementYearDrp = By.cssSelector("div.calendar_date_select select.year");
     private final By measurementMonthDrp = By.cssSelector("div.calendar_date_select select.month");
@@ -125,7 +139,7 @@ public class CreatePatientPage extends CommonInfoSelectors
     private final By geneStatusDrps = By.cssSelector("td.Status > select");
     private final By geneStrategySequencingCheckboxes = By.cssSelector(
         "td.Strategy > label > input[value=sequencing]");
-    private final By firstGeneSuggestion = By.cssSelector("div.suggestItem > div > span.suggestValue");
+    private final By firstGeneSuggestion = By.cssSelector("div.suggestItem > div > span.suggestValue"); // First suggestion result for prenatal phenotypes too
 
 
     private final By saveAndViewSummaryBtn = By.cssSelector("span.buttonwrapper:nth-child(3) > input:nth-child(1)");
@@ -551,6 +565,56 @@ public class CreatePatientPage extends CommonInfoSelectors
         loLabels.addAll(loCategorizedLabels);
 
         return loLabels;
+    }
+
+    /**
+     * Traverses through the rest of the boxes in prenatal options by entering in some text to each box.
+     * Traverses through the dropdowns too.
+     * Requires that the "Prenatal and perinatal history" section be expanded
+     * @return Stay on the same page so return the same object.
+     */
+    public CreatePatientPage cycleThroughPrenatalOptions()
+    {
+        waitForElementToBePresent(APGARScore1MinDrp);
+
+        clickOnElement(termBirthCheckbox);
+        clickOnElement(termBirthCheckbox);
+        clickAndTypeOnElement(gestationWeeksBox, "12");
+        clickAndTypeOnElement(maternalAgeBox, "26");
+        clickAndTypeOnElement(paternalAgeBox, "30");
+
+        forceScrollToElement(APGARScore1MinDrp);
+        Select APGARScore1Min = new Select(superDriver.findElement(APGARScore1MinDrp));
+        Select APGARScore5Min = new Select(superDriver.findElement(APGARScore5MinDrp));
+        List<String> loAPGARScores = new ArrayList<>(Arrays.asList(
+            "Unknown", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"));
+
+        for (String score : loAPGARScores) {
+            APGARScore1Min.selectByVisibleText(score);
+            APGARScore5Min.selectByVisibleText(score);
+        }
+
+        APGARScore1Min.selectByVisibleText("Unknown");
+        APGARScore5Min.selectByVisibleText("Unknown");
+
+        clickAndTypeOnElement(otherPregnancyPhenotypeBox, "Tall chin");
+        clickOnElement(firstGeneSuggestion);
+
+        clickAndTypeOnElement(otherDevelopmentPhenotypeBox, "Tall chin");
+        clickOnElement(firstGeneSuggestion);
+
+        clickAndTypeOnElement(otherDeliveryPhenotypeBox, "Tall chin");
+        clickOnElement(firstGeneSuggestion);
+
+        clickAndTypeOnElement(otherGrowthPhenotypeBox, "Tall chin");
+        clickOnElement(firstGeneSuggestion);
+
+        clickAndTypeOnElement(otherComplicationsPhenotypeBox, "Tall chin");
+        clickOnElement(firstGeneSuggestion);
+
+        clickAndTypeOnElement(prenatalNotesBox, "Notes for prenatal. Moving on...");
+
+        return this;
     }
 
     /**

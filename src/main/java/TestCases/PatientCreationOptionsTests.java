@@ -147,7 +147,7 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
         List<String> loPrenatalYesNoBoxes = aCreationPage.cycleThroughPrenatalHistory();
         Assert.assertEquals(loPrenatalYesNoBoxes, checkPrenatalConditionsLabels);
 
-        aCreationPage.logOut();
+        aCreationPage.cycleThroughPrenatalOptions().logOut();
     }
 
     @Test(priority = 4)
