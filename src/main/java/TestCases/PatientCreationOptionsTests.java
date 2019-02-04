@@ -199,6 +199,8 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
         aCreationPage.logOut();
     }
 
+    // Clicks on all input boxes within the Diagnosis section and tries to provide input.
+    // Asserts that the PubMedIDs and Resolution Notes are hidden upon toggling "Case Solved"
     @Test(priority = 6)
     public void cycleThroughDiagnosis()
     {
@@ -212,19 +214,42 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
 
         System.out.println("Case Solved should be False: " + aCreationPage.isCaseSolved());
         Assert.assertFalse(aCreationPage.isCaseSolved());
-        Assert.assertFalse(aCreationPage.isPubMedAndResolutionBoxesPresent());
+        Assert.assertFalse(aCreationPage.isPubMedAndResolutionBoxesClickable());
 
         aCreationPage.cycleThroughDiagnosisBoxes();
         System.out.println("Case Solved should be True: " + aCreationPage.isCaseSolved());
         Assert.assertTrue(aCreationPage.isCaseSolved());
-        Assert.assertTrue(aCreationPage.isPubMedAndResolutionBoxesPresent());
+        Assert.assertTrue(aCreationPage.isPubMedAndResolutionBoxesClickable());
 
         aCreationPage.toggleCaseSolved();
         System.out.println("Case Solved should be False: " + aCreationPage.isCaseSolved());
         Assert.assertFalse(aCreationPage.isCaseSolved());
-        Assert.assertFalse(aCreationPage.isPubMedAndResolutionBoxesPresent());
-        
+        Assert.assertFalse(aCreationPage.isPubMedAndResolutionBoxesClickable());
+
         aCreationPage.logOut();
+    }
+
+    // Checks that the red error message when inputting an invalid PubMed ID shows up.
+    @Test(priority = 7)
+    public void checkDiagnosisErrorMessages()
+    {
+        aHomePage.navigateToLoginPage()
+            .loginAsUser()
+            .navigateToAllPatientsPage()
+            .sortPatientsDateDesc()
+            .viewFirstPatientInTable()
+            .editThisPatient()
+            .expandSection(SECTIONS.DiagnosisSection);
+
+        aCreationPage.toggleCaseSolved()
+            .addPubMedID("This is an invalid ID");
+
+        Assert.assertFalse(aCreationPage.isNthPubMDBoxValid(1));
+
+        aCreationPage.removeNthPubMedID(1)
+            .addPubMedID("30699054");
+
+        Assert.assertTrue(aCreationPage.isNthPubMDBoxValid(1));
     }
 
 

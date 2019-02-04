@@ -1057,12 +1057,15 @@ public class CreatePatientPage extends CommonInfoSelectors
     }
 
     /**
-     * Checks for the visibility of the pubMed ID boxes and Resolution Notes box.
+     * Checks for the visibility (i.e. clickability) of the pubMed ID boxes and Resolution Notes box.
+     * Visibility is not enough as the elements are always loaded but with odd hidden property that is still
+     * considered visible.
+     * Requires the "Diagnosis" section to be expanded.
      * @return bool indicating the presence of those two boxes. True for present, and false if not present.
      */
-    public boolean isPubMedAndResolutionBoxesPresent()
+    public boolean isPubMedAndResolutionBoxesClickable()
     {
-        return (isElementPresent(pubMDIDBoxes) && (isElementPresent(resolutionNotesBox)));
+        return (isElementClickable(pubMDIDBoxes) && (isElementClickable(resolutionNotesBox)));
     }
 
 
