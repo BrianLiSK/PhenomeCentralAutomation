@@ -76,6 +76,8 @@ public abstract class BasePage
     // Approval Pending Message that appears on all pages for an unapproved user
     protected final By approvalPendingMessage = By.cssSelector("#mainContentArea > div.infomessage");
 
+    protected final By phenomeCentralLogoBtn = By.cssSelector("#companylogo > a > img"); // PC logo at top left to navigate to homepage
+
     /**
      * Declaration of the webdriver and the waiting objects. Will be initialized
      * when a test runs.
@@ -403,5 +405,15 @@ public abstract class BasePage
     {
         waitForElementToBePresent(approvalPendingMessage);
         return superDriver.findElement(approvalPendingMessage).getText();
+    }
+
+    /**
+     * Navigates to the homepage by clicking on the PhenomeCentral Logo at the top left corner of the top toolbar.
+     * @return A new instance of a HomePage as we navigate there.
+     */
+    public HomePage navigateToHomePage()
+    {
+        clickOnElement(phenomeCentralLogoBtn);
+        return new HomePage(superDriver);
     }
 }
