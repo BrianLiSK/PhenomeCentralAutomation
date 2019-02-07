@@ -2,6 +2,12 @@ package PageObjects;
 
 import org.openqa.selenium.By;
 
+/**
+ * This interface contains selectors that are used on a sign up page. These appear on both the sign up page that a
+ * user sees and when an Admin tries to add a user manually.
+ * i.e. http://localhost:8083/register/PhenomeCentral/WebHome and
+ *      http://localhost:8083/admin/XWiki/XWikiPreferences?editor=globaladmin&section=Users#
+ */
 public interface CommonSignUpSelectors
 {
     By newUserBtn = By.id("addNewUser");
@@ -21,4 +27,5 @@ public interface CommonSignUpSelectors
     By nonIdentificationCheckbox = By.id("confirmation_identify");
     By cooperationCheckbox = By.id("confirmation_publication");
     By acknoledgementCheckbox = By.id("confirmation_funding");
+
 }

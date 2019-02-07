@@ -10,7 +10,7 @@ public class HomePage extends BasePage
 {
     final By loginLink = By.id("launch-login");
 
-    final By signUpButton = By.cssSelector("launch-register");
+    final By signUpButton = By.id("launch-register");
 
     public HomePage(WebDriver aDriver)
     {
@@ -35,5 +35,22 @@ public class HomePage extends BasePage
         }
         clickOnElement(loginLink);
         return new LoginPage(superDriver);
+    }
+
+    /**
+     * Navigate to the User Sign up page by clicking on the "Sign Up" button from the homepage.
+     * This is the public sign up page form where people can request access to the PC instance.
+     * Ideally, the no user should be signed in when calling this method.
+     * @return A new instance of the UserSignUp page as we navigate there.
+     */
+    public UserSignUpPage navigateToSignUpPage()
+    {
+        superDriver.navigate().to(HOMEPAGE_URL);
+        if (isElementPresent(logOutLink)) {
+            logOut();
+        }
+        clickOnElement(signUpButton);
+
+        return new UserSignUpPage(superDriver);
     }
 }

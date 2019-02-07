@@ -73,6 +73,9 @@ public abstract class BasePage
 
     protected final By logOutLink = By.id("tmLogout"); // Used to check when modals close
 
+    // Approval Pending Message that appears on all pages for an unapproved user
+    protected final By approvalPendingMessage = By.cssSelector("#mainContentArea > div.infomessage");
+
     /**
      * Declaration of the webdriver and the waiting objects. Will be initialized
      * when a test runs.
@@ -389,5 +392,16 @@ public abstract class BasePage
         }
 
         return loTextStrings;
+    }
+
+    /**
+     * Retrieves the approval pending message that a user receives when they are unapproved and waiting to be
+     * granted access. It should be "Please wait for your account to be approved. Thank you."
+     * @return A String representing the approval pending message.
+     */
+    public String getApprovalPendingMessage()
+    {
+        waitForElementToBePresent(approvalPendingMessage);
+        return superDriver.findElement(approvalPendingMessage).getText();
     }
 }

@@ -1,8 +1,10 @@
 package TestCases;
 
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import PageObjects.HomePage;
+import PageObjects.UserSignUpPage;
 import net.bytebuddy.utility.RandomString;
 
 /**
@@ -13,6 +15,8 @@ public class AddingUsersTests extends BaseTest
     final private String randomChars = RandomString.make(5);
 
     final HomePage aHomePage = new HomePage(theDriver);
+
+    final UserSignUpPage aUserSignUpPage = new UserSignUpPage(theDriver);
 
     @Test
     public void adminAddAndApproveUser()
@@ -55,6 +59,33 @@ public class AddingUsersTests extends BaseTest
             .loginAsUserTwo()
             .logOut();
 //        aHomePage.unconditionalWaitNs(15);
+    }
+
+    @Test
+    public void userSignUpNotApproved()
+    {
+        final String confirmationMessageCheck = "Thank you for your interest in PhenomeCentral. We took note of your request and we will process it shortly.";
+        final String pendingApprovalMessageCheck = "Please wait for your account to be approved. Thank you.";
+
+        aHomePage.navigateToSignUpPage()
+            .requestAccount("PublicSignUp" + randomChars , "Auto" + randomChars, "123456",
+            "PublicSignUp" + randomChars + "@akjsjdf.cjsjdfn", "none",
+            "Test server", "Some reason");
+
+        Assert.assertEquals(aUserSignUpPage.getConfirmationMessage(), confirmationMessageCheck);
+        System.out.println("Request Recieved Msg: " + aUserSignUpPage.getConfirmationMessage());
+
+        aHomePage.navigateToLoginPage()
+            .loginAs("PublicSignUp" + randomChars + "Auto" + randomChars, "123456");
+
+        System.out.println("Approval Pending Msg: " + aHomePage.getApprovalPendingMessage());
+        Assert.assertEquals(aHomePage.getApprovalPendingMessage(), pendingApprovalMessageCheck);
+        Assert.assertEquals(aHomePage.navigateToAllPatientsPage().getApprovalPendingMessage(), pendingApprovalMessageCheck);
+        Assert.assertEquals(aHomePage.navigateToCreateANewPatientPage().getApprovalPendingMessage(), pendingApprovalMessageCheck);
+
+        aHomePage.logOut();
+
+
     }
 
 }
