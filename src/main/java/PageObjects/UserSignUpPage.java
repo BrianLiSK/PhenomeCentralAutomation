@@ -10,7 +10,7 @@ import org.openqa.selenium.WebDriver;
 public class UserSignUpPage extends BasePage implements CommonSignUpSelectors
 {
     private final By registerBtn = By.cssSelector("input[type=submit][value=Register]");
-    private final By cancelAndReturnBtn = By.linkText("Cancel and return to homepage");
+    private final By cancelAndReturnBtn = By.cssSelector("#register a.button.secondary");
     private final By infoMessageArea = By.cssSelector("div.infomessage");
 
     public UserSignUpPage(WebDriver aDriver)
@@ -30,24 +30,27 @@ public class UserSignUpPage extends BasePage implements CommonSignUpSelectors
      * @param justification value for the "Why are you requesting access" box as a String.
      * @return Stay on the same page so return the same object.
      */
-    public UserSignUpPage requestAccount(String firstName, String lastName, String password,
+    public UserSignUpPage requestAccount(String firstName, String lastName, String password, String confirmPassword,
         String email, String affiliation, String referral, String justification)
     {
+        clickAndClearElement(userNameBox);
+        unconditionalWaitNs(1);
+
         clickAndTypeOnElement(firstNameBox, firstName);
         clickAndTypeOnElement(lastNameBox, lastName);
         clickOnElement(userNameBox);
         clickAndTypeOnElement(passwordBox, password);
-        clickAndTypeOnElement(confirmPasswordBox, password);
+        clickAndTypeOnElement(confirmPasswordBox, confirmPassword);
         clickAndTypeOnElement(emailBox, email);
         clickAndTypeOnElement(affiliationBox, affiliation);
         clickAndTypeOnElement(referralBox, referral);
         clickAndTypeOnElement(reasoningBox, justification);
 
-        clickOnElement(professionalCheckbox);
-        clickOnElement(liabilityCheckbox);
-        clickOnElement(nonIdentificationCheckbox);
-        clickOnElement(cooperationCheckbox);
-        clickOnElement(acknoledgementCheckbox);
+        toggleCheckboxToChecked(professionalCheckbox);
+        toggleCheckboxToChecked(liabilityCheckbox);
+        toggleCheckboxToChecked(nonIdentificationCheckbox);
+        toggleCheckboxToChecked(cooperationCheckbox);
+        toggleCheckboxToChecked(acknoledgementCheckbox);
 
         clickOnElement(registerBtn);
         return this;
@@ -63,5 +66,15 @@ public class UserSignUpPage extends BasePage implements CommonSignUpSelectors
     {
         waitForElementToBePresent(infoMessageArea);
         return superDriver.findElement(infoMessageArea).getText();
+    }
+
+    /**
+     * Cancel the Request an Account page. Navigates back to the home page by clicking on the cancel button
+     * @return Navigate back to the home page so return a new instance of HomePage object.
+     */
+    public HomePage cancelRequestingAccount()
+    {
+        clickOnElement(cancelAndReturnBtn);
+        return new HomePage(superDriver);
     }
 }

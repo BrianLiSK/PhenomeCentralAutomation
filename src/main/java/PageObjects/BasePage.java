@@ -208,7 +208,30 @@ public abstract class BasePage
     public void clickAndTypeOnElement(By elementSelector, String input)
     {
         clickOnElement(elementSelector);
+        superDriver.findElement(elementSelector).clear(); // Clear first
         superDriver.findElement(elementSelector).sendKeys(input);
+    }
+
+    /**
+     * Click on the element, usually a text box, and clear the contents.
+     * @param elementSelector The selector for the element to clear the contents of, usually a text box.
+     */
+    public void clickAndClearElement(By elementSelector)
+    {
+        clickOnElement(elementSelector);
+        superDriver.findElement(elementSelector).clear(); // Clear first
+    }
+
+    /**
+     * Toggles the specified checkbox to the enabled state. If it is already selected/enabled,
+     * it does not click on it again.
+     * @param checkboxSelector is the By selector for the checkbox to changed to enabled state.
+     */
+    public void toggleCheckboxToChecked(By checkboxSelector) {
+        waitForElementToBePresent(checkboxSelector);
+        if (!superDriver.findElement(checkboxSelector).isSelected()) {
+            clickOnElement(checkboxSelector);
+        }
     }
 
     /**
