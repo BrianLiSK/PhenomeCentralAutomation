@@ -34,6 +34,7 @@ public class MatchNotificationPageTests extends BaseTest implements CommonInfoEn
     /**
      * Refresh "matches since last modified" so that the number goes to zero before beginning these tests.
      * This ensures that the assertions for "Number of Patients Processed" will pass as we check for exact match.
+     * It then navigates to MockMock's UI page to clear the email inbox before any of these tests run.
      * This method runs once before the tests in this class begin running.
      */
     @BeforeClass
@@ -44,6 +45,9 @@ public class MatchNotificationPageTests extends BaseTest implements CommonInfoEn
             .navigateToAdminSettingsPage()
             .navigateToRefreshMatchesPage()
             .refreshMatchesSinceLastUpdate()
+            .navigateToEmailInboxPage()
+            .deleteAllEmails()
+            .navigateToHomePage()
             .logOut();
     }
 
@@ -53,7 +57,7 @@ public class MatchNotificationPageTests extends BaseTest implements CommonInfoEn
      * - Two new patients are processed after a match refresh since last update
      * - A match for the two patients is found.
      */
-    @Test
+    @Test(priority = 1)
     public void matchPhenotypeOnly()
     {
         List<String> loPhenotypesToAdd1 = new ArrayList<String>(Arrays.asList(
@@ -103,7 +107,7 @@ public class MatchNotificationPageTests extends BaseTest implements CommonInfoEn
             .expandSection(SECTIONS.GenotypeInfoSection)
             .addGene("NUDT12", "Candidate", "Sequencing")
             .addGene("MIR5685", "Rejected candidate", "Sequencing")
-            .addGene("DAW1", "Confirmed causal", "Sequencing")
+            .addGene("QRFP", "Confirmed causal", "Sequencing")
             .addGene("LINC01854", "Carrier", "Sequencing")
             .addGene("PRKCZ", "Tested negative", "Sequencing")
             .saveAndViewSummary();
@@ -138,7 +142,7 @@ public class MatchNotificationPageTests extends BaseTest implements CommonInfoEn
      * - Two new patients are processed after a match refresh since last update
      * - A match for the two patients is found.
      */
-    @Test
+    @Test(priority = 2)
     public void matchGenotypeOnly()
     {
         List<String> loPhenotypesToAdd1 = new ArrayList<String>(Arrays.asList(
@@ -222,7 +226,7 @@ public class MatchNotificationPageTests extends BaseTest implements CommonInfoEn
         aEmailUIPage.navigateToHomePage().logOut();
     }
 
-    @Test
+    @Test(enabled = false)
     public void filterAndEmailTemp()
     {
         List<String> patientsEmailTitleCheck = new ArrayList<>(Arrays.asList(
