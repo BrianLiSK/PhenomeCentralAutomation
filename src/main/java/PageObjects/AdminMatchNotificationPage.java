@@ -32,6 +32,8 @@ public class AdminMatchNotificationPage extends AdminSettingsPage
 
     By notContactedStatusCheckbox = By.cssSelector("input[name=notified-filter][value=unnotified]");
 
+    By sendingNotificationMessage = By.cssSelector("#send-notifications-messages > div");
+
     public AdminMatchNotificationPage(WebDriver aDriver)
     {
         super(aDriver);
@@ -101,6 +103,10 @@ public class AdminMatchNotificationPage extends AdminSettingsPage
         }
 
         clickOnElement(sendNotificationsBtn);
+
+        // Wait for the green "Sending emails..." message to disappear.
+        waitForElementToBePresent(sendingNotificationMessage);
+        waitForElementToBeGone(sendingNotificationMessage);
 
         return this;
     }
