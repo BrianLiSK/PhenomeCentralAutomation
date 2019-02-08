@@ -124,6 +124,8 @@ public class MatchNotificationPageTests extends BaseTest implements CommonInfoEn
 
         anAdminRefreshMatchesPage.navigateToAdminSettingsPage()
             .navigateToMatchingNotificationPage()
+            .setAverageScoreSliderToMinimum()
+            .setGenotypeSliderToZero()
             .filterByID(createdPatient1)
             .emailSpecificPatients(createdPatient1, createdPatient2)
             .navigateToEmailInboxPage();
@@ -245,4 +247,5 @@ public class MatchNotificationPageTests extends BaseTest implements CommonInfoEn
 
         aEmailUIPage.deleteAllEmails();
     }
+
 }
