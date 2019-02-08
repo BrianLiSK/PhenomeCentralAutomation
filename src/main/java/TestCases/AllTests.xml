@@ -1,4 +1,5 @@
 <suite name="AllTests" parallel="methods" thread-count="1"  preserve-order="true">
+  <!--
   <test name="testngTest" parallel="methods" thread-count="1"  preserve-order="true">
     <classes>
       <class name="TestCases.LoginPageTest" />
@@ -33,7 +34,7 @@
     <classes>
       <class name="TestCases.PermissionsTests" />
     </classes>
-  </test>
+  </test> -->
   <test name="testngTest8" parallel="methods" thread-count="1"  preserve-order="true">
     <classes>
       <class name="TestCases.LoginPageTest" />
