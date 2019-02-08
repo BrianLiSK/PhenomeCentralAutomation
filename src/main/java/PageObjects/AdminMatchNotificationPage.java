@@ -117,6 +117,34 @@ public class AdminMatchNotificationPage extends AdminSettingsPage
     }
 
     /**
+     * Determines if the two specified patients appear on the match table, matching to each other.
+     * @param referencePatient The reference patient, either PatientID or unique identifier, can be substring.
+     * @param matchedPatient The matched patient, either patientID or unique identifier, can be substring.
+     * @return boolean, true when there is a referencePatient matching to the matchedPatient, false if match not found.
+     */
+    public boolean doesMatchExist(String referencePatient, String matchedPatient)
+    {
+        filterByID(referencePatient);
+        unconditionalWaitNs(3); // maybe wait on something?
+
+        List<WebElement> loFoundReferencePatients = superDriver.findElements(referencePatientLink);
+        List<WebElement> loFoundMatchedPatients = superDriver.findElements(matchedPatientLink);
+
+        for (int i = 0; i < loFoundMatchedPatients.size(); ++i)
+        {
+            System.out.println("For loop: Reference: " + loFoundMatchedPatients.get(i).getText() +
+                "Matched patient: " + loFoundReferencePatients.get(i).getText());
+            if (loFoundMatchedPatients.get(i).getText().contains(matchedPatient) &&
+                loFoundReferencePatients.get(i).getText().contains(referencePatient))
+            {
+                return true;
+            }
+        }
+
+        return false; // didn't find the specified patients while looping through match table
+    }
+
+    /**
      * Toggles the "Contacted status: contacted" filter checkbox.
      * @return Stay on the same page so return the same object.
      */
