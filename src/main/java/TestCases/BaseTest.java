@@ -15,8 +15,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 
-import com.sun.org.apache.xml.internal.security.utils.JavaUtils;
-
 /**
  * An abstract test. All tests should inherit this class.
  * We should put any high level methods using @after- annotations here
@@ -26,10 +24,10 @@ public abstract class BaseTest
 {
     protected static WebDriver theDriver = new FirefoxDriver();
 
+    // Old code for instantiating driver for each individual test
 //    @BeforeTest
 //    public void testSetup() {
 //        theDriver = new FirefoxDriver();
-//        aHomePage = new HomePage(theDriver);
 //    }
 //
 //    @AfterTest
@@ -48,18 +46,12 @@ public abstract class BaseTest
 //        }
 //    }
 
-//    public void onTestFailure(ITestResult testResult)
-//    {
-//        if (ITestResult.FAILURE == testResult.getStatus()) {
-//            File source = theDriver.getScreenshotAs(OutputType.FILE);
-//            try {
-//                FileUtils.copyFile(source, new File("target/screenshots/" + name + ".png"));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
+    /**
+     * Runs after every test method. In the case that TestNG's listener reports a failure, will take a
+     * screenshot and copy over to targets/screenshots directory as a .png with a methodName and timeStamp
+     * @param testResult resulting status of a test method that has just run, as reported by TestNGs listener.
+     *        Check this passed info for failure.
+     */
     @AfterMethod
     public void onTestFailure(ITestResult testResult)
     {
@@ -87,41 +79,25 @@ public abstract class BaseTest
             System.out.println("Method (test) suceeded. No screenshot. Moving on.");
         }
 
-
     }
 
     /**
-     * Cleans up the tests. Pauses a bit first so that we can see the state of the class at the end.
-     * We need to explicitly quit the web driver before it goes out of scope in order for the window to close
-     * and the Firefox instance to quit
+     * Runs after each class finishes. Now no longer really being used, except for a debug message.
      */
     @AfterClass
     public void testCleanup()
     {
-        // Pause a bit before closing.
-//        try {
-//            Thread.sleep(1500);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
         System.out.println("A single class has finished");
-
-//        if (theDriver != null) {
-//            theDriver.quit();
-//        }
     }
 
+    /**
+     * Runs after the entire suite (all test cases specified in the test run) are finished. We explicitly quit
+     * the webDriver here as it does not close on its own when the reference is trashed. Quitting the webDriver means
+     * closing the browser window and quitting the firefox process (important).
+     */
     @AfterSuite
     public void cleanup()
     {
-        // Pause a bit before closing.
-        try {
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         System.out.println("Test suite finished running");
 
         if (theDriver != null) {
