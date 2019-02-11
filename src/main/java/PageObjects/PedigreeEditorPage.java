@@ -174,8 +174,8 @@ public class PedigreeEditorPage extends BasePage
 
     /**
      * Checks if a warning dialogue appears when trying to close the editor. Clicks on close
-     * and then tries to click on "Keep editing patient". Sometimes, the dialgoue isn't supposed to
-     * be there so it would have navigated away with no warning.
+     * and then tries to click on "Save and Quit". Sometimes, the dialogue isn't supposed to
+     * be there so it would have navigated away with no warning. Waits for the three buttons to appear.
      * Requires that the pedigree toolbar be interactable, not blocked by some other modal.
      * @return A Boolean to indicate whether the dialogue, or more specifically, "keep editing pedigree"
      *          button appears or not.
@@ -184,6 +184,11 @@ public class PedigreeEditorPage extends BasePage
     public Boolean doesWarningDialogueAppear()
     {
         clickOnElement(closeEditor);
+
+        waitForElementToBePresent(saveAndQuitBtn);
+        waitForElementToBePresent(dontSaveAndQuitBtn);
+        waitForElementToBePresent(keepEditingPedigreeBtn);
+
         Boolean appearance = isElementPresent(saveAndQuitBtn);
         if (appearance) {
             clickOnElement(saveAndQuitBtn);
