@@ -2,7 +2,10 @@ package TestCases;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -61,20 +64,27 @@ public abstract class BaseTest
     public void onTestFailure(ITestResult testResult)
     {
         if (ITestResult.FAILURE == testResult.getStatus()) {
-            //Convert web driver object to TakeScreenshot
 
-            TakesScreenshot scrShot =((TakesScreenshot)theDriver);
+            // Cast webDriver over to TakeScreenshot. Call getScreenshotAs method to create image file
+            File srcFile = ((TakesScreenshot)theDriver).getScreenshotAs(OutputType.FILE);
 
-            //Call getScreenshotAs method to create image file
+            LocalDateTime dateTime = ZonedDateTime.now().toLocalDateTime();
 
-            File SrcFile=scrShot.getScreenshotAs(OutputType.FILE);
+            // Save screenshot in target/screenshots folder with the methodName of failed test and timestamp.
+            File destFile = new File("target/screenshots/" + testResult.getMethod().getMethodName() + " " + dateTime + ".png");
 
-            //Move image file to new destination
+            System.out.println("Test failed. Taking screenshot...");
 
-            File DestFile=new File("target/screenshot.png");
+            // Copy over to target/screenshots folder
+            try {
+                FileUtils.copyFile(srcFile, destFile);
+            } catch (IOException e) {
+                System.out.println("Something went wrong copying over screenshot: " + e);
+            }
         }
+
         else {
-            System.out.println("Method suceeded. Moving on.");
+            System.out.println("Method (test) suceeded. No screenshot. Moving on.");
         }
 
 
