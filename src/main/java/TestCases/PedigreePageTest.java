@@ -241,7 +241,7 @@ public class PedigreePageTest extends BaseTest implements CommonInfoEnums
 
     /**
      * Opens the pedigree editor for the previously created patient (in the test above) and edit the patient's
-     * phenotype. Asserts:
+     * genotype. Asserts:
      * - On trying to click "Close", that there is a js warning dialogue to prompt saving before
      *      navigating away.
      */
@@ -257,7 +257,7 @@ public class PedigreePageTest extends BaseTest implements CommonInfoEnums
             .expandSection(SECTIONS.FamilyHistorySection)
             .navigateToPedigreeEditor("")
             .openNthEditModal(1)
-            .setGender("Unknown");
+            .addGene("FOXP2", "Carrier");
 
         Assert.assertTrue(aPedigreeEditorPage.doesWarningDialogueAppear());
     }
