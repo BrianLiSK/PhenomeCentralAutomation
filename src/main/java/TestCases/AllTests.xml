@@ -1,6 +1,7 @@
-<suite name="AllTests" parallel="methods" thread-count="1"  preserve-order="true">
-  <test name="testngTest8" parallel="methods" thread-count="1"  preserve-order="true" group-by-instances="true">
-    <classes>
+<suite name="AllTests" parallel="methods" thread-count="1"  preserve-order="true" group-by-instances="true">
+  <test name="FullSuite" parallel="methods" thread-count="1"  preserve-order="true" group-by-instances="true">
+    <classes parallel="none" thread-count="1"  preserve-order="true" group-by-instances="true" >
+      <class name="SetupUsers" />
       <class name="TestCases.LoginPageTest" />
       <class name="TestCases.CreatePatientTest" />
       <class name="TestCases.AddingUsersTests" />

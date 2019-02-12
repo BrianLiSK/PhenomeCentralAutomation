@@ -47,6 +47,12 @@ public class PermissionsTests extends BaseTest
         String createdPatient2;
 
         aHomePage.navigateToLoginPage()
+            .loginAsAdmin()
+            .navigateToAdminSettingsPage()
+            .navigateToRefreshMatchesPage()
+            .refreshMatchesSinceLastUpdate() // Refresh Matches so that "Since last update" goes to 0 first
+            .logOut()
+
             .loginAsUser()
             .navigateToCreateANewPatientPage()
             .toggleFirstFourConsentBoxes()
