@@ -35,7 +35,7 @@ public class PermissionsTests extends BaseTest
      * - 1 Patients Processed during refresh of matches
      * - No match is found on Admin's match page
      */
-    @Test(priority = 1)
+    @Test()
     public void noMatchPrivatePatient()
     {
         List<String> loPhenotypesToAdd = new ArrayList<String>(Arrays.asList(
@@ -107,7 +107,7 @@ public class PermissionsTests extends BaseTest
      * Ensure that the matchable patient created by User2Dos cannot be seen by User1Uno.
      * Asserts that the unauthorized action error message page is presented.
      */
-    @Test(priority = 2)
+    @Test()
     public void cannotSeeOtherPatients()
     {
         String unauthorizedActionMsgCheck = "You are not allowed to view this page or perform this action.";

@@ -7,7 +7,7 @@ public class SetupUsers extends BaseTest
 {
     HomePage aHomePage = new HomePage(theDriver);
 
-    @Test(priority = 1)
+    @Test()
     public void setEmailPort()
     {
         aHomePage.navigateToLoginPage()
@@ -20,7 +20,7 @@ public class SetupUsers extends BaseTest
     }
 
     // Creates the two users used by the automation.
-    @Test(priority = 2)
+    @Test()
     public void setupAutomationUsers()
     {
         aHomePage.navigateToLoginPage()

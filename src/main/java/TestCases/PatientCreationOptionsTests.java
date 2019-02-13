@@ -22,7 +22,7 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
     private CreatePatientPage aCreationPage = new CreatePatientPage(theDriver);
 
     // Cycle through all the options on the "Patient Information" Section.
-    @Test(priority = 1)
+    @Test()
     public void cycleThroughInfoOptions() {
         final List<String> checkOnsetLabels = new ArrayList<String>(Arrays.asList(
             "Unknown", "Congenital onset", "Antenatal onset", "Embryonal onset", "Fetal onset", "Neonatal onset",
@@ -84,7 +84,7 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
 
     }
 
-    @Test(priority = 2)
+    @Test()
     public void cycleThroughFamilialConditions()
     {
         final List<String> checkFamilialConditionsLabels = new ArrayList<String>(Arrays.asList(
@@ -107,7 +107,7 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
         aCreationPage.logOut();
     }
 
-    @Test(priority = 3)
+    @Test()
     public void cycleThroughPrenatalHistory()
     {
         final List<String> checkPrenatalConditionsLabels = new ArrayList<String>(Arrays.asList(
@@ -150,7 +150,7 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
         aCreationPage.cycleThroughPrenatalOptions().logOut();
     }
 
-    @Test(priority = 4)
+    @Test()
     public void cycleThroughPhenotypeDetails()
     {
         final List<String> checkPhenotypeDetailsLabels = new ArrayList<String>(Arrays.asList(
@@ -181,7 +181,7 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
         aCreationPage.logOut();
     }
 
-    @Test(priority = 5)
+    @Test()
     public void cycleThroughAllPhenotypes()
     {
         aHomePage.navigateToLoginPage()
@@ -201,7 +201,7 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
 
     // Clicks on all input boxes within the Diagnosis section and tries to provide input.
     // Asserts that the PubMedIDs and Resolution Notes are hidden upon toggling "Case Solved"
-    @Test(priority = 6)
+    @Test()
     public void cycleThroughDiagnosis()
     {
         aHomePage.navigateToLoginPage()
@@ -230,7 +230,7 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
     }
 
     // Checks that the red error message when inputting an invalid PubMed ID shows up.
-    @Test(priority = 7)
+    @Test()
     public void checkDiagnosisErrorMessages()
     {
         aHomePage.navigateToLoginPage()
