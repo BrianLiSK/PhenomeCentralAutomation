@@ -12,6 +12,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterClass;
@@ -45,33 +46,30 @@ public abstract class BaseTest
      * to the desired executable and setting up environment.
      */
     public BaseTest() {
-        if (browserToUse == activeBrowser.CHROME) {
-            WebDriverManager.chromedriver().setup();
-            theDriver = new ChromeDriver();
-        }
-        else if (browserToUse == activeBrowser.FIREFOX) {
-            WebDriverManager.firefoxdriver().setup();
-            theDriver = new FirefoxDriver();
-        }
-        else if (browserToUse == activeBrowser.EDGE) {
-            WebDriverManager.edgedriver().setup();
-            theDriver = new EdgeDriver();
-        }
-        else if (browserToUse == activeBrowser.IE) {
-            WebDriverManager.iedriver().setup();
-            theDriver = new EdgeDriver();
-        }
-        else if (browserToUse == activeBrowser.SAFARI) {
-            // No need to setup for Safari, native Selenium api should work... according to Apple docs
-            theDriver = new SafariDriver();
-        }
-        else {
-            System.out.println("Unknown browser, defaulting to Chrome");
-            WebDriverManager.chromedriver().setup();
-            theDriver = new ChromeDriver();
-        }
+        if (theDriver == null) {
+            if (browserToUse == activeBrowser.CHROME) {
+                WebDriverManager.chromedriver().setup();
+                theDriver = new ChromeDriver();
+            } else if (browserToUse == activeBrowser.FIREFOX) {
+                WebDriverManager.firefoxdriver().setup();
+                theDriver = new FirefoxDriver();
+            } else if (browserToUse == activeBrowser.EDGE) {
+                WebDriverManager.edgedriver().setup();
+                theDriver = new EdgeDriver();
+            } else if (browserToUse == activeBrowser.IE) {
+                WebDriverManager.iedriver().setup();
+                theDriver = new InternetExplorerDriver();
+            } else if (browserToUse == activeBrowser.SAFARI) {
+                // No need to setup for Safari, native Selenium api should work... according to Apple docs
+                theDriver = new SafariDriver();
+            } else {
+                System.out.println("Unknown browser, defaulting to Chrome");
+                WebDriverManager.chromedriver().setup();
+                theDriver = new ChromeDriver();
+            }
 
-        System.out.println("Initiating the webDriver for: " + browserToUse.toString());
+            System.out.println("Initiating the webDriver for: " + browserToUse.toString());
+        }
     }
 
     /**
