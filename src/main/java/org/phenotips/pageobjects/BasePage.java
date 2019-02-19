@@ -33,7 +33,7 @@ public abstract class BasePage
      */
     protected final String HOMEPAGE_URL = "http://localhost:8083";
 
-    protected final String ALL_PAITIENTS_URL = "http://localhost:8083/AllData";
+    // protected final String ALL_PAITIENTS_URL = "http://localhost:8083/AllData";
 
     // protected final String NEW_PAITIENTS_URL = "http://localhost:8083/AllData";
 
@@ -279,7 +279,7 @@ public abstract class BasePage
             clickOnElement(viewAllPatientsLink);
         } catch (ElementNotInteractableException e) {
             System.err.println("Might throw an error, All Patients Link not clickable!");
-            superDriver.navigate().to(ALL_PAITIENTS_URL);
+            //superDriver.navigate().to(ALL_PAITIENTS_URL);
         }
 
         waitForLoadingBarToDisappear();
