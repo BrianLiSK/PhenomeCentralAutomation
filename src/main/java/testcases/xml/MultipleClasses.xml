@@ -1,8 +1,0 @@
-<suite name="multipleClassesDemo" thread-count="1" parallel="methods" preserve-order="true">
-  <test name="testngTest" thread-count="1" parallel="methods" preserve-order="true">
-    <classes>
-      <class name="testcases.LoginPageTest" />
-      <class name="testcases.CreatePatientTest" />
-    </classes>
-  </test>
-</suite>
