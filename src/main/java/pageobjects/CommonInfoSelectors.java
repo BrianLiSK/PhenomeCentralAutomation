@@ -10,7 +10,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
-import TestCases.CommonInfoEnums;
+import testcases.CommonInfoEnums;
 
 /** Contains common selectors for the accordion sections on the create and view patient info pages.
  *  Ex. http://localhost:8083/data/P0000015 and http://localhost:8083/edit/data/P0000015

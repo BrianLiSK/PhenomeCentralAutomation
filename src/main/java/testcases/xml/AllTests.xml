@@ -9,14 +9,14 @@
         </methods>
       </class>
 
-      <class name="TestCases.LoginPageTest">
+      <class name="testcases.LoginPageTest">
         <methods>
           <include name="loginAdminTest" />
           <include name="loginUserTest" />
         </methods>
       </class>
 
-      <class name="TestCases.CreatePatientTest" >
+      <class name="testcases.CreatePatientTest" >
         <methods>
           <include name="createPatientManually" />
           <include name="importSecondJSONPatient" />
@@ -30,7 +30,7 @@
         </methods>
       </class>
 
-      <class name="TestCases.AddingUsersTests" >
+      <class name="testcases.AddingUsersTests" >
         <methods>
           <include name="adminAddAndApproveUser" />
           <include name="userSignUpNotApproved" />
@@ -39,7 +39,7 @@
         </methods>
       </class>
 
-      <class name="TestCases.MatchNotificationPageTests" >
+      <class name="testcases.MatchNotificationPageTests" >
         <methods>
           <include name="refreshMatchesFirst" />
           <include name="matchPhenotypeOnly" />
@@ -47,7 +47,7 @@
         </methods>
       </class>
 
-      <class name="TestCases.PatientCreationOptionsTests" >
+      <class name="testcases.PatientCreationOptionsTests" >
         <methods>
           <include name="cycleThroughInfoOptions" />
           <include name="cycleThroughFamilialConditions" />
@@ -59,7 +59,7 @@
         </methods>
       </class>
 
-      <class name="TestCases.PedigreePageTest" >
+      <class name="testcases.PedigreePageTest" >
         <methods>
           <include name="basicPedigree" />
           <include name="createChild" />
@@ -69,7 +69,7 @@
         </methods>
       </class>
 
-      <class name="TestCases.PermissionsTests" >
+      <class name="testcases.PermissionsTests" >
         <methods>
           <include name="noMatchPrivatePatient" />
           <include name="cannotSeeOtherPatients" />

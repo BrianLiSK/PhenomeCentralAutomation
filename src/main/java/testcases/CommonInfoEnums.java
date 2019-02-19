@@ -1,4 +1,4 @@
-package TestCases;
+package testcases;
 
 /**
  * This class provides common enums used by both pageobjects and can be used in test cases too.

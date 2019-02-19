@@ -10,7 +10,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
-import TestCases.CommonPatientMeasurement;
+import testcases.CommonPatientMeasurement;
 
 /**
  * Represents the page reached when "Create... -> New patient" is clicked on the navbar

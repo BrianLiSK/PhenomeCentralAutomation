@@ -1,7 +1,7 @@
 import org.testng.annotations.Test;
 
 import pageobjects.HomePage;
-import TestCases.BaseTest;
+import testcases.BaseTest;
 
 public class SetupUsers extends BaseTest
 {
