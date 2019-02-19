@@ -5,9 +5,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
 
-// This is a self-contained test that does not depend on anything in PageObjects
+// This is a self-contained test that does not depend on anything in pageobjects
 // Implement using JUnit or TestNG for annotations
-// Seperate into PageObjects and Testcases
+// Seperate into pageobjects and Testcases
 
 public class DummyTest
 {

@@ -1,6 +1,6 @@
 import org.testng.annotations.Test;
 
-import PageObjects.HomePage;
+import pageobjects.HomePage;
 import TestCases.BaseTest;
 
 public class SetupUsers extends BaseTest

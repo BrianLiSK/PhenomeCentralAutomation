@@ -1,11 +1,10 @@
-package PageObjects;
+package pageobjects;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;

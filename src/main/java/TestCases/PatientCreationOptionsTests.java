@@ -7,8 +7,8 @@ import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import PageObjects.CreatePatientPage;
-import PageObjects.HomePage;
+import pageobjects.CreatePatientPage;
+import pageobjects.HomePage;
 
 /**
  * This class of tests will eventually cycle through the possible options when creating a patient via

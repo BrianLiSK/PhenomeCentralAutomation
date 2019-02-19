@@ -8,10 +8,10 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import PageObjects.AdminRefreshMatchesPage;
-import PageObjects.EmailUIPage;
-import PageObjects.HomePage;
-import PageObjects.ViewPatientPage;
+import pageobjects.AdminRefreshMatchesPage;
+import pageobjects.EmailUIPage;
+import pageobjects.HomePage;
+import pageobjects.ViewPatientPage;
 import net.bytebuddy.utility.RandomString;
 
 /**

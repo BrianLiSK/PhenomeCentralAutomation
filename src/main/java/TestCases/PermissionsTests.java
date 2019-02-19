@@ -7,10 +7,10 @@ import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import PageObjects.AdminMatchNotificationPage;
-import PageObjects.AdminRefreshMatchesPage;
-import PageObjects.HomePage;
-import PageObjects.ViewPatientPage;
+import pageobjects.AdminMatchNotificationPage;
+import pageobjects.AdminRefreshMatchesPage;
+import pageobjects.HomePage;
+import pageobjects.ViewPatientPage;
 import net.bytebuddy.utility.RandomString;
 
 /**

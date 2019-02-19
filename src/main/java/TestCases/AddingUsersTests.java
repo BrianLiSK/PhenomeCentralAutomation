@@ -7,8 +7,8 @@ import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import PageObjects.HomePage;
-import PageObjects.UserSignUpPage;
+import pageobjects.HomePage;
+import pageobjects.UserSignUpPage;
 import net.bytebuddy.utility.RandomString;
 
 /**

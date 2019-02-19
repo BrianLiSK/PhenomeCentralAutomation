@@ -7,12 +7,12 @@ import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import PageObjects.AdminRefreshMatchesPage;
-import PageObjects.CreatePatientPage;
-import PageObjects.EmailUIPage;
+import pageobjects.AdminRefreshMatchesPage;
+import pageobjects.CreatePatientPage;
+import pageobjects.EmailUIPage;
 import net.bytebuddy.utility.RandomString;
-import PageObjects.HomePage;
-import PageObjects.ViewPatientPage;
+import pageobjects.HomePage;
+import pageobjects.ViewPatientPage;
 
 /**
  * Testing the creation of two very similar patients via JSON import and manually. Asserts a match at end.
