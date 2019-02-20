@@ -72,6 +72,8 @@ public abstract class BasePage
 
     private final By loadingStatusBar = By.id("patients-ajax-loader");
 
+    private final By inProgressMsg = By.cssSelector("div[class='xnotification xnotification-inprogress']");
+
     protected final By logOutLink = By.id("tmLogout"); // Used to check when modals close
 
     // Approval Pending Message that appears on all pages for an unapproved user
@@ -314,7 +316,7 @@ public abstract class BasePage
      */
     public CreatePatientPage navigateToCreateANewPatientPage() {
         clickOnElement(createMenuDrp);
-        unconditionalWaitNs(1);
+        // unconditionalWaitNs(1); // This should not be needed anymore? Test.
 
         try {
             clickOnElement(newPatientLink);
@@ -438,6 +440,8 @@ public abstract class BasePage
 
     /**
      * Navigates to the homepage by clicking on the PhenomeCentral Logo at the top left corner of the top toolbar.
+     * Note that this gets overridden in the EmailUIPage class because the PC logo doesn't appear there and we have to
+     * explicitly navigate back to the homepage by explicitly navigating to the HOMEPAGE_URL
      * @return A new instance of a HomePage as we navigate there.
      */
     public HomePage navigateToHomePage()
@@ -453,6 +457,20 @@ public abstract class BasePage
      */
     public void waitForLoadingBarToDisappear()
     {
+        waitForElementToBePresent(loadingStatusBar);
         waitForElementToBeGone(loadingStatusBar);
+    }
+
+    /**
+     * Explicitly wait until the spinning message (xwiki generated) that appears on the bottom of the page disappears.
+     * This message appears when sending a request to the servers. It has several different texts as
+     * they appear in multiple areas but they usually have a black background before changing to green.
+     * Example, deleting a patient makes the black "Sending Request..." before changing to green "Done!".
+     * Also, importing JSON patient also makes "Importing JSON, please be patient..." followed by "Done!".
+     */
+    public void waitForInProgressMsgToDisappear()
+    {
+        waitForElementToBePresent(inProgressMsg);
+        waitForElementToBeGone(inProgressMsg);
     }
 }
