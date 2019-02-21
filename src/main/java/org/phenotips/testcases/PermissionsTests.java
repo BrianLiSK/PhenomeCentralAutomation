@@ -101,6 +101,8 @@ public class PermissionsTests extends BaseTest
             .filterByID(createdPatient1);
 
         Assert.assertFalse(anAdminMatchNotificationPage.doesMatchExist(createdPatient1, createdPatient2));
+
+        anAdminRefreshMatchesPage.logOut();
     }
 
     /**

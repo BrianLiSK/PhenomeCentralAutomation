@@ -260,6 +260,8 @@ public class PedigreePageTest extends BaseTest implements CommonInfoEnums
             .addGene("FOXP2", "Carrier");
 
         Assert.assertTrue(aPedigreeEditorPage.doesWarningDialogueAppear());
+
+        aHomePage.logOut();
     }
 
 }

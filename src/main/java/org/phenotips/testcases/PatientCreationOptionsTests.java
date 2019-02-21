@@ -256,6 +256,8 @@ public class PatientCreationOptionsTests extends BaseTest implements CommonInfoE
             .addPubMedID("30699054");
 
         Assert.assertTrue(aCreationPage.isNthPubMDBoxValid(1));
+
+        aCreationPage.logOut();
     }
 
 

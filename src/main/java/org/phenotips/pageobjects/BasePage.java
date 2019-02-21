@@ -9,6 +9,7 @@ import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.ByChained;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -192,13 +193,13 @@ public abstract class BasePage
     {
         try {
             aWebElement.click();
-        } catch (ElementNotInteractableException e) {
+        } catch (WebDriverException e) {
             ((JavascriptExecutor)superDriver).executeScript("arguments[0].scrollIntoView();", aWebElement);
             try {
                 aWebElement.click();
-            } catch (ElementNotInteractableException f) {
+            } catch (WebDriverException f) {
                 ((JavascriptExecutor)superDriver).executeScript("arguments[0].click();", aWebElement);
-                System.out.println("Force click on element: " + aWebElement);
+                System.out.println("Warning: Force click on element: " + aWebElement);
             }
 
         }
@@ -457,7 +458,6 @@ public abstract class BasePage
      */
     public void waitForLoadingBarToDisappear()
     {
-        waitForElementToBePresent(loadingStatusBar);
         waitForElementToBeGone(loadingStatusBar);
     }
 

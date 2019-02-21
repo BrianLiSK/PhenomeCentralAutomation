@@ -111,7 +111,7 @@ public class AdminMatchNotificationPage extends AdminSettingsPage
         clickOnElement(sendNotificationsBtn);
 
         // Wait for the green "Sending emails..." message to disappear.
-        waitForElementToBePresent(sendingNotificationMessage);
+//        waitForElementToBePresent(sendingNotificationMessage);
         waitForElementToBeGone(sendingNotificationMessage);
 
         return this;
