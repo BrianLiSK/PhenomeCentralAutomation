@@ -149,7 +149,7 @@ public class CreatePatientTest extends BaseTest implements CommonInfoEnums
         Assert.assertEquals(emailPage.getNumberOfEmails(), 2);
 
         emailPage.deleteAllEmails();
-        theDriver.navigate().back();
+        emailPage.navigateToHomePage();
         aViewPatientPage.logOut();
     }
 

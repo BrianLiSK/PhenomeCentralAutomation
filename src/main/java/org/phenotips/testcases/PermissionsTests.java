@@ -123,5 +123,7 @@ public class PermissionsTests extends BaseTest
             .loginAsUser();
 
         Assert.assertEquals(aHomePage.getUnauthorizedErrorMessage(), unauthorizedActionMsgCheck);
+
+        anAdminRefreshMatchesPage.logOut();
     }
 }

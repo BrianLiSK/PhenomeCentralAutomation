@@ -473,4 +473,17 @@ public abstract class BasePage
         waitForElementToBePresent(inProgressMsg);
         waitForElementToBeGone(inProgressMsg);
     }
+
+    /**
+     * Dismiss the "You have unsaved changes on this page. Continue?" warning message that appears when
+     * trying to navigate away from a page with unsaved edits. It selects "Leave" button.
+     * This is a native browser (operating system, not web-based) warning dialogue.
+     * Requires: That there actually be a warning box open and active on the browser. Selenium will throw
+     *             a "NoAlertPresentException" if there is actually no dialogue to interact with.
+     */
+    public void dismissUnsavedChangesWarning()
+    {
+        superDriver.switchTo().alert().accept();
+        superDriver.switchTo().defaultContent();
+    }
 }

@@ -91,23 +91,6 @@ public abstract class BaseTest
 
         if (ITestResult.FAILURE == testResult.getStatus()) {
 
-            // Navigate to a blank page. Might trigger a warning modal for unsaved edits.
-            // Ensure that any open alert dialogue is closed before continuing.
-            // Navigating away and taking care of potential unsaved changes alert allows the next test
-            // to be run.
-            try {
-                theDriver.navigate().to("about:blank");
-                theDriver.switchTo().alert().accept();
-                theDriver.switchTo().defaultContent();
-                tempHomePage.logOut();
-                tempHomePage.navigateToLoginPage();
-                System.out.println("Test failure, navigate to blank page. Closed an unsaved changes warning dialogue");
-            } catch (NoAlertPresentException e) {
-                tempHomePage.logOut();
-                tempHomePage.navigateToLoginPage();
-                System.out.println("Test failure, navigate to blank page. There is no unsaved changes warning.");
-            }
-
             // Screenshot mechanism
             // Cast webDriver over to TakeScreenshot. Call getScreenshotAs method to create image file
             File srcFile = ((TakesScreenshot)theDriver).getScreenshotAs(OutputType.FILE);
@@ -126,19 +109,26 @@ public abstract class BaseTest
                 System.out.println("Something went wrong copying over screenshot: " + e);
             }
 
+            // Navigate to a login page. Might trigger a warning modal for unsaved edits.
+            // Ensure that any open alert dialogue is closed before continuing.
+            // Navigating away and taking care of potential unsaved changes alert allows the next test
+            // to be run.
+            // TODO: This is bad logic. Maybe dump the driver and restart a new instance.
+            //          It might not even get to the home page.
+            try {
+                tempHomePage.navigateToLoginPage();
+                System.out.println("Test failure, navigate to login page. There is no unsaved changes warning.");
+            } catch (UnhandledAlertException e) {
+                theDriver.switchTo().alert().accept();
+                theDriver.switchTo().defaultContent();
+                tempHomePage.navigateToLoginPage();
+                System.out.println("Test failure, navigate to login page. Closed an unsaved changes warning dialogue");
+            }
+
         }
 
         else {
             System.out.println("Method (test) suceeded or skipped. No screenshot. Moving on.");
-        }
-
-        // Always try to close warning dialogue regardless of test result
-
-        try {
-            theDriver.switchTo().alert().accept();
-            System.out.println("Had to close a warning dialogue and logout again.");
-        } catch (NoAlertPresentException e) {
-            // There was no alert dialogue that appeared, so do nothing.
         }
 
     }
