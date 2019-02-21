@@ -250,7 +250,7 @@ public class PedigreeEditorPage extends BasePage
             clickOnElement(createNewPatientBtn);
             clickOnElement(confirmNewPatientBtn);
             waitForElementToBeClickable(personalTab);
-            unconditionalWaitNs(5);
+            unconditionalWaitNs(5); // PersonalTab is deemed clickable too early? Loading modal has not fully disappeared.
         }
         else {
             clickAndTypeOnElement(linkPatientBox, patientID);

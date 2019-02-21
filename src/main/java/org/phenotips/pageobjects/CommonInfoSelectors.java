@@ -144,7 +144,7 @@ public abstract class CommonInfoSelectors extends BasePage implements CommonInfo
 
         forceClickOnElement(updateConfirmBtn);
         waitForElementToBeClickable(logOutLink);
-        unconditionalWaitNs(2);
+        unconditionalWaitNs(2); // Modal does not seem to be fully closed even when logOut link turns to clickable?
     }
 
     /**
@@ -161,7 +161,7 @@ public abstract class CommonInfoSelectors extends BasePage implements CommonInfo
 
         forceClickOnElement(updateConfirmBtn);
         waitForElementToBeClickable(logOutLink);
-        unconditionalWaitNs(2);
+        unconditionalWaitNs(2); // Likewise, the modal does not seem to be fully closed even when logOut is clickable?
     }
 
 
