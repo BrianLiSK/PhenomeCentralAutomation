@@ -39,7 +39,8 @@ public class PermissionsTests extends BaseTest
     public void noMatchPrivatePatient()
     {
         List<String> loPhenotypesToAdd = new ArrayList<String>(Arrays.asList(
-            "Nausea and vomiting", "Poikilocytosis", "Swollen lip", "Narcolepsy", "Eye poking"));
+            "Perimembranous ventricular septal defect", "Postaxial polysyndactyly of foot",
+            "Delayed ability to stand"));
 
         final String patientUniqueIdentifier = "NoPermissionForMatch " + randomChars;
 
@@ -58,13 +59,13 @@ public class PermissionsTests extends BaseTest
             .toggleFirstFourConsentBoxes()
             .updateConsent()
             .setIdentifer(patientUniqueIdentifier)
-            .setDOB("02", "2002")
+            .setDOB("01", "2001")
             .setGender("Female")
             .expandSection(CommonInfoEnums.SECTIONS.ClinicalSymptomsSection)
             .addPhenotypes(loPhenotypesToAdd)
             .expandSection(CommonInfoEnums.SECTIONS.ClinicalSymptomsSection)
             .expandSection(CommonInfoEnums.SECTIONS.GenotypeInfoSection)
-            .addGene("SH2B3", "Confirmed causal", "Sequencing")
+            .addGene("CEP85", "Confirmed causal", "Sequencing")
             .saveAndViewSummary();
 
         aViewPatientPage.setGlobalVisibility("Private");
@@ -77,13 +78,13 @@ public class PermissionsTests extends BaseTest
             .toggleFirstFourConsentBoxes()
             .updateConsent()
             .setIdentifer(patientUniqueIdentifier + "Matchee")
-            .setDOB("03", "2003")
+            .setDOB("05", "2005")
             .setGender("Male")
             .expandSection(CommonInfoEnums.SECTIONS.ClinicalSymptomsSection)
             .addPhenotypes(loPhenotypesToAdd)
             .expandSection(CommonInfoEnums.SECTIONS.ClinicalSymptomsSection)
             .expandSection(CommonInfoEnums.SECTIONS.GenotypeInfoSection)
-            .addGene("SH2B3", "Confirmed causal", "Sequencing")
+            .addGene("CEP85", "Confirmed causal", "Sequencing")
             .saveAndViewSummary();
 
         createdPatient2 = aViewPatientPage.getPatientID();
