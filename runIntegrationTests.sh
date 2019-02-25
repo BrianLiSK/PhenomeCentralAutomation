@@ -1,27 +1,32 @@
 #!/usr/bin/env bash
 
+# PC and SMTP UI ports. These can be changed as needed.
 browser="chrome"
 PCInstancePort="8083"
-PCInstanceURL="localhost:$PCInstancePort"
 PCInstanceStopPort="8087"
-emailUIPort="8085"
-outGoingEmailPort="1025"
-curDate=$(date +'%s')
-zipExtract="PCInstance_$curDate/"
+emailUIPort="8085" # Port to access Fake SMTP (MockMock) email inbox UI
+outGoingEmailPort="1025" # PC instance sends emails to this port. Fake SMTP (MockMock) listens to this port.
+
+PCInstanceURL="localhost:$PCInstancePort"
+emailUIURL="localhost:$emailUIPort"
+
+curDate=$(date +'%s') # Set once
+zipExtract="PCInstance_$curDate/" # Directory to create and will contain the contents of extracted zip file
 
 
-PCZipLocation=""
-PCZipName=""
-distPath="../standalone/distribution/"
+distPath="../standalone/distribution/" # Path to phenomecentral.org's distribution folder, where standalone zip is located
 distZip="phenomecentral-standalone*.zip"
+PCZipName="" # The exact name of the zip file found, to be set in extractZip()
+
+
 logFile="logFile$curDate.txt"
 startPCInstanceCommand="./start.sh"
 stopPCInstanceCommand="./stop.sh"
 startSMTPCommand="java -jar MockMock.jar"
-SMTPPID=""
+SMTPPID="" # PID of the FakeSMTP that is to be set in startSMTP()
 startingMessage="Phenotips is initializing"
 
-
+# cd into standalone directory, locate the zip, and extract it to where we were previously. If 0 or more than 1 standalone zip located, exits
 extractZip() {
 	# Go to distribution folder of PC and check for zips there.
 	# Should do this because ls might give full path of file (instead of just filename) if we do not cd into the directory. Dependent on unix flavour.
@@ -50,7 +55,7 @@ extractZip() {
 }
 
 startInstance() {
-	zipSubdir=${PCZipName%????} # Cut off last 4 chars of PCZipName
+	zipSubdir=${PCZipName%????} # Cut off last 4 chars of PCZipName (remove the .zip extension as this is the folder name)
 	cd $zipExtract$zipSubdir
 	echo "Starting server on port $PCInstancePort and stop port $PCInstanceStopPort" | tee -a $logFile
 	$startPCInstanceCommand $PCInstancePort $PCInstanceStopPort 2>&1 | tee -a $logFile &
@@ -58,6 +63,7 @@ startInstance() {
 	echo "Waited 60 seconds for server to start. Now check with curl command" | tee -a $logFile
 }
 
+# Checks if the instance has started, recursivly calls itself to check again if the "Phenotips is initializing" message is still there after waiting.
 checkForStart() {
 	local curlResult=$(curl "$PCInstanceURL")
 	local curlReturn=$?
@@ -118,6 +124,7 @@ cd "$PRGDIR"
 
 echo "ProgramDir is calculated as: $PRGDIR"
 
+# Create a debug log file.
 touch $logFile
 pwdir="$(pwd)"
 logFile="$pwdir/$logFile" #Specify absolute path to logfile
