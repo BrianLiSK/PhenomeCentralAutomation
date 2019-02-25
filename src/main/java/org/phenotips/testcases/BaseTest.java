@@ -129,8 +129,10 @@ public abstract class BaseTest
 
             LocalDateTime dateTime = ZonedDateTime.now().toLocalDateTime();
 
+            String scrnFileName = "target/screenshots/" + testResult.getMethod().getMethodName() + " " + dateTime + ".png";
+
             // Save screenshot in target/screenshots folder with the methodName of failed test and timestamp.
-            File destFile = new File("target/screenshots/" + testResult.getMethod().getMethodName() + " " + dateTime + ".png");
+            File destFile = new File(scrnFileName);
 
             System.out.println("Test failed. Taking screenshot...");
 
@@ -143,9 +145,9 @@ public abstract class BaseTest
 
             // Add screenshot to Allure Report
 //            Allure.addAttachment("Test fail screenshot", "My attachment content");
-            Path content = Paths.get("target/screenshots/" + testResult.getMethod().getMethodName() + " " + dateTime + ".png");
+            Path content = Paths.get(scrnFileName);
             try (InputStream is = Files.newInputStream(content)) {
-                Allure.addAttachment("My attachment", is);
+                Allure.addAttachment("Failure: " + testResult.getMethod().getMethodName(), is);
             } catch (IOException e) {
                 System.out.println("Something went wrong giving screenshot to Allure: " + e);
             }
