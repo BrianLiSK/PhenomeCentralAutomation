@@ -14,7 +14,7 @@ curDate=$(date +'%s') # Set once
 zipExtract="PCInstance_$curDate/" # Directory to create and will contain the contents of extracted zip file
 
 
-distPath="../standalone/distribution/" # Path to phenomecentral.org's distribution folder, where standalone zip is located
+distPath="../../standalone/distribution/" # Path to phenomecentral.org's distribution folder, where standalone zip is located
 distZip="phenomecentral-standalone*.zip"
 PCZipName="" # The exact name of the zip file found, to be set in extractZip()
 
