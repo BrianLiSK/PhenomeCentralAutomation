@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # PC and SMTP UI ports. These can be changed as needed.
-browser="chrome"
+browser="chrome" # One of: chrome, firefox, edge, ie, safari
 PCInstancePort="8083"
 PCInstanceStopPort="8084"
 emailUIPort="8085" # Port to access Fake SMTP (MockMock) email inbox UI
@@ -26,8 +26,9 @@ startSMTPCommand="java -jar MockMock.jar"
 SMTPPID="" # PID of the FakeSMTP that is to be set in startSMTP()
 startingMessage="Phenotips is initializing"
 readyMessage="About PhenomeCentral"
-# TODO: Let's not hardcode this like so
-mavenCommand="mvn test -f ../../../pom.xml -Dsurefire.suiteXmlFiles=src/main/java/org/phenotips/testcases/xml/AllTests.xml"
+# TODO: Ensure that these remain correct
+mavenPOMLocation="../../../pom.xml"
+mavenTestNGXMLLocation="src/main/java/org/phenotips/testcases/xml/AllTests.xml"
 
 # cd into standalone directory, locate the zip, and extract it to where we were previously. If 0 or more than 1 standalone zip located, exits
 extractZip() {
@@ -93,8 +94,8 @@ checkForStart() {
 }
 
 runTests() {
-	echo "Compiling and running e2e testing framework with maven. Should see maven messages and browser soon" | tee -a $logFile
-	$mavenCommand | tee -a $logFile
+	echo "Compiling and running e2e testing framework with maven. Should see maven messages and browser soon"
+	mvn test -f $mavenPOMLocation -Dsurefire.suiteXmlFiles=$mavenTestNGXMLLocation -Dbrowser=$browser -DhomePageURL=$PCInstanceURL -DemailUIPageURL=$emailUIURL 
 }
 
 stopInstance() {
@@ -145,6 +146,13 @@ cd "$PRGDIR"
 
 echo "ProgramDir is calculated as: $PRGDIR"
 
+# If a browser argument is passed, then set browser argument
+# TODO: Make arguments to allow stop/start ports. Perhaps argument parser needed.
+if [ -n "$1" ]; then
+	browser=$1
+	echo "Browser is being specified as: $browser" | tee -a $logFile
+fi
+
 # Create a debug log file.
 touch $logFile
 pwdir="$(pwd)"
@@ -157,7 +165,7 @@ trap onCtrlC SIGINT # If we break (ctrl+c) from here on, we should stop SMTP and
 startSMTP
 startInstance
 checkForStart
-runTests
+runTests | tee -a $logFile
 stopInstance
 stopSMTP
 
