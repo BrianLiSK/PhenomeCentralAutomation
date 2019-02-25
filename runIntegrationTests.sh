@@ -22,40 +22,6 @@ SMTPPID=""
 startingMessage="Phenotips is initializing"
 
 
-CURL_OUTPUT_FILE=curlOutput.temp
-CURL_OUTPUT_FILE2=curlOutput2.temp
-
-# Taken from start.sh
-# Ensure that the commands below are always started in the directory where this script is
-# located. To do this we compute the location of the current script.
-PRG="$0"
-while [ -h "$PRG" ]; do
-  ls=`ls -ld "$PRG"`
-  link=`expr "$ls" : '.*-> \(.*\)$'`
-  if expr "$link" : '/.*' > /dev/null; then
-    PRG="$link"
-  else
-    PRG=`dirname "$PRG"`/"$link"
-  fi
-done
-PRGDIR=`dirname "$PRG"`
-cd "$PRGDIR"
-
-echo "ProgramDir is calculated as: $PRGDIR"
-
-# rm $CURL_OUTPUT_FILE
-# rm $CURL_OUTPUT_FILE2
-# rm stdout.out
-
-#mkdir $zipExtract
-#cp $PCZipLocation $zipExtract/
-#unzip $zipExtract/$PCZipName 
-#cd $PCZipName
-
-touch $logFile
-pwdir="$(pwd)"
-logFile="$pwdir/$logFile" #Specify absolute path to logfile
-
 extractZip() {
 	# Go to distribution folder of PC and check for zips there.
 	# Should do this because ls might give full path of file (instead of just filename) if we do not cd into the directory. Dependent on unix flavour.
@@ -131,12 +97,39 @@ stopSMTP() {
 	kill -INT $SMTPPID
 }
 
+##################
+# main
+##################
+# Taken from start.sh
+# Ensure that the commands below are always started in the directory where this script is
+# located. To do this we compute the location of the current script.
+PRG="$0"
+while [ -h "$PRG" ]; do
+  ls=`ls -ld "$PRG"`
+  link=`expr "$ls" : '.*-> \(.*\)$'`
+  if expr "$link" : '/.*' > /dev/null; then
+    PRG="$link"
+  else
+    PRG=`dirname "$PRG"`/"$link"
+  fi
+done
+PRGDIR=`dirname "$PRG"`
+cd "$PRGDIR"
+
+echo "ProgramDir is calculated as: $PRGDIR"
+
+touch $logFile
+pwdir="$(pwd)"
+logFile="$pwdir/$logFile" #Specify absolute path to logfile
+
 extractZip
 startSMTP
 startInstance
 #checkForStart
 stopInstance
 stopSMTP
+
+# Old stuff below
 
 startServer() {
 	#bash --rcfile ./start.sh ;
