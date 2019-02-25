@@ -7,8 +7,8 @@ PCInstanceStopPort="8084"
 emailUIPort="8085" # Port to access Fake SMTP (MockMock) email inbox UI
 outGoingEmailPort="1025" # PC instance sends emails to this port. Fake SMTP (MockMock) listens to this port.
 
-PCInstanceURL="localhost:$PCInstancePort"
-emailUIURL="localhost:$emailUIPort"
+PCInstanceURL="http://localhost:$PCInstancePort"
+emailUIURL="http://localhost:$emailUIPort"
 
 curDate=$(date +'%s') # Set once
 zipExtract="PCInstance_$curDate/" # Directory to create and will contain the contents of extracted zip file
@@ -63,8 +63,8 @@ startInstance() {
 	cd $zipExtract$zipSubdir
 	echo "Starting server on port $PCInstancePort and stop port $PCInstanceStopPort" | tee -a $logFile
 	$startPCInstanceCommand $PCInstancePort $PCInstanceStopPort 2>&1 | tee -a $logFile &
-	sleep 10
-	echo "Waited 60 seconds for server to start. Now check with curl command" | tee -a $logFile
+	sleep 30
+	echo "Waited 30 seconds for server to start. Now check with curl command" | tee -a $logFile
 }
 
 # Checks if the instance has started, recursivly calls itself to check again if the "Phenotips is initializing" message is still there after waiting.
