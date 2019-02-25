@@ -4,6 +4,10 @@ import org.phenotips.pageobjects.HomePage;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
@@ -24,6 +28,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import io.qameta.allure.Allure;
 
 /**
  * An abstract test. All tests should inherit this class.
@@ -135,6 +140,16 @@ public abstract class BaseTest
             } catch (IOException e) {
                 System.out.println("Something went wrong copying over screenshot: " + e);
             }
+
+            // Add screenshot to Allure Report
+//            Allure.addAttachment("Test fail screenshot", "My attachment content");
+            Path content = Paths.get("target/screenshots/" + testResult.getMethod().getMethodName() + " " + dateTime + ".png");
+            try (InputStream is = Files.newInputStream(content)) {
+                Allure.addAttachment("My attachment", is);
+            } catch (IOException e) {
+                System.out.println("Something went wrong giving screenshot to Allure: " + e);
+            }
+
 
             // Navigate to a login page. Might trigger a warning modal for unsaved edits.
             // Ensure that any open alert dialogue is closed before continuing.
