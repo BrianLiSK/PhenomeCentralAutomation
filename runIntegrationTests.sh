@@ -52,9 +52,9 @@ echo "ProgramDir is calculated as: $PRGDIR"
 #unzip $zipExtract/$PCZipName 
 #cd $PCZipName
 
-touch "$logFile"
+touch $logFile
 pwdir="$(pwd)"
-logFile="$pwdir$logFile"
+logFile="$pwdir/$logFile" #Specify absolute path to logfile
 
 extractZip() {
 	# Go to distribution folder of PC and check for zips there.
@@ -66,30 +66,30 @@ extractZip() {
 	PCZipName=$(ls $distZip -t1 | head -n 1)
 
 	if [[ $numberOfZipsFound -eq 0 ]]; then
-		echo "No zips following pattern of $distZip were found in $distPath. Exiting." | tee -a "$logFile"
+		echo "No zips following pattern of $distZip were found in $distPath. Exiting." | tee -a $logFile
 		exit
 	elif [[ $numberOfZipsFound -gt 1 ]]; then
-		echo "More than one zip following pattern of $distZip were found in $distPath. Not sure which one to use. Exiting." | tee -a "$logFile"
+		echo "More than one zip following pattern of $distZip were found in $distPath. Not sure which one to use. Exiting." | tee -a $logFile
 		exit
 	else
-		echo "Found $PCZipName in $distPath" | tee -a "$logFile"
+		echo "Found $PCZipName in $distPath" | tee -a $logFile
 		# Return to where we were
 		cd -
 
 		mkdir "$zipExtract"
-		unzip $distPath$PCZipName -d "$zipExtract" 2>&1 | tee -a "$logFile"
+		unzip $distPath$PCZipName -d "$zipExtract" 2>&1 | tee -a $logFile
 
-		echo "Extracted $PCZipName to $zipExtract" | tee -a "$logFile"
+		echo "Extracted $PCZipName to $zipExtract" | tee -a $logFile
 	fi
 }
 
 startInstance() {
-	zipDir=${PCZipName%????} # Cut off last 4 chars of PCZipName
-	cd "$zipExtract$PCZipName"
-	echo "Starting server on port $PCInstancePort and stop port $PCInstanceStopPort" | tee -a "$logFile"
-	"$startPCInstanceCommand $PCInstancePort $PCInstanceStopPort" 2>&1 | tee -a "$logFile" &
+	zipSubdir=${PCZipName%????} # Cut off last 4 chars of PCZipName
+	cd $zipExtract$zipSubdir
+	echo "Starting server on port $PCInstancePort and stop port $PCInstanceStopPort" | tee -a $logFile
+	$startPCInstanceCommand $PCInstancePort $PCInstanceStopPort 2>&1 | tee -a $logFile &
 	sleep 60
-	echo "Waited 60 seconds for server to start. Now check with curl command" | tee -a "$logFile"
+	echo "Waited 60 seconds for server to start. Now check with curl command" | tee -a $logFile
 }
 
 checkForStart() {
@@ -97,17 +97,17 @@ checkForStart() {
 	local curlReturn=$?
 
 	if test "curlReturn" != "0"; then
-		echo "Curl to $PCInstanceURL has failed. Wait 10 secs on try again" | tee -a "$logFile"
+		echo "Curl to $PCInstanceURL has failed. Wait 10 secs on try again" | tee -a $logFile
 		sleep 10
 		checkForStart
 	else
-		echo "Response recieved on curl to $PCInstanceURL." | tee -a "$logFile"
+		echo "Response recieved on curl to $PCInstanceURL." | tee -a $logFile
 		local startingMessageFound=$(curl "$PCInstanceURL" | grep -c "$startingMessage")
 
 		if [[ "$startingMessageFound" -eq 0 ]]; then
-			echo "It seems instance has sucessfully started and is ready." | tee -a "$logFile"
+			echo "It seems instance has sucessfully started and is ready." | tee -a $logFile
 		else
-			echo "Instance is not ready yet. Wait 10 seconds and ping again" | tee -a "$logFile"
+			echo "Instance is not ready yet. Wait 10 seconds and ping again" | tee -a $logFile
 			sleep 10
 			checkForStart
 		fi
@@ -115,19 +115,19 @@ checkForStart() {
 }
 
 stopInstance() {
-	echo "Stopping instance that was started on port $PCInstancePort and stop port $PCInstanceStopPort" | tee -a "$logFile"
-	"$stopPCInstanceCommand $PCInstanceStopPort"
+	echo "Stopping instance that was started on port $PCInstancePort and stop port $PCInstanceStopPort" | tee -a $logFile
+	$stopPCInstanceCommand $PCInstanceStopPort | tee -a $logFile
 }
 
 startSMTP() {
-	echo "Starting SMTP (MockMock). Listening on $outGoingEmailPort. Email UI is at $emailUIPort" | tee -a "$logFile"
-	"$startSMTPCommand -p $outGoingEmailPort -h $emailUIPort" &
+	echo "Starting SMTP (MockMock). Listening on $outGoingEmailPort. Email UI is at $emailUIPort" | tee -a $logFile
+	$startSMTPCommand -p $outGoingEmailPort -h $emailUIPort &
 	SMTPPID=$!
-	sleep 30
+	sleep 10
 }
 
 stopSMTP() {
-	echo "Killing SMTP" | tee -a "$logFile"
+	echo "Killing SMTP" | tee -a $logFile
 	kill -INT $SMTPPID
 }
 
