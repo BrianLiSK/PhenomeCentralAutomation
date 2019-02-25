@@ -169,3 +169,6 @@ runTests | tee -a $logFile
 stopInstance
 stopSMTP
 
+mvn -f $mavenPOMLocation io.qameta.allure:allure-maven:serve
+
+
