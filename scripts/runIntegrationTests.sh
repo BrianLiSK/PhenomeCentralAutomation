@@ -3,7 +3,7 @@
 # PC and SMTP UI ports. These can be changed as needed.
 browser="chrome"
 PCInstancePort="8083"
-PCInstanceStopPort="8087"
+PCInstanceStopPort="8084"
 emailUIPort="8085" # Port to access Fake SMTP (MockMock) email inbox UI
 outGoingEmailPort="1025" # PC instance sends emails to this port. Fake SMTP (MockMock) listens to this port.
 
@@ -14,7 +14,7 @@ curDate=$(date +'%s') # Set once
 zipExtract="PCInstance_$curDate/" # Directory to create and will contain the contents of extracted zip file
 
 
-distPath="../../standalone/distribution/" # Path to phenomecentral.org's distribution folder, where standalone zip is located
+distPath="../../standalone/target/" # Path to phenomecentral.org's distribution folder, where standalone zip is located
 distZip="phenomecentral-standalone*.zip"
 PCZipName="" # The exact name of the zip file found, to be set in extractZip()
 
@@ -25,6 +25,9 @@ stopPCInstanceCommand="./stop.sh"
 startSMTPCommand="java -jar MockMock.jar"
 SMTPPID="" # PID of the FakeSMTP that is to be set in startSMTP()
 startingMessage="Phenotips is initializing"
+readyMessage="About PhenomeCentral"
+# TODO: Let's not hardcode this like so
+mavenCommand="mvn test -f ../../../pom.xml -Dsurefire.suiteXmlFiles=src/main/java/org/phenotips/testcases/xml/AllTests.xml"
 
 # cd into standalone directory, locate the zip, and extract it to where we were previously. If 0 or more than 1 standalone zip located, exits
 extractZip() {
@@ -38,10 +41,10 @@ extractZip() {
 
 	if [[ $numberOfZipsFound -eq 0 ]]; then
 		echo "No zips following pattern of $distZip were found in $distPath. Exiting." | tee -a $logFile
-		exit
+		exit 1
 	elif [[ $numberOfZipsFound -gt 1 ]]; then
 		echo "More than one zip following pattern of $distZip were found in $distPath. Not sure which one to use. Exiting." | tee -a $logFile
-		exit
+		exit 2
 	else
 		echo "Found $PCZipName in $distPath" | tee -a $logFile
 		# Return to where we were
@@ -59,31 +62,39 @@ startInstance() {
 	cd $zipExtract$zipSubdir
 	echo "Starting server on port $PCInstancePort and stop port $PCInstanceStopPort" | tee -a $logFile
 	$startPCInstanceCommand $PCInstancePort $PCInstanceStopPort 2>&1 | tee -a $logFile &
-	sleep 60
+	sleep 10
 	echo "Waited 60 seconds for server to start. Now check with curl command" | tee -a $logFile
 }
 
 # Checks if the instance has started, recursivly calls itself to check again if the "Phenotips is initializing" message is still there after waiting.
 checkForStart() {
-	local curlResult=$(curl "$PCInstanceURL")
-	local curlReturn=$?
+	local curlResult
+	local curlReturn
+	curlResult=$(curl "$PCInstanceURL")
+	curlReturn=$? # "local" affects the return code of above curl command. Declarae vars first.
 
-	if test "curlReturn" != "0"; then
+	if test "$curlReturn" != "0"; then
 		echo "Curl to $PCInstanceURL has failed. Wait 10 secs on try again" | tee -a $logFile
 		sleep 10
 		checkForStart
 	else
 		echo "Response recieved on curl to $PCInstanceURL." | tee -a $logFile
-		local startingMessageFound=$(curl "$PCInstanceURL" | grep -c "$startingMessage")
+		# local startingMessageFound=$(curl "$PCInstanceURL" | grep -c "$startingMessage")
+		local readyMessageFound=$(echo "$curlResult" | grep -c "$readyMessage")
 
-		if [[ "$startingMessageFound" -eq 0 ]]; then
+		if [[ "$readyMessageFound" -gt 0 ]]; then
 			echo "It seems instance has sucessfully started and is ready." | tee -a $logFile
 		else
-			echo "Instance is not ready yet. Wait 10 seconds and ping again" | tee -a $logFile
+			echo "Instance is not ready yet. The string $readyMessage was not found on page. Wait 10 seconds and ping again" | tee -a $logFile
 			sleep 10
 			checkForStart
 		fi
 	fi
+}
+
+runTests() {
+	echo "Compiling and running e2e testing framework with maven. Should see maven messages and browser soon" | tee -a $logFile
+	$mavenCommand | tee -a $logFile
 }
 
 stopInstance() {
@@ -95,12 +106,22 @@ startSMTP() {
 	echo "Starting SMTP (MockMock). Listening on $outGoingEmailPort. Email UI is at $emailUIPort" | tee -a $logFile
 	$startSMTPCommand -p $outGoingEmailPort -h $emailUIPort &
 	SMTPPID=$!
+	echo "DEBUG: PID of SMTP is: $SMTPPID" | tee -a $logFile
 	sleep 10
 }
 
 stopSMTP() {
 	echo "Killing SMTP" | tee -a $logFile
-	kill -INT $SMTPPID
+	while kill INT $SMTPPID 2>/dev/null; do 
+    	sleep 1
+	done
+}
+
+onCtrlC() {
+	echo "Ctrl C recieved. Stopping script" | tee -a $logFile
+	stopInstance
+	stopSMTP
+	exit 3 # TODO: check that this does not exit before above two finishes
 }
 
 ##################
@@ -130,58 +151,13 @@ pwdir="$(pwd)"
 logFile="$pwdir/$logFile" #Specify absolute path to logfile
 
 extractZip
+
+trap onCtrlC SIGINT # If we break (ctrl+c) from here on, we should stop SMTP and PC instance
+
 startSMTP
 startInstance
-#checkForStart
+checkForStart
+runTests
 stopInstance
 stopSMTP
-
-# Old stuff below
-
-startServer() {
-	#bash --rcfile ./start.sh ;
-	./../pcZipExtract/pt_1.4.4/phenomecentral-standalone-1.2-SNAPSHOT/start.sh 2>&1 | tee -a stdout.out &
-	#./../pcZipExtract/pt_1.4.4/phenomecentral-standalone-1.2-SNAPSHOT/start.sh  &> serverOut.log &
-	sleep 60
-	echo "Started server"
-}
-
-stopServer() {
-	./../pcZipExtract/pt_1.4.4/phenomecentral-standalone-1.2-SNAPSHOT/stop.sh | tee -a -a stdout.out
-	wait $!
-	echo "Stopped Server"
-}
-
-#Make a CURL request to see if the server has started or not
-checkServer() {
-	curl $PCInstanceURL &>> $CURL_OUTPUT_FILE
-	return=$?
-
-	if test "$return" != "0"; then
-		echo "the curl command failed with: $return"
-	else
-		echo "curl command sucess"
-	fi
-}
-
-#Make a CURL request to see if the server has started or not
-checkServer2() {
-	curl $PCInstanceURL &>> $CURL_OUTPUT_FILE2
-	return=$?
-
-	if test "$return" != "0"; then
-		echo "the curl command failed with: $return"
-	else
-		echo "curl command sucess"
-	fi
-}
-
-# checkServer
-
-# startServer
-
-# checkServer2
-
-# stopServer
-
 
