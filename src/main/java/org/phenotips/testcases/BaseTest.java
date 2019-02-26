@@ -147,7 +147,7 @@ public abstract class BaseTest
 //            Allure.addAttachment("Test fail screenshot", "My attachment content");
             Path content = Paths.get(scrnFileName);
             try (InputStream is = Files.newInputStream(content)) {
-                Allure.addAttachment("Failure: " + testResult.getMethod().getMethodName(), is);
+                Allure.addAttachment("Page Screenshot: " + testResult.getMethod().getMethodName(), is);
             } catch (IOException e) {
                 System.out.println("Something went wrong giving screenshot to Allure: " + e);
             }
