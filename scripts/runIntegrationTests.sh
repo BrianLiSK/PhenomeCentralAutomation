@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 
+# This script does the following:
+# 	- Extract zip file for standalone PC instance
+# 	- Start the local PC instance
+#	- Start a fake SMTP server (MockMock SMTP)
+#	- Run all integration tests (AllTests.xml)
+#	- Stop the SMTP and PC instances
+#	- Generate an Allure report with the test run results. Opens result in browser.
+
+
+###########################
+# Variables
+###########################
+
 # PC and SMTP UI ports. These can be changed as needed.
 browser="chrome" # One of: chrome, firefox, edge, ie, safari
 PCInstancePort="8083"
@@ -28,7 +41,11 @@ startingMessage="Phenotips is initializing"
 readyMessage="About PhenomeCentral"
 # TODO: Ensure that these remain correct
 mavenPOMLocation="../../../pom.xml"
-mavenTestNGXMLLocation="src/main/java/org/phenotips/testcases/xml/AllTests.xml"
+mavenTestNGXMLLocation="src/main/java/org/phenotips/endtoendtests/testcases/xml/AllTests.xml"
+
+###########################
+# Functions
+###########################
 
 # cd into standalone directory, locate the zip, and extract it to where we were previously. If 0 or more than 1 standalone zip located, exits
 extractZip() {
@@ -169,3 +186,4 @@ runTests | tee -a $logFile
 stopInstance
 stopSMTP
 
+mvn -f $mavenPOMLocation io.qameta.allure:allure-maven:serve
