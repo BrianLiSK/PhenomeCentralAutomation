@@ -1,9 +1,9 @@
-package org.phenotips;
+package org.phenotips.endtoendtests;
 
 import org.testng.annotations.Test;
 
-import org.phenotips.pageobjects.HomePage;
-import org.phenotips.testcases.BaseTest;
+import org.phenotips.endtoendtests.pageobjects.HomePage;
+import org.phenotips.endtoendtests.testcases.BaseTest;
 
 public class SetupUsers extends BaseTest
 {

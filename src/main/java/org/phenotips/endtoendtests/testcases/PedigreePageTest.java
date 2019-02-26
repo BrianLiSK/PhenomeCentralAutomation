@@ -1,4 +1,4 @@
-package org.phenotips.testcases;
+package org.phenotips.endtoendtests.testcases;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,10 +7,10 @@ import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import org.phenotips.pageobjects.CreatePatientPage;
-import org.phenotips.pageobjects.HomePage;
-import org.phenotips.pageobjects.PedigreeEditorPage;
-import org.phenotips.pageobjects.ViewPatientPage;
+import org.phenotips.endtoendtests.pageobjects.CreatePatientPage;
+import org.phenotips.endtoendtests.pageobjects.HomePage;
+import org.phenotips.endtoendtests.pageobjects.PedigreeEditorPage;
+import org.phenotips.endtoendtests.pageobjects.ViewPatientPage;
 import net.bytebuddy.utility.RandomString;
 
 /**

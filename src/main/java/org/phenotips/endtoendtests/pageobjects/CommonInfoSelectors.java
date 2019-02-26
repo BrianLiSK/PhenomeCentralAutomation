@@ -1,4 +1,4 @@
-package org.phenotips.pageobjects;
+package org.phenotips.endtoendtests.pageobjects;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
-import org.phenotips.testcases.CommonInfoEnums;
+import org.phenotips.endtoendtests.testcases.CommonInfoEnums;
 
 import io.qameta.allure.Step;
 

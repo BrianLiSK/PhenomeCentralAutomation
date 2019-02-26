@@ -1,4 +1,4 @@
-package org.phenotips.pageobjects;
+package org.phenotips.endtoendtests.pageobjects;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,7 +10,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
-import org.phenotips.testcases.CommonPatientMeasurement;
+import org.phenotips.endtoendtests.testcases.CommonPatientMeasurement;
 
 import io.qameta.allure.Step;
 

@@ -1,9 +1,9 @@
-package org.phenotips.testcases;
+package org.phenotips.endtoendtests.testcases;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import org.phenotips.pageobjects.HomePage;
+import org.phenotips.endtoendtests.pageobjects.HomePage;
 
 /**
  * Test the login functionality.

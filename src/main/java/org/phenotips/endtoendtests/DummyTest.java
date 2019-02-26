@@ -1,4 +1,4 @@
-package org.phenotips;
+package org.phenotips.endtoendtests;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -7,9 +7,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
 
-// This is a self-contained test that does not depend on anything in org.phenotips.pageobjects
+// This is a self-contained test that does not depend on anything in org.phenotips.endtoendtests.pageobjects
 // Implement using JUnit or TestNG for annotations
-// Seperate into org.phenotips.pageobjects and Testcases
+// Seperate into org.phenotips.endtoendtests.pageobjects and Testcases
 
 public class DummyTest
 {

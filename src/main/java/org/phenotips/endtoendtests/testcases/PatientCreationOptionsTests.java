@@ -1,4 +1,4 @@
-package org.phenotips.testcases;
+package org.phenotips.endtoendtests.testcases;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,8 +7,8 @@ import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import org.phenotips.pageobjects.CreatePatientPage;
-import org.phenotips.pageobjects.HomePage;
+import org.phenotips.endtoendtests.pageobjects.CreatePatientPage;
+import org.phenotips.endtoendtests.pageobjects.HomePage;
 
 /**
  * This class of tests will eventually cycle through the possible options when creating a patient via

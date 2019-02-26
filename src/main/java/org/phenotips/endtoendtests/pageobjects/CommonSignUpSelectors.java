@@ -1,4 +1,4 @@
-package org.phenotips.pageobjects;
+package org.phenotips.endtoendtests.pageobjects;
 
 import org.openqa.selenium.By;
 

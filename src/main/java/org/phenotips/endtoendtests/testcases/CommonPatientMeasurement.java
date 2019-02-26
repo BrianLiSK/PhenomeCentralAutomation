@@ -1,4 +1,4 @@
-package org.phenotips.testcases;
+package org.phenotips.endtoendtests.testcases;
 
 import java.util.Objects;
 

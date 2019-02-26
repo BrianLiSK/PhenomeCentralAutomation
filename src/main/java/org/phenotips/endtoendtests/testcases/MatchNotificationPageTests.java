@@ -1,4 +1,4 @@
-package org.phenotips.testcases;
+package org.phenotips.endtoendtests.testcases;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,10 +8,10 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import org.phenotips.pageobjects.AdminRefreshMatchesPage;
-import org.phenotips.pageobjects.EmailUIPage;
-import org.phenotips.pageobjects.HomePage;
-import org.phenotips.pageobjects.ViewPatientPage;
+import org.phenotips.endtoendtests.pageobjects.AdminRefreshMatchesPage;
+import org.phenotips.endtoendtests.pageobjects.EmailUIPage;
+import org.phenotips.endtoendtests.pageobjects.HomePage;
+import org.phenotips.endtoendtests.pageobjects.ViewPatientPage;
 import net.bytebuddy.utility.RandomString;
 
 /**
