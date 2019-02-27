@@ -24,6 +24,7 @@ emailUIURL="http://localhost:$emailUIPort"
 
 curDate=$(date '+%Y-%m-%d_%H-%M-%S') # Set once
 zipExtract="PCInstance_$curDate/" # Directory to create and will contain the contents of extracted zip file
+allPCInstanceFolder="instances" # Parent folder after scripts/ for where extracted folders should go
 
 
 distPath="../../standalone/target/" # Path to phenomecentral.org's distribution folder, where standalone zip is located
@@ -39,7 +40,7 @@ SMTPPID="" # PID of the FakeSMTP that is to be set in startSMTP()
 startingMessage="Phenotips is initializing"
 readyMessage="About PhenomeCentral"
 # TODO: Ensure that these remain correct
-mavenPOMLocation="../../../pom.xml"
+mavenPOMLocation="../../../../pom.xml"
 mavenTestNGXMLLocation="src/main/java/org/phenotips/endtoendtests/testcases/xml/AllTests.xml"
 
 ###########################
@@ -68,10 +69,10 @@ extractZip() {
 		# Return to where we were
 		cd -
 
-		mkdir "$zipExtract"
-		unzip $distPath$PCZipName -d "$zipExtract"
+		mkdir -p "$allPCInstanceFolder/$zipExtract"
+		unzip $distPath$PCZipName -d "$allPCInstanceFolder/$zipExtract"
 
-		echo "Extracted $PCZipName to $zipExtract" 
+		echo "Extracted $PCZipName to $allPCInstanceFolder/$zipExtract" 
 	fi
 }
 
@@ -79,9 +80,9 @@ startInstance() {
 	echo -e "\n====================== Start PC Instance ======================"
 
 	zipSubdir=${PCZipName%????} # Cut off last 4 chars of PCZipName (remove the .zip extension as this is the folder name)
-	cd $zipExtract$zipSubdir
+	cd $allPCInstanceFolder/$zipExtract$zipSubdir
 	echo "Starting server on port $PCInstancePort and stop port $PCInstanceStopPort" 
-	$startPCInstanceCommand $PCInstancePort $PCInstanceStopPort  &
+	$startPCInstanceCommand $PCInstancePort $PCInstanceStopPort &
 	sleep 30
 	echo "Waited 30 seconds for server to start. Now check with curl command" 
 }
@@ -186,8 +187,10 @@ echo -e "\n====================== $0 Start ======================"
 checkPWD
 parseArgs
 
+mkdir -p $allPCInstanceFolder
+
 # Create a debug log file.
-logFile="$PWD/$logFile" #Specify absolute path to logfile
+logFile="$PWD/$allPCInstanceFolder/$logFile" #Specify absolute path to logfile
 touch $logFile
 
 # Capture both stderr and stout to logfile.
