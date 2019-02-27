@@ -35,13 +35,13 @@ PCZipName="" # The exact name of the zip file found, to be set in extractZip()
 logFile="outputLog_$curDate.txt" # Mutate to absolute dir in main
 startPCInstanceCommand="./start.sh"
 stopPCInstanceCommand="./stop.sh"
-startSMTPCommand="java -jar MockMock.jar"
+startSMTPCommand="java -jar smtp-server/MockMock.jar"
 SMTPPID="" # PID of the FakeSMTP that is to be set in startSMTP()
 startingMessage="Phenotips is initializing"
 readyMessage="About PhenomeCentral"
 # TODO: Ensure that these remain correct
 mavenPOMLocation="../../../../pom.xml"
-mavenTestNGXMLLocation="src/main/java/org/phenotips/endtoendtests/testcases/xml/AllTests.xml"
+mavenTestNGXMLLocation="src/main/java/org/phenotips/endtoendtests/testcases/xml/DemoTests.xml"
 
 ###########################
 # Functions
