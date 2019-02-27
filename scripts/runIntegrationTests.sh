@@ -2,7 +2,7 @@
 
 # This script does the following:
 # 	- Extract zip file for standalone PC instance
-# 	- Start the local PC instance
+# 	- Start the local PC instance. After 30 seconds, pings to check for $readyMessage.
 #	- Start a fake SMTP server (MockMock SMTP)
 #	- Run all integration tests (AllTests.xml)
 #	- Stop the SMTP and PC instances
@@ -32,7 +32,7 @@ distZip="phenomecentral-standalone*.zip"
 PCZipName="" # The exact name of the zip file found, to be set in extractZip()
 
 
-logFile="logFile$curDate.txt"
+logFile="outputLog_$curDate.txt"
 startPCInstanceCommand="./start.sh"
 stopPCInstanceCommand="./stop.sh"
 startSMTPCommand="java -jar MockMock.jar"
@@ -186,4 +186,4 @@ runTests | tee -a $logFile
 stopInstance
 stopSMTP
 
-mvn -f $mavenPOMLocation io.qameta.allure:allure-maven:serve
+mvn -f $mavenPOMLocation io.qameta.allure:allure-maven:report
