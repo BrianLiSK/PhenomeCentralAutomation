@@ -6,8 +6,7 @@
 #	- Start a fake SMTP server (MockMock SMTP)
 #	- Run all integration tests (AllTests.xml)
 #	- Stop the SMTP and PC instances
-#	- Generate an Allure report with the test run results. Opens result in browser.
-
+#	- Generate an Allure report with the test run results.
 
 ###########################
 # Variables
@@ -58,30 +57,30 @@ extractZip() {
 	PCZipName=$(ls $distZip -t1 | head -n 1)
 
 	if [[ $numberOfZipsFound -eq 0 ]]; then
-		echo "No zips following pattern of $distZip were found in $distPath. Exiting." | tee -a $logFile
+		echo "No zips following pattern of $distZip were found in $distPath. Exiting." 
 		exit 1
 	elif [[ $numberOfZipsFound -gt 1 ]]; then
-		echo "More than one zip following pattern of $distZip were found in $distPath. Not sure which one to use. Exiting." | tee -a $logFile
+		echo "More than one zip following pattern of $distZip were found in $distPath. Not sure which one to use. Exiting." 
 		exit 2
 	else
-		echo "Found $PCZipName in $distPath" | tee -a $logFile
+		echo "Found $PCZipName in $distPath" 
 		# Return to where we were
 		cd -
 
 		mkdir "$zipExtract"
-		unzip $distPath$PCZipName -d "$zipExtract" 2>&1 | tee -a $logFile
+		unzip $distPath$PCZipName -d "$zipExtract"
 
-		echo "Extracted $PCZipName to $zipExtract" | tee -a $logFile
+		echo "Extracted $PCZipName to $zipExtract" 
 	fi
 }
 
 startInstance() {
 	zipSubdir=${PCZipName%????} # Cut off last 4 chars of PCZipName (remove the .zip extension as this is the folder name)
 	cd $zipExtract$zipSubdir
-	echo "Starting server on port $PCInstancePort and stop port $PCInstanceStopPort" | tee -a $logFile
-	$startPCInstanceCommand $PCInstancePort $PCInstanceStopPort 2>&1 | tee -a $logFile &
+	echo "Starting server on port $PCInstancePort and stop port $PCInstanceStopPort" 
+	$startPCInstanceCommand $PCInstancePort $PCInstanceStopPort  &
 	sleep 30
-	echo "Waited 30 seconds for server to start. Now check with curl command" | tee -a $logFile
+	echo "Waited 30 seconds for server to start. Now check with curl command" 
 }
 
 # Checks if the instance has started, recursivly calls itself to check again if the "Phenotips is initializing" message is still there after waiting.
@@ -92,18 +91,18 @@ checkForStart() {
 	curlReturn=$? # "local" affects the return code of above curl command. Declarae vars first.
 
 	if test "$curlReturn" != "0"; then
-		echo "Curl to $PCInstanceURL has failed. Wait 10 secs on try again" | tee -a $logFile
+		echo "Curl to $PCInstanceURL has failed. Wait 10 secs on try again" 
 		sleep 10
 		checkForStart
 	else
-		echo "Response recieved on curl to $PCInstanceURL." | tee -a $logFile
+		echo "Response recieved on curl to $PCInstanceURL." 
 		# local startingMessageFound=$(curl "$PCInstanceURL" | grep -c "$startingMessage")
 		local readyMessageFound=$(echo "$curlResult" | grep -c "$readyMessage")
 
 		if [[ "$readyMessageFound" -gt 0 ]]; then
-			echo "It seems instance has sucessfully started and is ready." | tee -a $logFile
+			echo "It seems instance has sucessfully started and is ready." 
 		else
-			echo "Instance is not ready yet. The string $readyMessage was not found on page. Wait 10 seconds and ping again" | tee -a $logFile
+			echo "Instance is not ready yet. The string $readyMessage was not found on page. Wait 10 seconds and ping again" 
 			sleep 10
 			checkForStart
 		fi
@@ -116,27 +115,27 @@ runTests() {
 }
 
 stopInstance() {
-	echo "Stopping instance that was started on port $PCInstancePort and stop port $PCInstanceStopPort" | tee -a $logFile
-	$stopPCInstanceCommand $PCInstanceStopPort | tee -a $logFile
+	echo "Stopping instance that was started on port $PCInstancePort and stop port $PCInstanceStopPort" 
+	$stopPCInstanceCommand $PCInstanceStopPort 
 }
 
 startSMTP() {
-	echo "Starting SMTP (MockMock). Listening on $outGoingEmailPort. Email UI is at $emailUIPort" | tee -a $logFile
+	echo "Starting SMTP (MockMock). Listening on $outGoingEmailPort. Email UI is at $emailUIPort" 
 	$startSMTPCommand -p $outGoingEmailPort -h $emailUIPort &
 	SMTPPID=$!
-	echo "DEBUG: PID of SMTP is: $SMTPPID" | tee -a $logFile
+	echo "DEBUG: PID of SMTP is: $SMTPPID" 
 	sleep 10
 }
 
 stopSMTP() {
-	echo "Killing SMTP" | tee -a $logFile
+	echo "Killing SMTP" 
 	while kill INT $SMTPPID 2>/dev/null; do 
     	sleep 1
 	done
 }
 
 onCtrlC() {
-	echo "Ctrl C recieved. Stopping script" | tee -a $logFile
+	echo "Ctrl C recieved. Stopping script" 
 	stopInstance
 	stopSMTP
 	exit 3 # TODO: check that this does not exit before above two finishes
@@ -167,13 +166,16 @@ echo "ProgramDir is calculated as: $PRGDIR"
 # TODO: Make arguments to allow stop/start ports. Perhaps argument parser needed.
 if [ -n "$1" ]; then
 	browser=$1
-	echo "Browser is being specified as: $browser" | tee -a $logFile
+	echo "Browser is being specified as: $browser" 
 fi
 
 # Create a debug log file.
 touch $logFile
 pwdir="$(pwd)"
 logFile="$pwdir/$logFile" #Specify absolute path to logfile
+
+exec >  >(tee -ia $logFile)
+exec 2> >(tee -ia $logFile >&2)
 
 extractZip
 
@@ -182,7 +184,7 @@ trap onCtrlC SIGINT # If we break (ctrl+c) from here on, we should stop SMTP and
 startSMTP
 startInstance
 checkForStart
-runTests | tee -a $logFile
+runTests 
 stopInstance
 stopSMTP
 
