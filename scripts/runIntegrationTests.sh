@@ -41,7 +41,7 @@ startingMessage="Phenotips is initializing"
 readyMessage="About PhenomeCentral"
 # TODO: Ensure that these remain correct
 mavenPOMLocation="../../../../pom.xml"
-mavenTestNGXMLLocation="src/main/java/org/phenotips/endtoendtests/testcases/xml/DemoTests.xml"
+mavenTestNGXMLLocation="src/test/java/org/phenotips/endtoendtests/testcases/xml/AllTests.xml"
 
 ###########################
 # Functions
