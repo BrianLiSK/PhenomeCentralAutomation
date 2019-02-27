@@ -22,7 +22,7 @@ outGoingEmailPort="1025" # PC instance sends emails to this port. Fake SMTP (Moc
 PCInstanceURL="http://localhost:$PCInstancePort"
 emailUIURL="http://localhost:$emailUIPort"
 
-curDate=$(date +'%s') # Set once
+curDate=$(date '+%Y-%m-%d_%H-%M-%S') # Set once
 zipExtract="PCInstance_$curDate/" # Directory to create and will contain the contents of extracted zip file
 
 
@@ -31,7 +31,7 @@ distZip="phenomecentral-standalone*.zip"
 PCZipName="" # The exact name of the zip file found, to be set in extractZip()
 
 
-logFile="outputLog_$curDate.txt"
+logFile="outputLog_$curDate.txt" # Mutate to absolute dir in main
 startPCInstanceCommand="./start.sh"
 stopPCInstanceCommand="./stop.sh"
 startSMTPCommand="java -jar MockMock.jar"
@@ -48,6 +48,7 @@ mavenTestNGXMLLocation="src/main/java/org/phenotips/endtoendtests/testcases/xml/
 
 # cd into standalone directory, locate the zip, and extract it to where we were previously. If 0 or more than 1 standalone zip located, exits
 extractZip() {
+	echo -e "\n====================== Extract Zip File ======================"
 	# Go to distribution folder of PC and check for zips there.
 	# Should do this because ls might give full path of file (instead of just filename) if we do not cd into the directory. Dependent on unix flavour.
 	cd "$distPath"
@@ -75,6 +76,8 @@ extractZip() {
 }
 
 startInstance() {
+	echo -e "\n====================== Start PC Instance ======================"
+
 	zipSubdir=${PCZipName%????} # Cut off last 4 chars of PCZipName (remove the .zip extension as this is the folder name)
 	cd $zipExtract$zipSubdir
 	echo "Starting server on port $PCInstancePort and stop port $PCInstanceStopPort" 
@@ -85,6 +88,7 @@ startInstance() {
 
 # Checks if the instance has started, recursivly calls itself to check again if the "Phenotips is initializing" message is still there after waiting.
 checkForStart() {
+	echo -e "\n====================== Check PC Instance Start Status ======================"
 	local curlResult
 	local curlReturn
 	curlResult=$(curl "$PCInstanceURL")
@@ -110,16 +114,19 @@ checkForStart() {
 }
 
 runTests() {
+	echo -e "\n====================== Running Selenium Tests ======================"
 	echo "Compiling and running e2e testing framework with maven. Should see maven messages and browser soon"
 	mvn test -f $mavenPOMLocation -Dsurefire.suiteXmlFiles=$mavenTestNGXMLLocation -Dbrowser=$browser -DhomePageURL=$PCInstanceURL -DemailUIPageURL=$emailUIURL 
 }
 
 stopInstance() {
+	echo -e "\n====================== Stopping PC Instance ======================"
 	echo "Stopping instance that was started on port $PCInstancePort and stop port $PCInstanceStopPort" 
 	$stopPCInstanceCommand $PCInstanceStopPort 
 }
 
 startSMTP() {
+	echo -e "\n====================== Start Mock SMTP ======================"
 	echo "Starting SMTP (MockMock). Listening on $outGoingEmailPort. Email UI is at $emailUIPort" 
 	$startSMTPCommand -p $outGoingEmailPort -h $emailUIPort &
 	SMTPPID=$!
@@ -128,6 +135,7 @@ startSMTP() {
 }
 
 stopSMTP() {
+	echo -e "\n====================== Stop SMTP ======================"
 	echo "Killing SMTP" 
 	while kill INT $SMTPPID 2>/dev/null; do 
     	sleep 1
@@ -141,39 +149,48 @@ onCtrlC() {
 	exit 3 # TODO: check that this does not exit before above two finishes
 }
 
+checkPWD() {
+	# Taken from start.sh
+	# Ensure that the commands below are always started in the directory where this script is
+	# located. To do this we compute the location of the current script.
+	PRG="$0"
+	while [ -h "$PRG" ]; do
+	  ls=`ls -ld "$PRG"`
+	  link=`expr "$ls" : '.*-> \(.*\)$'`
+	  if expr "$link" : '/.*' > /dev/null; then
+	    PRG="$link"
+	  else
+	    PRG=`dirname "$PRG"`/"$link"
+	  fi
+	done
+	PRGDIR=`dirname "$PRG"`
+	cd "$PRGDIR"
+
+	echo "ProgramDir is calculated as: $PRGDIR"
+}
+
+parseArgs() {
+	# If a browser argument is passed, then set browser argument
+	# TODO: Make arguments to allow stop/start ports. Perhaps argument parser needed.
+	if [ -n "$1" ]; then
+		browser=$1
+		echo "Browser is being specified as: $browser" 
+	fi
+}
+
 ##################
 # main
 ##################
-# Taken from start.sh
-# Ensure that the commands below are always started in the directory where this script is
-# located. To do this we compute the location of the current script.
-PRG="$0"
-while [ -h "$PRG" ]; do
-  ls=`ls -ld "$PRG"`
-  link=`expr "$ls" : '.*-> \(.*\)$'`
-  if expr "$link" : '/.*' > /dev/null; then
-    PRG="$link"
-  else
-    PRG=`dirname "$PRG"`/"$link"
-  fi
-done
-PRGDIR=`dirname "$PRG"`
-cd "$PRGDIR"
+echo -e "\n====================== $0 Start ======================"
 
-echo "ProgramDir is calculated as: $PRGDIR"
-
-# If a browser argument is passed, then set browser argument
-# TODO: Make arguments to allow stop/start ports. Perhaps argument parser needed.
-if [ -n "$1" ]; then
-	browser=$1
-	echo "Browser is being specified as: $browser" 
-fi
+checkPWD
+parseArgs
 
 # Create a debug log file.
+logFile="$PWD/$logFile" #Specify absolute path to logfile
 touch $logFile
-pwdir="$(pwd)"
-logFile="$pwdir/$logFile" #Specify absolute path to logfile
 
+# Capture both stderr and stout to logfile.
 exec >  >(tee -ia $logFile)
 exec 2> >(tee -ia $logFile >&2)
 
@@ -188,4 +205,7 @@ runTests
 stopInstance
 stopSMTP
 
+echo -e "\n====================== Generate Allure Report ======================"
 mvn -f $mavenPOMLocation io.qameta.allure:allure-maven:report
+
+echo -e "\n====================== $0 End ======================"
