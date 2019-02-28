@@ -2,7 +2,7 @@
 
 # This script does the following:
 # 	- Extract zip file for standalone PC instance
-# 	- Start the local PC instance. After 30 seconds, pings to check for $readyMessage.
+# 	- Start the local PC instance. After 30 seconds, pings to check for $READY_MESSAGE.
 #	- Start a fake SMTP server (MockMock SMTP)
 #	- Run all integration tests (AllTests.xml)
 #	- Stop the SMTP and PC instances
@@ -13,35 +13,35 @@
 ###########################
 
 # PC and SMTP UI ports. These can be changed as needed.
-browser="chrome" # One of: chrome, firefox, edge, ie, safari
-PCInstancePort="8083"
-PCInstanceStopPort="8084"
-emailUIPort="8085" # Port to access Fake SMTP (MockMock) email inbox UI
-outGoingEmailPort="1025" # PC instance sends emails to this port. Fake SMTP (MockMock) listens to this port.
+BROWSER="chrome" # One of: chrome, firefox, edge, ie, safari
+PC_INSTANCE_PORT="8083"
+PC_INSTANCE_STOP_PORT="8084"
+EMAIL_UI_PORT="8085" # Port to access Fake SMTP (MockMock) email inbox UI
+OUTGOING_EMAIL_PORT="1025" # PC instance sends emails to this port. Fake SMTP (MockMock) listens to this port.
 
-PCInstanceURL="http://localhost:$PCInstancePort"
-emailUIURL="http://localhost:$emailUIPort"
+PC_INSTANCE_URL="http://localhost:$PC_INSTANCE_PORT"
+EMAIL_UI_URL="http://localhost:$EMAIL_UI_PORT"
 
-curDate=$(date '+%Y-%m-%d_%H-%M-%S') # Set once
-zipExtract="PCInstance_$curDate/" # Directory to create and will contain the contents of extracted zip file
-allPCInstanceFolder="instances" # Parent folder after scripts/ for where extracted folders should go
-
-
-distPath="../../standalone/target/" # Path to phenomecentral.org's distribution folder, where standalone zip is located
-distZip="phenomecentral-standalone*.zip"
-PCZipName="" # The exact name of the zip file found, to be set in extractZip()
+CUR_DATE=$(date '+%Y-%m-%d_%H-%M-%S') # Set once
+ZIP_EXTRACT="PCInstance_$CUR_DATE" # Directory to create and will contain the contents of extracted zip file
+ALL_PC_INSTANCES_FOLDER="instances" # Parent folder after scripts/ for where extracted folders should go
 
 
-logFile="outputLog_$curDate.txt" # Mutate to absolute dir in main
-startPCInstanceCommand="./start.sh"
-stopPCInstanceCommand="./stop.sh"
-startSMTPCommand="java -jar smtp-server/MockMock.jar"
-SMTPPID="" # PID of the FakeSMTP that is to be set in startSMTP()
-startingMessage="Phenotips is initializing"
-readyMessage="About PhenomeCentral"
-# TODO: Ensure that these remain correct
-mavenPOMLocation="../../../../pom.xml"
-mavenTestNGXMLLocation="src/test/java/org/phenotips/endtoendtests/testcases/xml/AllTests.xml"
+BUILT_ZIP_LOCATION="../../standalone/target" # Path to phenomecentral.org's build standalone/target folder, where standalone zip is located
+BUILT_ZIP_REGEX="phenomecentral-standalone*.zip"
+BUILT_ZIP_EXACT_NAME="" # The exact name of the zip file found, to be set in extractZip()
+
+
+OUTPUT_LOG_FILE="outputLog_$CUR_DATE.txt" # Mutate to absolute dir in main
+START_PC_COMMAND="./start.sh"
+STOP_PC_COMMAND="./stop.sh"
+START_SMTP_COMMAND="java -jar smtp-server/MockMock.jar"
+SMTP_PID="" # PID of the FakeSMTP that is to be set in startSMTP()
+STARTING_MESSAGE="Phenotips is initializing"
+READY_MESSAGE="About PhenomeCentral"
+# Ensure that these relative paths remain when changing file structure of project
+POM_LOCATION="../../../../pom.xml" # Relative to the extracted from inside the extracted PC instance folder (scripts/$ALL_PC_INSTANCES_FOLDER/$ZIP_EXTRACT/phenomecentral-standalone-*/)
+TESTNG_XML_LOCATION="src/test/java/org/phenotips/endtoendtests/testcases/xml/AllTests.xml"
 
 ###########################
 # Functions
@@ -52,37 +52,37 @@ extractZip() {
 	echo -e "\n====================== Extract Zip File ======================"
 	# Go to distribution folder of PC and check for zips there.
 	# Should do this because ls might give full path of file (instead of just filename) if we do not cd into the directory. Dependent on unix flavour.
-	cd "$distPath"
+	cd "$BUILT_ZIP_LOCATION"
 
 	# ls giving filenames only sorted by most recently modified descending
-	local numberOfZipsFound=$(ls $distZip -t1 | wc -l)
-	PCZipName=$(ls $distZip -t1 | head -n 1)
+	local ZIPS_FOUND_COUNT=$(ls $BUILT_ZIP_REGEX -t1 | wc -l)
+	BUILT_ZIP_EXACT_NAME=$(ls $BUILT_ZIP_REGEX -t1 | head -n 1)
 
-	if [[ $numberOfZipsFound -eq 0 ]]; then
-		echo "No zips following pattern of $distZip were found in $distPath. Exiting." 
+	if [[ $ZIPS_FOUND_COUNT -eq 0 ]]; then
+		echo "No zips following pattern of $BUILT_ZIP_REGEX were found in $BUILT_ZIP_LOCATION. Exiting." 
 		exit 1
-	elif [[ $numberOfZipsFound -gt 1 ]]; then
-		echo "More than one zip following pattern of $distZip were found in $distPath. Not sure which one to use. Exiting." 
+	elif [[ $ZIPS_FOUND_COUNT -gt 1 ]]; then
+		echo "More than one zip following pattern of $BUILT_ZIP_REGEX were found in $BUILT_ZIP_LOCATION. Not sure which one to use. Exiting." 
 		exit 2
 	else
-		echo "Found $PCZipName in $distPath" 
+		echo "Found $BUILT_ZIP_EXACT_NAME in $BUILT_ZIP_LOCATION" 
 		# Return to where we were
 		cd -
 
-		mkdir -p "$allPCInstanceFolder/$zipExtract"
-		unzip $distPath$PCZipName -d "$allPCInstanceFolder/$zipExtract"
+		mkdir -p "$ALL_PC_INSTANCES_FOLDER/$ZIP_EXTRACT"
+		unzip "$BUILT_ZIP_LOCATION/$BUILT_ZIP_EXACT_NAME" -d "$ALL_PC_INSTANCES_FOLDER/$ZIP_EXTRACT"
 
-		echo "Extracted $PCZipName to $allPCInstanceFolder/$zipExtract" 
+		echo "Extracted $BUILT_ZIP_EXACT_NAME to $ALL_PC_INSTANCES_FOLDER/$ZIP_EXTRACT" 
 	fi
 }
 
 startInstance() {
 	echo -e "\n====================== Start PC Instance ======================"
 
-	zipSubdir=${PCZipName%????} # Cut off last 4 chars of PCZipName (remove the .zip extension as this is the folder name)
-	cd $allPCInstanceFolder/$zipExtract$zipSubdir
-	echo "Starting server on port $PCInstancePort and stop port $PCInstanceStopPort" 
-	$startPCInstanceCommand $PCInstancePort $PCInstanceStopPort &
+	ZIP_SUBDIR=${BUILT_ZIP_EXACT_NAME%????} # Cut off last 4 chars of BUILT_ZIP_EXACT_NAME (remove the .zip extension as this is the folder name)
+	cd $ALL_PC_INSTANCES_FOLDER/$ZIP_EXTRACT/$ZIP_SUBDIR
+	echo "Starting server on port $PC_INSTANCE_PORT and stop port $PC_INSTANCE_STOP_PORT" 
+	$START_PC_COMMAND $PC_INSTANCE_PORT $PC_INSTANCE_STOP_PORT &
 	sleep 30
 	echo "Waited 30 seconds for server to start. Now check with curl command" 
 }
@@ -90,24 +90,24 @@ startInstance() {
 # Checks if the instance has started, recursivly calls itself to check again if the "Phenotips is initializing" message is still there after waiting.
 checkForStart() {
 	echo -e "\n====================== Check PC Instance Start Status ======================"
-	local curlResult
-	local curlReturn
-	curlResult=$(curl "$PCInstanceURL")
-	curlReturn=$? # "local" affects the return code of above curl command. Declarae vars first.
+	local CURL_RESULT
+	local CURL_RETURN
+	CURL_RESULT=$(curl "$PC_INSTANCE_URL")
+	CURL_RETURN=$? # "local" affects the return code of above curl command. Declarae vars first.
 
-	if test "$curlReturn" != "0"; then
-		echo "Curl to $PCInstanceURL has failed. Wait 10 secs on try again" 
+	if test "$CURL_RETURN" != "0"; then
+		echo "Curl to $PC_INSTANCE_URL has failed. Wait 10 secs on try again" 
 		sleep 10
 		checkForStart
 	else
-		echo "Response recieved on curl to $PCInstanceURL." 
-		# local startingMessageFound=$(curl "$PCInstanceURL" | grep -c "$startingMessage")
-		local readyMessageFound=$(echo "$curlResult" | grep -c "$readyMessage")
+		echo "Response recieved on curl to $PC_INSTANCE_URL." 
+		# local STARTING_MESSAGEFound=$(curl "$PC_INSTANCE_URL" | grep -c "$STARTING_MESSAGE")
+		local READY_MESSAGE_FOUND=$(echo "$CURL_RESULT" | grep -c "$READY_MESSAGE")
 
-		if [[ "$readyMessageFound" -gt 0 ]]; then
-			echo "It seems instance has sucessfully started and is ready." 
+		if [[ "$READY_MESSAGE_FOUND" -gt 0 ]]; then
+			echo "It seems instance has sucessfully started and is ready since '$READY_MESSAGE' is visible on the page" 
 		else
-			echo "Instance is not ready yet. The string $readyMessage was not found on page. Wait 10 seconds and ping again" 
+			echo "Instance is not ready yet. The string $READY_MESSAGE was not found on page. Wait 10 seconds and ping again" 
 			sleep 10
 			checkForStart
 		fi
@@ -117,28 +117,28 @@ checkForStart() {
 runTests() {
 	echo -e "\n====================== Running Selenium Tests ======================"
 	echo "Compiling and running e2e testing framework with maven. Should see maven messages and browser soon"
-	mvn test -f $mavenPOMLocation -Dsurefire.suiteXmlFiles=$mavenTestNGXMLLocation -Dbrowser=$browser -DhomePageURL=$PCInstanceURL -DemailUIPageURL=$emailUIURL 
+	mvn test -f $POM_LOCATION -Dsurefire.suiteXmlFiles=$TESTNG_XML_LOCATION -Dbrowser=$BROWSER -DhomePageURL=$PC_INSTANCE_URL -DemailUIPageURL=$EMAIL_UI_URL 
 }
 
 stopInstance() {
 	echo -e "\n====================== Stopping PC Instance ======================"
-	echo "Stopping instance that was started on port $PCInstancePort and stop port $PCInstanceStopPort" 
-	$stopPCInstanceCommand $PCInstanceStopPort 
+	echo "Stopping instance that was started on port $PC_INSTANCE_PORT and stop port $PC_INSTANCE_STOP_PORT" 
+	$STOP_PC_COMMAND $PC_INSTANCE_STOP_PORT 
 }
 
 startSMTP() {
 	echo -e "\n====================== Start Mock SMTP ======================"
-	echo "Starting SMTP (MockMock). Listening on $outGoingEmailPort. Email UI is at $emailUIPort" 
-	$startSMTPCommand -p $outGoingEmailPort -h $emailUIPort &
-	SMTPPID=$!
-	echo "DEBUG: PID of SMTP is: $SMTPPID" 
+	echo "Starting SMTP (MockMock). Listening on $OUTGOING_EMAIL_PORT. Email UI is at $EMAIL_UI_PORT" 
+	$START_SMTP_COMMAND -p $OUTGOING_EMAIL_PORT -h $EMAIL_UI_PORT &
+	SMTP_PID=$!
+	echo "DEBUG: PID of SMTP is: $SMTP_PID" 
 	sleep 10
 }
 
 stopSMTP() {
 	echo -e "\n====================== Stop SMTP ======================"
-	echo "Killing SMTP" 
-	while kill INT $SMTPPID 2>/dev/null; do 
+	echo "Killing SMTP with PID of $SMTP_PID" 
+	while kill INT $SMTP_PID 2>/dev/null; do 
     	sleep 1
 	done
 }
@@ -174,8 +174,8 @@ parseArgs() {
 	# If a browser argument is passed, then set browser argument
 	# TODO: Make arguments to allow stop/start ports. Perhaps argument parser needed.
 	if [ -n "$1" ]; then
-		browser=$1
-		echo "Browser is being specified as: $browser" 
+		BROWSER=$1
+		echo "Browser is being specified as: $BROWSER" 
 	fi
 }
 
@@ -187,15 +187,16 @@ echo -e "\n====================== $0 Start ======================"
 checkPWD
 parseArgs
 
-mkdir -p $allPCInstanceFolder
+mkdir -p $ALL_PC_INSTANCES_FOLDER
 
 # Create a debug log file.
-logFile="$PWD/$allPCInstanceFolder/$logFile" #Specify absolute path to logfile
-touch $logFile
+OUTPUT_LOG_FILE="$PWD/$ALL_PC_INSTANCES_FOLDER/$OUTPUT_LOG_FILE" #Specify absolute path to OUTPUT_LOG_FILE
+touch $OUTPUT_LOG_FILE
 
-# Capture both stderr and stout to logfile.
-exec >  >(tee -ia $logFile)
-exec 2> >(tee -ia $logFile >&2)
+# Capture both stderr and stout to OUTPUT_LOG_FILE.
+# Note: This is process substitution, it might not work on non-bash shells such as ksh or sh.
+exec >  >(tee -ia $OUTPUT_LOG_FILE)
+exec 2> >(tee -ia $OUTPUT_LOG_FILE >&2)
 
 extractZip
 
@@ -209,6 +210,6 @@ stopInstance
 stopSMTP
 
 echo -e "\n====================== Generate Allure Report ======================"
-mvn -f $mavenPOMLocation io.qameta.allure:allure-maven:report
+mvn -f $POM_LOCATION io.qameta.allure:allure-maven:report
 
 echo -e "\n====================== $0 End ======================"
