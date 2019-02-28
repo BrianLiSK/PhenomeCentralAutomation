@@ -37,7 +37,6 @@ START_PC_COMMAND="./start.sh"
 STOP_PC_COMMAND="./stop.sh"
 START_SMTP_COMMAND="java -jar smtp-server/MockMock.jar"
 SMTP_PID="" # PID of the FakeSMTP that is to be set in startSMTP()
-STARTING_MESSAGE="Phenotips is initializing"
 READY_MESSAGE="About PhenomeCentral"
 # Ensure that these relative paths remain when changing file structure of project
 POM_LOCATION="../../../../pom.xml" # Relative to the extracted from inside the extracted PC instance folder (scripts/$ALL_PC_INSTANCES_FOLDER/$ZIP_EXTRACT/phenomecentral-standalone-*/)
@@ -101,7 +100,6 @@ checkForStart() {
 		checkForStart
 	else
 		echo "Response recieved on curl to $PC_INSTANCE_URL." 
-		# local STARTING_MESSAGEFound=$(curl "$PC_INSTANCE_URL" | grep -c "$STARTING_MESSAGE")
 		local READY_MESSAGE_FOUND=$(echo "$CURL_RESULT" | grep -c "$READY_MESSAGE")
 
 		if [[ "$READY_MESSAGE_FOUND" -gt 0 ]]; then
@@ -147,7 +145,7 @@ onCtrlC() {
 	echo "Ctrl C recieved. Stopping script" 
 	stopInstance
 	stopSMTP
-	exit 3 # TODO: check that this does not exit before above two finishes
+	exit 3
 }
 
 checkPWD() {
@@ -170,14 +168,77 @@ checkPWD() {
 	echo "ProgramDir is calculated as: $PRGDIR"
 }
 
-parseArgs() {
-	# If a browser argument is passed, then set browser argument
-	# TODO: Make arguments to allow stop/start ports. Perhaps argument parser needed.
-	if [ -n "$1" ]; then
-		BROWSER=$1
-		echo "Browser is being specified as: $BROWSER" 
-	fi
+printHelp() {
+	echo "Usage: $0 [--argName argValue]"
+	echo "Example: $0 --browser chrome --start 8083 --stop 8084 --emailUI 8085 --emailListen 1025"
+	echo "Arguments can be passed in any order and any number of them can be used"
+	echo "The example shows the default values if the arg is not supplied."
+	echo ""
+	echo "Possible Arguments:"
+	echo "--help (or -h)     display this help message"
+	echo "--browser          Run tests with browser specified. Must be one of: chrome, firefox, edge, ie, safari"
+	echo "--start            Start port of the PC instance"
+	echo "--stop             Stop port of the PC instance"
+	echo "--emailUI          Email UI (MockMock SMTP) access port"
+	echo "--emailListen      Port that the mock SMTP listens to for messages. This is the port that the PC instance sends outgoing emails."
 }
+
+# Help from https://stackoverflow.com/questions/16483119/an-example-of-how-to-use-getopts-in-bash
+parseArgs() {
+	echo -e "\n====================== Parsing Arguments ======================"
+
+	OPTSPEC=":h-:"
+	while getopts "$OPTSPEC" OPTCHAR; do
+	    case "${OPTCHAR}" in
+	        -)
+                VAL="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                echo "Parsing option: '--${OPTARG}', value: '${VAL}'" >&2;
+	            case "${OPTARG}" in
+	                help)
+	                    printHelp
+	                    exit 0
+	                    ;;
+	                browser)
+	                    BROWSER=${VAL}
+	    				echo "Browser is being specified as: $BROWSER" 
+	                    ;;
+	                start)
+	                    PC_INSTANCE_PORT=${VAL}
+						echo "PC instance start port is being specified as: $PC_INSTANCE_PORT" 
+	                    ;;
+	                stop)
+	                    PC_INSTANCE_STOP_PORT=${VAL}
+	    				echo "PC instance stop port is being specified as: $PC_INSTANCE_STOP_PORT"
+	                    ;;
+	                emailUI)
+	                    EMAIL_UI_PORT=${VAL}
+	    				echo "Email UI port is being specified as: $EMAIL_UI_PORT"
+	                    ;;
+	                emailListen)
+	                    OUTGOING_EMAIL_PORT=${VAL}
+	    				echo "Email listening port is being specified as: $OUTGOING_EMAIL_PORT"
+	                    ;;
+	                *)
+	                    if [ "$OPTERR" = 1 ] && [ "${OPTSPEC:0:1}" != ":" ]; then
+	                        echo "Unknown option --${OPTARG}" >&2
+	                    fi
+	                    ;;
+	            esac;;
+	        h)
+	            printHelp
+	            exit 0
+	            ;;
+	        *)
+	            if [ "$OPTERR" != 1 ] || [ "${OPTSPEC:0:1}" = ":" ]; then
+	                echo "Non-option argument: '-${OPTARG}'" >&2
+	            fi
+	            ;;
+	    esac
+	done
+
+}
+
+
 
 ##################
 # main
@@ -185,7 +246,11 @@ parseArgs() {
 echo -e "\n====================== $0 Start ======================"
 
 checkPWD
-parseArgs
+parseArgs $@ # Pass command line params to parseArgs... important
+
+# Argument parsing might have changed these.
+PC_INSTANCE_URL="http://localhost:$PC_INSTANCE_PORT"
+EMAIL_UI_URL="http://localhost:$EMAIL_UI_PORT"
 
 mkdir -p $ALL_PC_INSTANCES_FOLDER
 
