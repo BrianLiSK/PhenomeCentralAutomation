@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
@@ -69,6 +68,11 @@ public class CreatePatientPage extends CommonInfoSelectors
     private final By indicationForReferralBox = By.id("PhenoTips.PatientClass_0_indication_for_referral");
 
     private final By updateBtn = By.cssSelector("#patient-consent-update > a:nth-child(1)");
+
+    // For tree traversals
+    private final By ageOfOnsetAndModeInheritanceChildBtn = By.cssSelector("ul > li.term-entry > input");
+
+    private final By ageOfOnsetAndModeInheritanceChildLabels = By.cssSelector("ul > li.term-entry > label");
 
     /*******************************************************
      * "Family history and pedigree" Section - Selectors
@@ -259,15 +263,14 @@ public class CreatePatientPage extends CommonInfoSelectors
     }
 
     /**
-     * Clicks on the "Update" button under the "Consents granted" section and then waits
-     * 5 seconds for it to update the consent.
+     * Clicks on the "Update" button under the "Consents granted" section. Waits 5 seconds for consent to update.
      * @return same object as we stay on the same page
      */
     @Step("Click on 'Update' button for consent")
     public CreatePatientPage updateConsent()
     {
         clickOnElement(updateBtn);
-        waitForElementToBePresent(identifierBox); // Wait until the identifier box appears
+        unconditionalWaitNs(5); // No element to wait on as the state of the consents might not have changed.
         return this;
     }
 
@@ -293,7 +296,8 @@ public class CreatePatientPage extends CommonInfoSelectors
 
     /**
      * Sets the Life Status dropdown of the patient.
-     * @param status is either "Alive" or "Deceased". Must be exact string otherwise defaults to "Alive".
+     * @param status is either "Alive" or "Deceased". Must be exact string otherwise
+     *          Selenium throws NoSuchElementException exception.
      * @return stay on the same page so return same object.
      */
     @Step("Set patient's life status to: {0}")
@@ -302,19 +306,14 @@ public class CreatePatientPage extends CommonInfoSelectors
         waitForElementToBePresent(lifeStatusDrp);
         Select statusDrp = new Select(superDriver.findElement(lifeStatusDrp));
 
-        try {
-            statusDrp.selectByVisibleText(status);
-        } catch (NoSuchElementException e) {
-            System.out.println("No such life status. Defaulting to Alive.");
-            statusDrp.selectByVisibleText("Alive");
-        }
+        statusDrp.selectByVisibleText(status);
 
         return this;
     }
 
     /**
      * Sets the Date of Birth of the patient under Patient Information.
-     * Will safely handle invalid strings by defaulting to 01/2019.
+     * In case of invalid params or unable to find selection, Selenium throws NoSuchElementException exception.
      * @param month the Month as a String (01 - 12). Must exactly match the dropdown.
      * @param year the year as a String (1500s - 2019). Must exactly match the dropdown.
      * @return stay on the same page so return same object.
@@ -328,21 +327,15 @@ public class CreatePatientPage extends CommonInfoSelectors
         monthDrp = new Select(superDriver.findElement(dobMonthDrp));
         yearDrp = new Select(superDriver.findElement(dobYearDrp));
 
-        try {
-            monthDrp.selectByVisibleText(month);
-            yearDrp.selectByVisibleText(year);
-        } catch (NoSuchElementException e) {
-            System.out.println("Invalid DOB passed. Default set to 01/2019");
-            monthDrp.selectByVisibleText("01");
-            yearDrp.selectByVisibleText("2019");
-        }
+        monthDrp.selectByVisibleText(month);
+        yearDrp.selectByVisibleText(year);
 
         return this;
     }
 
     /**
      * Sets the Date of Death of the patient under Patient Information.
-     * Will safely handle invalid strings by defaulting to 01/2018.
+     * In case of invalid params or unable to find selection, Selenium throws NoSuchElementException exception.
      * Requires: Life Status set to "Deceased" so that Date of Death dropdowns are visible.
      * @param month the Month as a String (01 - 12). Must exactly match the dropdown.
      * @param year the year as a String (1500s - 2019). Must exactly match the dropdown.
@@ -357,14 +350,8 @@ public class CreatePatientPage extends CommonInfoSelectors
         monthDrp = new Select(superDriver.findElement(doDeathMonthDrp));
         yearDrp = new Select(superDriver.findElement(doDeathYearDrp));
 
-        try {
-            monthDrp.selectByVisibleText(month);
-            yearDrp.selectByVisibleText(year);
-        } catch (NoSuchElementException e) {
-            System.out.println("Invalid date of death passed. Default set to 01/2018");
-            monthDrp.selectByVisibleText("01");
-            yearDrp.selectByVisibleText("2018");
-        }
+        monthDrp.selectByVisibleText(month);
+        yearDrp.selectByVisibleText(year);
 
         return this;
     }
@@ -377,12 +364,7 @@ public class CreatePatientPage extends CommonInfoSelectors
      */
     public CreatePatientPage expandSection(SECTIONS theSection) {
         forceScrollToElement(sectionMap.get(theSection));
-        /*
-        WebElement element = superDriver.findElement(sectionMap.get(theSection));
-        Actions actions = new Actions(superDriver);
-        actions.moveToElement(element);
-        actions.perform();
-        */
+
         clickOnElement(sectionMap.get(theSection));
         return this;
     }
@@ -408,7 +390,7 @@ public class CreatePatientPage extends CommonInfoSelectors
 
     /**
      * Sets the Age of Onset under patient information.
-     * Currently, only works for congential.
+     * Currently, only works for congential onset.
      * Assumes that Patient Information section is expanded (selectors in that section visible).
      * @param theOnset onset specified by radio button text, must match exactly.
      * @return Stay on the same page, return same object.
@@ -416,6 +398,7 @@ public class CreatePatientPage extends CommonInfoSelectors
     @Step("Set the Age of Onset for the patient to: {0}")
     public CreatePatientPage setOnset(String theOnset) {
         waitForElementToBePresent(congenitalOnsentBtn);
+
         switch (theOnset) {
             default: clickOnElement(congenitalOnsentBtn); break;
         }
@@ -429,9 +412,11 @@ public class CreatePatientPage extends CommonInfoSelectors
      */
     @Step("Traverse through UI for Age of Onset")
     public List<String> cycleThroughAgeOfOnset() {
+
         List <String> loLabels =
-            preOrderTraverseAndClick(ageOfOnsetBtns, By.cssSelector("ul > li.term-entry > input"),
-                By.cssSelector("ul > li.term-entry > label"));
+            preOrderTraverseAndClick(ageOfOnsetBtns,
+                ageOfOnsetAndModeInheritanceChildBtn,
+                ageOfOnsetAndModeInheritanceChildLabels);
 
         clickOnElement(congenitalOnsentBtn);
 
@@ -447,8 +432,8 @@ public class CreatePatientPage extends CommonInfoSelectors
     public List<String> cycleThroughModeOfInheritance() {
 
         return preOrderTraverseAndClick(modeOfInheritanceChkboxes,
-            By.cssSelector("ul > li.term-entry > input"),
-            By.cssSelector("ul > li.term-entry > label"));
+            ageOfOnsetAndModeInheritanceChildBtn,
+            ageOfOnsetAndModeInheritanceChildLabels);
     }
 
     /**
@@ -563,6 +548,9 @@ public class CreatePatientPage extends CommonInfoSelectors
 
         List<String> loLabels = new ArrayList<>();
 
+        // It is difficult to specify more unique (readable) selectors for the latter two arguments as they will be searched
+        // for as children of the first argument's selector. We have similar selectors in cycleThroughAllPhenotypes()
+        // but they are a bit different due to how the tree structure is arranged.
         List<String> loUncategorizedLabels = preOrderTraverseAndClick(By.cssSelector("div.prenatal-info"),
             By.cssSelector("div.fieldset > div.displayed-value > span.yes-no-picker > label.yes"),
             By.cssSelector("div.fieldset > div.displayed-value > label.yes-no-picker-label"));
@@ -637,9 +625,11 @@ public class CreatePatientPage extends CommonInfoSelectors
      * "Measurements" Section - Methods
      *****************************************/
 
+    // TODO: Methods for this section only support one measurement entry right now. I don't have test cases for
+    //       multiple measurement entries
+
     /**
      * Adds a new entry of measurement data to the patient under the "Measurements" section.
-     * TODO: Check that it truncates floats within the measurements object to something that can be input to the box.
      * Requires: The "Measurements" section to already be expanded.
      * @param aMeasurement is a measurement object (instantiated struct) containing all the measurement fields to enter.
      * @return Stay on the same page so return the same object.
@@ -671,8 +661,8 @@ public class CreatePatientPage extends CommonInfoSelectors
     }
 
     /**
-     * Changes the date of the first measurement to the specified month and year. Defaults to January 2018
-     * upon invalid input.
+     * Changes the date of the first measurement to the specified month and year and date. Must be valid
+     * date otherwise Selenium will throw an ElementNotFound exception.
      * Requires: The measurement section to be open and at least one measurement entry to be present.
      * @param month is the month as a String "January" to "December". Must be exact.
      * @param year is the year as a String "1920" to current year (ex. "2019"). Must be exact.
@@ -689,14 +679,8 @@ public class CreatePatientPage extends CommonInfoSelectors
         Select monthDrp = new Select(superDriver.findElement(measurementMonthDrp));
         Select yearDrp = new Select(superDriver.findElement(measurementYearDrp));
 
-        try {
-            monthDrp.selectByVisibleText(month);
-            yearDrp.selectByVisibleText(year);
-        } catch (NoSuchElementException e) {
-            System.out.println("Invalid dropdown month or year passed. Defaulting to January 2018");
-            monthDrp.selectByVisibleText("January");
-            yearDrp.selectByVisibleText("2018");
-        }
+        monthDrp.selectByVisibleText(month);
+        yearDrp.selectByVisibleText(year);
 
         clickOnElement(calendarDayBtn);
         waitForElementToBeGone(measurementMonthDrp);
@@ -714,33 +698,44 @@ public class CreatePatientPage extends CommonInfoSelectors
     {
         waitForElementToBePresent(weightBox);
 
-        float weight = Float.parseFloat(superDriver.findElement(weightBox).getAttribute("value"));
-        float armSpan = Float.parseFloat(superDriver.findElement(armSpanBox).getAttribute("value"));
-        float headCircumference = Float.parseFloat(superDriver.findElement(headCircumferenceBox).getAttribute("value"));
-        float outerCanthalDistance = Float.parseFloat(superDriver.findElement(outherCanthalDistanceBox).getAttribute("value"));
-        float leftHandLength = Float.parseFloat(superDriver.findElement(leftHandLengthBox).getAttribute("value"));
-        float rightHandLength = Float.parseFloat(superDriver.findElement(rightHandLengthBox).getAttribute("value"));
+        float weight = getSpecificMeasurement(weightBox);
+        float armSpan = getSpecificMeasurement(armSpanBox);
+        float headCircumference = getSpecificMeasurement(headCircumferenceBox);
+        float outerCanthalDistance = getSpecificMeasurement(outherCanthalDistanceBox);
+        float leftHandLength = getSpecificMeasurement(leftHandLengthBox);
+        float rightHandLength = getSpecificMeasurement(rightHandLengthBox);
 
-        float height = Float.parseFloat(superDriver.findElement(heightBox).getAttribute("value"));
-        float sittingHeight = Float.parseFloat(superDriver.findElement(sittingHeightBox).getAttribute("value"));
-        float philtrumLength = Float.parseFloat(superDriver.findElement(philtrumLengthBox).getAttribute("value"));
-        float inntercanthalDistance = Float.parseFloat(superDriver.findElement(innterCanthalDistanceBox).getAttribute("value"));
-        float leftPalmLength = Float.parseFloat(superDriver.findElement(leftPalmLengthBox).getAttribute("value"));
-        float rightPalmLength = Float.parseFloat(superDriver.findElement(rightPalmLengthBox).getAttribute("value"));
+        float height = getSpecificMeasurement(heightBox);
+        float sittingHeight = getSpecificMeasurement(sittingHeightBox);
+        float philtrumLength = getSpecificMeasurement(philtrumLengthBox);
+        float inntercanthalDistance = getSpecificMeasurement(innterCanthalDistanceBox);
+        float leftPalmLength = getSpecificMeasurement(leftPalmLengthBox);
+        float rightPalmLength = getSpecificMeasurement(rightPalmLengthBox);
 
-        float leftEarLength = Float.parseFloat(superDriver.findElement(leftEarLengthBox).getAttribute("value"));
-        float palpebralFissureLength = Float.parseFloat(superDriver.findElement(palpebralFissureLengthBox).getAttribute("value"));
-        float leftFootLength = Float.parseFloat(superDriver.findElement(leftFootLengthBox).getAttribute("value"));
-        float rightFootLength = Float.parseFloat(superDriver.findElement(rightFootLengthBox).getAttribute("value"));
+        float leftEarLength = getSpecificMeasurement(leftEarLengthBox);
+        float palpebralFissureLength = getSpecificMeasurement(palpebralFissureLengthBox);
+        float leftFootLength = getSpecificMeasurement(leftFootLengthBox);
+        float rightFootLength = getSpecificMeasurement(rightFootLengthBox);
 
-        float rightEarLength = Float.parseFloat(superDriver.findElement(rightEarLengthBox).getAttribute("value"));
-        float interpupilaryDistance = Float.parseFloat(superDriver.findElement(interpupilaryDistanceBox).getAttribute("value"));
+        float rightEarLength = getSpecificMeasurement(rightEarLengthBox);
+        float interpupilaryDistance = getSpecificMeasurement(interpupilaryDistanceBox);
 
         return new CommonPatientMeasurement(
             weight, armSpan, headCircumference, outerCanthalDistance, leftHandLength, rightHandLength,
             height, sittingHeight, philtrumLength, inntercanthalDistance, leftPalmLength, rightPalmLength,
             leftEarLength, palpebralFissureLength, leftFootLength, rightFootLength,
             rightEarLength, interpupilaryDistance);
+    }
+
+    /**
+     * Retrieves the measurement value within the specified measurement box as a float.
+     * This is a helper function for getPatientMeasurement()
+     * @param measurementBoxSelector Selector of the specific box
+     * @return The float value of what was in the measurement box. If it were empty, returns 0.
+     */
+    private float getSpecificMeasurement(By measurementBoxSelector)
+    {
+        return Float.parseFloat(superDriver.findElement(measurementBoxSelector).getAttribute("value"));
     }
 
 
@@ -794,6 +789,7 @@ public class CreatePatientPage extends CommonInfoSelectors
 
         //Expand all first
         for (WebElement aCaret : loExpandCarets) {
+            // Should find this text, rather than rely on expansion selector due to PT-3095
             if (aCaret.getText().equals("►")) {
                 clickOnElement(aCaret);
             }
