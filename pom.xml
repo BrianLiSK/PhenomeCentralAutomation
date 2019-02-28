@@ -10,6 +10,7 @@
 
   <properties>
     <aspectj.version>1.9.2</aspectj.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <build>
@@ -41,6 +42,7 @@
           </argLine>
 
           <suiteXmlFiles>
+            <!-- Specify POM file through command line using -Dsurefire.suiteXmlFiles=... -->
             <!--  <suiteXmlFile>src/main/java/org/phenotips/testcases/xml/AllTests.xml</suiteXmlFile> -->
           </suiteXmlFiles>
         </configuration>
@@ -52,7 +54,6 @@
             <version>${aspectj.version}</version>
           </dependency>
         </dependencies>
-
       </plugin>
 
     </plugins>
