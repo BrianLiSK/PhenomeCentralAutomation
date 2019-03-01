@@ -1,6 +1,6 @@
 package org.phenotips.endtoendtests.pageobjects;
 
-import org.phenotips.endtoendtests.testcases.CommonInfoEnums;
+import org.phenotips.endtoendtests.common.CommonInfoEnums;
 
 import java.util.HashMap;
 import java.util.List;

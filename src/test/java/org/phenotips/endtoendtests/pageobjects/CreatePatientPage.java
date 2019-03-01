@@ -1,6 +1,6 @@
 package org.phenotips.endtoendtests.pageobjects;
 
-import org.phenotips.endtoendtests.testcases.CommonPatientMeasurement;
+import org.phenotips.endtoendtests.common.CommonPatientMeasurement;
 
 import java.util.ArrayList;
 import java.util.Arrays;

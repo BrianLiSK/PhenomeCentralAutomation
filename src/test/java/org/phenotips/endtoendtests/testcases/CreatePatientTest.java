@@ -1,5 +1,7 @@
 package org.phenotips.endtoendtests.testcases;
 
+import org.phenotips.endtoendtests.common.CommonInfoEnums;
+import org.phenotips.endtoendtests.common.CommonPatientMeasurement;
 import org.phenotips.endtoendtests.pageobjects.AdminRefreshMatchesPage;
 import org.phenotips.endtoendtests.pageobjects.CreatePatientPage;
 import org.phenotips.endtoendtests.pageobjects.EmailUIPage;

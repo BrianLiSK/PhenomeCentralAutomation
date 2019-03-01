@@ -1,5 +1,6 @@
 package org.phenotips.endtoendtests.testcases;
 
+import org.phenotips.endtoendtests.common.CommonInfoEnums;
 import org.phenotips.endtoendtests.pageobjects.AdminRefreshMatchesPage;
 import org.phenotips.endtoendtests.pageobjects.EmailUIPage;
 import org.phenotips.endtoendtests.pageobjects.HomePage;
