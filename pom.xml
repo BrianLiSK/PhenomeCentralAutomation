@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.phenomeCentral.brianli</groupId>
+  <groupId>org.phenotips</groupId>
   <artifactId>phenomeCentral-automation</artifactId>
   <version>1.0-SNAPSHOT</version>
 
@@ -42,8 +42,10 @@
           </argLine>
 
           <suiteXmlFiles>
-            <!-- Specify POM file through command line using -Dsurefire.suiteXmlFiles=... -->
-            <!--  <suiteXmlFile>src/main/java/org/phenotips/testcases/xml/AllTests.xml</suiteXmlFile> -->
+            <!-- Specify POM file through command line using -Dsurefire.suiteXmlFiles=...
+                  Default to not run any tests so that doesn't affect mvn build of phenomecentral.org -->
+            <!--  <suiteXmlFile>src/test/java/org/phenotips/endtoendtests/testcases/xml/AllTests.xml</suiteXmlFile> -->
+            <suiteXmlFile>src/test/java/org/phenotips/endtoendtests/testcases/xml/NoTests.xml</suiteXmlFile>
           </suiteXmlFiles>
         </configuration>
 
