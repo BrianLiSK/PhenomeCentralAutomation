@@ -17,8 +17,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import io.qameta.allure.Step;
 
 /**
- * This abstract class contains the toolbar (navbar) elements which is visible on all pages All page classes should
- * inherit this base class
+ * This abstract class contains the toolbar (navbar) elements which is visible on all pages.
+ * All page classes should inherit this base class
  */
 public abstract class BasePage
 {
@@ -50,8 +50,8 @@ public abstract class BasePage
     protected String EMAIL_UI_URL = "http://localhost:8085";
 
     /**
-     * Default waiting time in seconds. Notably it is used when waiting for an element to appear.
-     * Increase if your system is slow.
+     * Default "maximum" waiting time in seconds. Notably it is used when waiting for an element to appear. This can be
+     * thought of the timeout time if no additional wait was added to a method. Increase if your system is slow.
      */
     private final int PAUSE_LENGTH = 5;
 
@@ -59,11 +59,11 @@ public abstract class BasePage
      * Declaration of the webdriver and the explicit waiting objects. Will be initialized when a test runs and any page
      * class instantiated. See BasePage ctor.
      */
-    WebDriver superDriver; // Initialized only when a test suite runs, so see BaseTest class.
+    protected WebDriver superDriver; // Initialized only when a test suite runs and needs a page, so see BaseTest class.
 
-    WebDriverWait pause;
+    private WebDriverWait pause;
 
-    WebDriverWait longPause; // Use to wait for element to disappear.
+    private WebDriverWait longPause; // Use to wait for element to disappear.
 
 
     /*******************************
@@ -103,7 +103,7 @@ public abstract class BasePage
     public final By adminLink = By.id("tmAdminSpace");
 
     public final By aboutLink = By.id("tmAbout");
-    
+
     /**
      * CTOR. The timeout period is defined here. We can also set the polling interval if need be.
      *
