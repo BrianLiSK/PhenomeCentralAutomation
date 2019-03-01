@@ -13,6 +13,7 @@
         <methods>
           <include name="loginAdminTest" />
           <include name="loginUserTest" />
+          <include name="invalidCredentials" />
         </methods>
       </class>
 

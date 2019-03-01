@@ -13,9 +13,9 @@ public class LoginPage extends BasePage
 {
     private final By userNameField = By.id("j_username");
 
-    private final By passField = By.id("j_pasword"); // TODO: There might be a typo there
+    private final By passField = By.id("j_pasword"); // Note: There might be a typo there
 
-    private final By loginButton = By.cssSelector("input.button");
+    private final By loginButton = By.cssSelector("input.button[value='Sign in']");
 
     public LoginPage(WebDriver aDriver)
     {

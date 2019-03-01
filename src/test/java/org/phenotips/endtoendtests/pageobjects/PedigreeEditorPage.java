@@ -47,9 +47,9 @@ public class PedigreeEditorPage extends BasePage
 
     private final By hoverBox = By.cssSelector("#work-area > #canvas > svg > rect.pedigree-hoverbox");
     // Actually, no, maybe we shouldn't have all rectangle classes. I think circles would cause it to break.
-    // We should figure out how to traverse up the structure of nodes.
-    // It looks like its just a linear list of nodes for now...
-    // TODO: Think some more, probably will need JS
+    // We should figure out how to traverse up the structure of nodes. Maybe add IDs to each node.
+    // It looks like its just a linear list of nodes for now... so we have to get selectors by grepping weird values
+
     private final By hoverBoxPartnerLink = By.cssSelector(
         "#work-area > #canvas > svg > rect.pedigree-hoverbox[width=\"52\"]");
 
@@ -444,10 +444,9 @@ public class PedigreeEditorPage extends BasePage
             .build()
             .perform();
 
-        //forceClickOnElement(hoverBox);
         if (!isElementClickable(personalTab)) {
             loHoverBoxes = superDriver.findElements(hoverBox); // Search again, maybe coordiantes changed.
-            System.out.println("Clicking " + n + "th hover box again...");
+            System.out.println("Note: Clicking " + n + "th hover box again...");
             System.out.println("Found hoverboxes, Second Try: " + loHoverBoxes.size());
             action.moveToElement(loHoverBoxes.get(n - 1), 10, 10)
                 .moveToElement(loHoverBoxes.get(n - 1))
@@ -464,7 +463,7 @@ public class PedigreeEditorPage extends BasePage
      * Creates a child of the specified gender. Currently, it just does it for the first patient node
      * that it can find.
      * @param gender is one of the options on the gender toolbar that appears when trying to create a new node
-     * "Male", "Female", "Unknown", etc. TODO: Possibly create an enum.
+     * "Male", "Female", "Unknown", etc.
      * @return Stay on the same page so return the same object.
      */
     @Step("Create a child of the currently focused node with gender {0}")
@@ -539,9 +538,8 @@ public class PedigreeEditorPage extends BasePage
      * @param partner1 is the patient node that has the left circle to be clicked and dragged on
      * @param partner2 is the patient node that is meant to be dragged to wards
      * @return Stay on the same page so return the same object.
-     * TODO: I don't think this is working...
+     * TODO: I don't think this is working... we really need better structure for it to be testable
      */
-    // 4 and 5th boxes
     public PedigreeEditorPage createPartnership(int partner1, int partner2)
     {
         Actions act = new Actions(superDriver);
