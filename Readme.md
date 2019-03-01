@@ -14,9 +14,6 @@ Jira story link: https://phenotips.atlassian.net/browse/PC-325
 - JDK 1.8 or above. The codebase uses some Java 8 features such as lambdas. 
 - phenomecentral.org (parent project) already built
 
-## Test Assumptions
-- Certain tests check for emails. Ensure that the PC instance is setup to allow for emails to be sent. If running locally, that would mean a fakeSMTP service has started
-
 ## Usage
 ### Quick start
 - Clone this repository
@@ -44,6 +41,10 @@ If you already have a running instance:
 
 ## Running on IE
 - These instructions need to be followed before IE can be used. Notably, you must manually disable "Enhanced Protected Mode" in the IE's settings before automated test software such as Selenium is able to interact with an IE browser. See https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver#required-configuration
+
+## Test Assumptions
+- The test suite assumes a blank PC instance.
+- Certain tests check for emails. Ensure that the PC instance is setup to allow for emails to be sent. If running locally, that would mean a fakeSMTP service has started. Even if we don't run tests for emails (there are only two or three), we still need a working SMTP to approve new users
 	
 
 ## Architecture
