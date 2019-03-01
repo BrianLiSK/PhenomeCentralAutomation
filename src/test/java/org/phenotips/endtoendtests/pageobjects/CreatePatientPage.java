@@ -19,11 +19,10 @@ import io.qameta.allure.Step;
 */
 public class CreatePatientPage extends CommonInfoSelectors
 {
-    /*******************************************
-     * "Patient Information" Section - Selectors
-     *******************************************/
 
-    private final By patientIDDiv = By.id("document-title");
+    /************************************************************
+     * "Patient Consent" (Consents Granted) Section - Selectors
+     ************************************************************/
 
     private final By realPatientConsentBox = By.id("real-consent-checkbox");
 
@@ -35,9 +34,11 @@ public class CreatePatientPage extends CommonInfoSelectors
 
     private final By matchingConsentBox = By.id("matching-consent-checkbox");
 
-    private final By patientConsentUpdateBtn = By.id("patient-consent-update");
+    private final By patientConsentUpdateBtn = By.cssSelector("#patient-consent-update > a:nth-child(1)");
 
-    // Add in selectors for text fields here
+    /*********************************************
+     * "Patient Information" Section - Selectors
+     *********************************************/
 
     private final By identifierBox = By.id("PhenoTips.PatientClass_0_external_id");
 
@@ -66,13 +67,6 @@ public class CreatePatientPage extends CommonInfoSelectors
     private final By modeOfInheritanceChkboxes = By.cssSelector("div.global_mode_of_inheritance > div > div > ul > li.term-entry");
 
     private final By indicationForReferralBox = By.id("PhenoTips.PatientClass_0_indication_for_referral");
-
-    private final By updateBtn = By.cssSelector("#patient-consent-update > a:nth-child(1)");
-
-    // For tree traversals
-    private final By ageOfOnsetAndModeInheritanceChildBtn = By.cssSelector("ul > li.term-entry > input");
-
-    private final By ageOfOnsetAndModeInheritanceChildLabels = By.cssSelector("ul > li.term-entry > label");
 
     /*******************************************************
      * "Family history and pedigree" Section - Selectors
@@ -113,8 +107,6 @@ public class CreatePatientPage extends CommonInfoSelectors
     private final By measurementYearDrp = By.cssSelector("div.calendar_date_select select.year");
     private final By measurementMonthDrp = By.cssSelector("div.calendar_date_select select.month");
     private final By todayCalendarLink = By.linkText("Today");
-    private final By MondayOfTheThirdWeek = By.cssSelector(
-        "#body > div.calendar_date_select > div.cds_part.cds_body > table > tbody > tr.row_2 > td:nth-child(2) > div");
     private final By measurementDateBoxes = By.id("PhenoTips.MeasurementsClass_0_date");
     private final By weightBox = By.id("PhenoTips.MeasurementsClass_0_weight");
     private final By heightBox = By.id("PhenoTips.MeasurementsClass_0_height");
@@ -140,6 +132,8 @@ public class CreatePatientPage extends CommonInfoSelectors
      ******************************************************************************/
 
     private final By phenotypeSearchBox = By.id("quick-phenotype-search");
+    // Xwiki suggestion dialogue is overlayed ontop of entire page document rather than underneath
+    // the phenotype section div. Hence the vague selector.
     private final By firstPhenotypeSuggestion = By.cssSelector("li.xitem > div");
     private final By addPhenotypeDetailsBtns = By.cssSelector("button.add");
     private final By editPhenotypeDetailsBtns = By.cssSelector("button.edit");
@@ -151,7 +145,6 @@ public class CreatePatientPage extends CommonInfoSelectors
     //   by measurement information.
     private final By phenotypesAutoSelectedByMeasurementLabels = By.xpath("//div[@class='summary-item' and span[@class='fa fa-bolt']]/label[@class='yes']");
     private final By phenotypesManuallySelectedLabels = By.xpath("//div[@class='summary-item' and not(span[@class='fa fa-bolt'])]/label[@class='yes']");
-//    private final By phenotypesSelectedDivs = By.cssSelector("div.summary-item");
 
     /*******************************************************
      * "Genotype information" Section - Selectors
@@ -189,8 +182,27 @@ public class CreatePatientPage extends CommonInfoSelectors
     private final By pubMDIDCheckStatus = By.cssSelector("div.solved__pubmed_id > div.solved__pubmed_id > div > ol > li > div");
     private final By resolutionNotesBox = By.id("PhenoTips.PatientClass_0_solved__notes");
 
+    /**************************************************
+     * Common Tree Traversal Selectors and Strings
+     **************************************************/
+    // For tree traversals
+    private final By ageOfOnsetAndModeInheritanceChildBtn = By.cssSelector("ul > li.term-entry > input");
 
-    private final By saveAndViewSummaryBtn = By.cssSelector("span.buttonwrapper:nth-child(3) > input:nth-child(1)");
+    private final By ageOfOnsetAndModeInheritanceChildLabels = By.cssSelector("ul > li.term-entry > label");
+
+    private final String yesBtnSelectorString = "div.displayed-value > span.yes-no-picker > label.yes";
+
+    private final String labelSelectorString = "div.displayed-value > label.yes-no-picker-label";
+
+    private final By expandToolSpan = By.cssSelector("span[class=expand-tool]");
+
+    // Common Selectors for page
+
+    private final By saveAndViewSummaryBtn = By.cssSelector("div.bottombuttons input[value='Save and view summary']");
+
+    private final By quickSaveBtn = By.cssSelector("div.bottombuttons input[value='Quick save']");
+
+    private final By cancelChangesSinceSaveBtn = By.cssSelector("div.bottombuttons input[value='Cancel changes since last save']");
 
     public CreatePatientPage(WebDriver aDriver)
     {
@@ -209,6 +221,28 @@ public class CreatePatientPage extends CommonInfoSelectors
     public ViewPatientPage saveAndViewSummary()
     {
         clickOnElement(saveAndViewSummaryBtn);
+        return new ViewPatientPage(superDriver);
+    }
+
+    /**
+     * Hits the "Quick Save" button on the bottom left.
+     * @return stay on the same page so return the same object
+     */
+    @Step("Quick Save of patient form")
+    public CreatePatientPage quickSave()
+    {
+        clickOnElement(quickSaveBtn);
+        return this;
+    }
+
+    /**
+     * Hits the "Cancel changes since last save" button on the bottom right.
+     * @return navigating to the view page containing patient's full details so a new object of that type
+     */
+    @Step("Cancel changes on patient form")
+    public ViewPatientPage cancelChanges()
+    {
+        clickOnElement(cancelChangesSinceSaveBtn);
         return new ViewPatientPage(superDriver);
     }
 
@@ -269,7 +303,7 @@ public class CreatePatientPage extends CommonInfoSelectors
     @Step("Click on 'Update' button for consent")
     public CreatePatientPage updateConsent()
     {
-        clickOnElement(updateBtn);
+        clickOnElement(patientConsentUpdateBtn);
         unconditionalWaitNs(5); // No element to wait on as the state of the consents might not have changed.
         return this;
     }
@@ -491,8 +525,8 @@ public class CreatePatientPage extends CommonInfoSelectors
     public List<String> cycleThroughFamilialHealthConditions() {
 
         return preOrderTraverseAndClick(By.cssSelector("div.family-info > div.fieldset"),
-            By.cssSelector("div.displayed-value > span.yes-no-picker > label.yes"),
-            By.cssSelector("div.displayed-value > label.yes-no-picker-label"));
+            By.cssSelector(yesBtnSelectorString),
+            By.cssSelector(labelSelectorString));
     }
 
     /**
@@ -543,19 +577,18 @@ public class CreatePatientPage extends CommonInfoSelectors
     @Step("Set the DOB for the patient to: {0} month and {1} year")
     public List<String> cycleThroughPrenatalHistory() {
 
-        // TODO: Those selectors are used once, okay to leave them without variable?
-        By expandToolSpan = By.cssSelector("span[class=expand-tool]");
-
         List<String> loLabels = new ArrayList<>();
 
         // It is difficult to specify more unique (readable) selectors for the latter two arguments as they will be searched
         // for as children of the first argument's selector. We have similar selectors in cycleThroughAllPhenotypes()
         // but they are a bit different due to how the tree structure is arranged.
+        // We add the strings together instead of ByChained becaues ByChained is itself a recursive tree traversal that
+        // will go deep and ignore the ">" to link the chain which means the "immediate child" (depth 1).
         List<String> loUncategorizedLabels = preOrderTraverseAndClick(By.cssSelector("div.prenatal-info"),
-            By.cssSelector("div.fieldset > div.displayed-value > span.yes-no-picker > label.yes"),
-            By.cssSelector("div.fieldset > div.displayed-value > label.yes-no-picker-label"));
+            By.cssSelector("div.fieldset > " + yesBtnSelectorString),
+            By.cssSelector("div.fieldset > " + labelSelectorString));
 
-//      Expand all dropdowns, lets them load first
+//      Expand the dropdowns for the yes/no options that are categorized into sections, lets them load first
         preOrderTraverseAndClick(
             By.cssSelector("div.prenatal-info > div > div > div"), expandToolSpan, expandToolSpan);
 
@@ -818,7 +851,9 @@ public class CreatePatientPage extends CommonInfoSelectors
     }
 
     /**
-     * Traverses through the options for phenotypes in the Clinical Symptoms and Physical Findings Section
+     * Traverses through the options for phenotypes in the Clinical Symptoms and Physical Findings Section. This
+     * specific traversal only goes a depth level of 1 as the HPO tree is rather large. Maybe split to several smaller
+     * functions for each HPO section and recurse full tree if we want a more detailed sanity test.
      * Requires: The "Clinical Symptoms and Physical Findings" section to be expanded and that
      *              none of the yes/no options are already selected/expanded (i.e. should be at the state of a new patient)
      *               Otherwise, traversal result might be off due to presence of additional (appearing) selectors.
@@ -828,12 +863,7 @@ public class CreatePatientPage extends CommonInfoSelectors
     @Step("Traverse (pre-order) through all phenotypes. Depth level limited to 1.")
     public List<String> cycleThroughAllPhenotypes() {
 
-        By expandAllBtn = By.cssSelector("span.expand-all");
-
-        clickOnElement(expandAllBtn);
-
-        // TODO: Those selectors are used once, okay to leave them without variable?
-        By expandToolSpan = By.cssSelector("span[class=expand-tool]");
+        clickOnElement(By.cssSelector("span.expand-all"));
 
         List<String> loLabels = new ArrayList<>();
 
@@ -849,8 +879,6 @@ public class CreatePatientPage extends CommonInfoSelectors
             By.cssSelector("label.yes-no-picker-label, span.yes-no-picker-label > span.value"));
 
         loLabels.addAll(loCategorizedLabels);
-
-        //    unconditionalWaitNs(25);
 
         return loLabels;
     }
