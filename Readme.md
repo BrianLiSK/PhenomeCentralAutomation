@@ -1,20 +1,38 @@
-# Integration Tests for PC
+# Integration Tests for PhenomeCentral
 
-Jira Link: https://phenotips.atlassian.net/browse/PC-325
+##### End-to-end tests on a native web browser using Selenium
 
-This is WIP e-2-e testing of PC.
+Jira story link: https://phenotips.atlassian.net/browse/PC-325
 
-## Maven Dependencies
+## Major Maven Dependencies
 - Selenium WebDriver
+- WebDriverManager
 - TestNG
+- Allure
 
 ## Requirements
-- Certain tests check for emails. Ensure that the PC instance is setup to allow for emails to be sent. 
+- Fresh PC instance
+- Certain tests check for emails. Ensure that the PC instance is setup to allow for emails to be sent and that a fakeSMTP service has started
 
 ## Usage
+Quick start:
 - Clone this repository
-- cd into directory and verify `pom.xml` is there
-- Import the project on intelliJ as a Maven project.
+- Build phenomecentral.org
+- `cd standalone/target` and ensure that phenomecentral-standalone*.zip is present from a `ls`
+- `cd ../../scripts` and then `./runIntegrationTests.sh`
+This script will extract the standalone zip to a subfolder named "instances", start up the PC instance, run the tests, and generate an Allure report. All dependencies taken care of by Maven
+- `runIntegrationTests.sh` accepts several arguments to specify several (optional) variables. `./runIntegrationTests.sh --help` for details.
+- Example: `./runIntegrationTests.sh --browser chrome --start 8083 --stop 8084 --emailUI 8085 --emailListen 1025
+
+If you already have a running instance:
+- `java -jar fake-smtp/MockMock.jar -p 1025 -h 8085`
+- `mvn test -Dsurefire=xmlLocation -Dbrowser=DesiredBrowser -PCInstanceURL=localhost:8085 -emailUIURL=8086`
+
+## Opening the Allure Report
+- Report is stored in
+
+## Architecture
+
 - Start MockMock fakeSMTP by running `java -jar MockMock.jar -p 1025 -h 8085` in the root folder. Change 1025 and 8085 to the outgoing port on PC and the port to access the email UI respectively
 - Modify `src/main/java/org.phenotips.endtoendtests.pageobjects/BasePage.java` to specify the login credentials and the address of the PC instance (`HOMEPAGE_URL`, `ADMIN_USERNAME`, `ADMIN_PASS`, etc.).
 - Navigate to `src/main/java/org.phenotips.endtoendtests.testcases.java` and run either `CreatePatientTest` or `LoginPageTest`. The run button is located on the class declaration line beside the line number.
