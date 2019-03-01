@@ -17,8 +17,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import io.qameta.allure.Step;
 
 /**
- * This abstract class contains the toolbar (navbar) elements which is visible on all pages.
- * All page classes should inherit this base class
+ * This abstract class contains the toolbar (navbar) elements which is visible on all pages. All page classes should
+ * inherit this base class
  */
 public abstract class BasePage
 {
@@ -26,6 +26,12 @@ public abstract class BasePage
      * Environment Information. You can change these as needed to run tests easily through
      * IDE instead of passing in command line options to JVM.
      ***************************************************************************************/
+    /**
+     * Public selectors, the LoginPageTest touches these. Ideally, tests should not touch selectors.
+     */
+    public final By adminLink = By.id("tmAdminSpace");
+
+    public final By aboutLink = By.id("tmAbout");
 
     /**
      * Common login credentials.
@@ -42,34 +48,9 @@ public abstract class BasePage
 
     protected final String USER_PASS2 = "123456";
 
-    /**
-     * Common URLs, specify address of the PC instance Possible mutation in BasePage ctor, get URLs from SystemProperty
-     */
-    protected String HOMEPAGE_URL = "http://localhost:8083";
-
-    protected String EMAIL_UI_URL = "http://localhost:8085";
-
-    /**
-     * Default "maximum" waiting time in seconds. Notably it is used when waiting for an element to appear. This can be
-     * thought of the timeout time if no additional wait was added to a method. Increase if your system is slow.
-     */
-    private final int PAUSE_LENGTH = 5;
-
-    /**
-     * Declaration of the webdriver and the explicit waiting objects. Will be initialized when a test runs and any page
-     * class instantiated. See BasePage ctor.
-     */
-    protected WebDriver superDriver; // Initialized only when a test suite runs and needs a page, so see BaseTest class.
-
-    private WebDriverWait pause;
-
-    private WebDriverWait longPause; // Use to wait for element to disappear.
-
-
     /*******************************
      * Selectors
      *******************************/
-
     protected final By logOutLink = By.id("tmLogout"); // Used in child classes to check when modals close.
 
     // Approval Pending Message that appears on all pages for an unapproved user
@@ -77,6 +58,12 @@ public abstract class BasePage
 
     // PC logo at top left to navigate to homepage
     protected final By phenomeCentralLogoBtn = By.cssSelector("#companylogo > a > img");
+
+    /**
+     * Default "maximum" waiting time in seconds. Notably it is used when waiting for an element to appear. This can be
+     * thought of the timeout time if no additional wait was added to a method. Increase if your system is slow.
+     */
+    private final int PAUSE_LENGTH = 5;
 
     /**
      * Private selectors from the navigation toolbar
@@ -98,11 +85,21 @@ public abstract class BasePage
     private final By inProgressMsg = By.cssSelector("div[class='xnotification xnotification-inprogress']");
 
     /**
-     * Public selectors, the LoginPageTest touches these. Ideally, tests should not touch selectors.
+     * Common URLs, specify address of the PC instance Possible mutation in BasePage ctor, get URLs from SystemProperty
      */
-    public final By adminLink = By.id("tmAdminSpace");
+    protected String HOMEPAGE_URL = "http://localhost:8083";
 
-    public final By aboutLink = By.id("tmAbout");
+    protected String EMAIL_UI_URL = "http://localhost:8085";
+
+    /**
+     * Declaration of the webdriver and the explicit waiting objects. Will be initialized when a test runs and any page
+     * class instantiated. See BasePage ctor.
+     */
+    protected WebDriver superDriver; // Initialized only when a test suite runs and needs a page, so see BaseTest class.
+
+    private WebDriverWait pause;
+
+    private WebDriverWait longPause; // Use to wait for element to disappear.
 
     /**
      * CTOR. The timeout period is defined here. We can also set the polling interval if need be.

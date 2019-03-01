@@ -1,10 +1,10 @@
 package org.phenotips.endtoendtests.testcases;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import org.phenotips.endtoendtests.pageobjects.HomePage;
 import org.phenotips.endtoendtests.pageobjects.LoginPage;
+
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 /**
  * Test the login functionality.
@@ -14,11 +14,12 @@ import org.phenotips.endtoendtests.pageobjects.LoginPage;
 public class LoginPageTest extends BaseTest
 {
     HomePage currentPage = new HomePage(theDriver);
+
     LoginPage aLoginPage = new LoginPage(theDriver);
 
     /**
      * Login as Admin, assert that both Administrator Settings link and About link are visible
-      */
+     */
     @Test
     public void loginAdminTest()
     {
@@ -36,7 +37,7 @@ public class LoginPageTest extends BaseTest
 
     /**
      * Login as User, assert that Admin Settings link is not visible
-      */
+     */
     @Test
     public void loginUserTest()
     {
@@ -50,9 +51,9 @@ public class LoginPageTest extends BaseTest
     }
 
     /**
-     * Test for invalid credentials. This implicitly tests for it as we should have stayed on the login page rather
-     * than being redirected to the homepage. If we got logged in at any point, test fails as it cannot login again
-     * without having logging out.
+     * Test for invalid credentials. This implicitly tests for it as we should have stayed on the login page rather than
+     * being redirected to the homepage. If we got logged in at any point, test fails as it cannot login again without
+     * having logging out.
      */
     @Test
     public void invalidCredentials()
